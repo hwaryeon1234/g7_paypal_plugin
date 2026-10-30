@@ -93,11 +93,16 @@ export function isTrustedApproveUrl(url: unknown): url is string {
  * @returns 메시지
  */
 export function extractErrorMessage(error: any): string {
-    const message = error?.response?.data?.message ?? error?.data?.message ?? error?.message;
+    const body = error?.response?.data ?? error?.data;
+    const message = body?.message ?? error?.message;
+    const code = body?.errors?.code;
 
-    return typeof message === 'string' && message !== ''
+    const text = typeof message === 'string' && message !== ''
         ? message
         : t('payment.error.start_failed', 'Could not start PayPal checkout. Please try again.');
+
+    // 운영자가 원인을 바로 알 수 있게 PayPal·서버 오류 코드를 덧붙인다 (예: CITY_REQUIRED).
+    return typeof code === 'string' && code !== '' ? `${text} (${code})` : text;
 }
 
 /**

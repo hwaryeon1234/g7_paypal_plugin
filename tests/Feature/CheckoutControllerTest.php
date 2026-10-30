@@ -9,6 +9,7 @@ use Illuminate\Http\Client\Request as HttpRequest;
 use Illuminate\Support\Facades\Http;
 use Modules\Sirsoft\Ecommerce\Enums\OrderStatusEnum;
 use Modules\Sirsoft\Ecommerce\Enums\PaymentStatusEnum;
+use Modules\Sirsoft\Ecommerce\Models\OrderAddress;
 use Plugins\Hwaryeon\Paypal\Tests\Concerns\CreatesPaypalOrders;
 use Plugins\Hwaryeon\Paypal\Tests\PluginTestCase;
 
@@ -151,5 +152,102 @@ class CheckoutControllerTest extends PluginTestCase
         $this->actingAs(User::find($order->user_id))
             ->postJson(self::URL, ['orderId' => $order->order_number])
             ->assertStatus(502);
+    }
+
+    /**
+     * 주문에 배송지를 붙입니다.
+     *
+     * @param  int  $orderId  주문 ID
+     * @param  array<string, mixed>  $overrides  덮어쓸 속성
+     * @return void 반환값 없음
+     */
+    private function attachShippingAddress(int $orderId, array $overrides = []): void
+    {
+        OrderAddress::create(array_merge([
+            'order_id' => $orderId,
+            'address_type' => 'shipping',
+            'orderer_name' => 'Jane Doe',
+            'orderer_phone' => '+1 555 0100',
+            'orderer_email' => 'jane@example.com',
+            'recipient_name' => 'Jane Doe',
+            'recipient_phone' => '+1 555 0100',
+            'recipient_country_code' => 'US',
+            'address_line_1' => '1 Main St',
+            'intl_city' => 'San Jose',
+            'intl_state' => 'CA',
+            'intl_postal_code' => '95131',
+            'zipcode' => '',
+            'address' => '',
+        ], $overrides));
+    }
+
+    public function test_address_without_a_city_is_not_sent_to_paypal(): void
+    {
+        // 국내식 주소 입력 — 도시 칸이 없다 (실제 운영 장애: PayPal 422 CITY_REQUIRED).
+        $this->fakeCreate();
+        $order = $this->createPaypalOrder(33.06);
+        $this->attachShippingAddress($order->id, [
+            'recipient_country_code' => 'KR',
+            'address_line_1' => null,
+            'address' => '서울특별시 강남구 테헤란로 1',
+            'address_detail' => '101호',
+            'intl_city' => null,
+            'intl_state' => null,
+            'intl_postal_code' => null,
+            'recipient_city' => null,
+            'zipcode' => '06234',
+        ]);
+
+        $this->actingAs(User::find($order->user_id))
+            ->postJson(self::URL, ['orderId' => $order->order_number])
+            ->assertOk();
+
+        Http::assertSent(fn (HttpRequest $r) => str_ends_with($r->url(), '/v2/checkout/orders')
+            && ! isset($r->data()['purchase_units'][0]['shipping'])
+            && $r->data()['payment_source']['paypal']['experience_context']['shipping_preference'] === 'NO_SHIPPING');
+    }
+
+    public function test_full_address_is_sent_for_seller_protection(): void
+    {
+        $this->fakeCreate();
+        $order = $this->createPaypalOrder();
+        $this->attachShippingAddress($order->id);
+
+        $this->actingAs(User::find($order->user_id))
+            ->postJson(self::URL, ['orderId' => $order->order_number])
+            ->assertOk();
+
+        Http::assertSent(fn (HttpRequest $r) => str_ends_with($r->url(), '/v2/checkout/orders')
+            && ($r->data()['purchase_units'][0]['shipping']['address']['admin_area_2'] ?? null) === 'San Jose'
+            && $r->data()['payment_source']['paypal']['experience_context']['shipping_preference'] === 'SET_PROVIDED_ADDRESS');
+    }
+
+    public function test_shipping_field_rejection_retries_without_shipping(): void
+    {
+        Http::fake($this->tokenFake() + [
+            'api-m.sandbox.paypal.com/v2/checkout/orders' => Http::sequence()
+                ->push([
+                    'name' => 'UNPROCESSABLE_ENTITY',
+                    'details' => [[
+                        'field' => "/purchase_units/@reference_id=='X'/shipping/address/admin_area_2",
+                        'issue' => 'CITY_REQUIRED',
+                    ]],
+                ], 422)
+                ->push([
+                    'id' => 'RETRY1',
+                    'links' => [['href' => 'https://www.sandbox.paypal.com/checkoutnow?token=RETRY1', 'rel' => 'payer-action']],
+                ], 200),
+        ]);
+        $order = $this->createPaypalOrder();
+        $this->attachShippingAddress($order->id);
+
+        $this->actingAs(User::find($order->user_id))
+            ->postJson(self::URL, ['orderId' => $order->order_number])
+            ->assertOk()
+            ->assertJsonPath('data.paypal_order_id', 'RETRY1');
+
+        Http::assertSent(fn (HttpRequest $r) => str_ends_with($r->url(), '/v2/checkout/orders')
+            && ! isset($r->data()['purchase_units'][0]['shipping'])
+            && str_ends_with($r->header('PayPal-Request-Id')[0] ?? '', '-noship'));
     }
 }

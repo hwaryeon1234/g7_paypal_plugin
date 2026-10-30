@@ -724,7 +724,8 @@ class PaypalCheckoutService
         $postal = trim((string) ($address->intl_postal_code ?: $address->zipcode));
         $name = trim((string) ($address->recipient_name ?? ''));
 
-        if ($line1 === '' || $name === '') {
+        // 도시가 없는 주소(국내식 주소 입력 등)는 PayPal 이 CITY_REQUIRED 로 거절한다 — 처음부터 싣지 않는다.
+        if ($line1 === '' || $name === '' || $city === '') {
             return null;
         }
 
@@ -749,8 +750,19 @@ class PaypalCheckoutService
      */
     private function isShippingAddressRejection(PaypalApiException $e): bool
     {
+        if ($e->getHttpStatus() !== 422) {
+            return false;
+        }
+
+        // PayPal 은 문제 필드의 JSON 경로를 함께 준다(예: /purchase_units/@reference_id=='…'/shipping/address/admin_area_2).
+        foreach ($e->getFields() as $field) {
+            if (str_contains($field, '/shipping')) {
+                return true;
+            }
+        }
+
         foreach ($e->getIssues() as $issue) {
-            if (str_contains($issue, 'SHIPPING') || str_contains($issue, 'POSTAL_CODE') || str_contains($issue, 'COUNTRY') || str_contains($issue, 'ADDRESS')) {
+            if (preg_match('/SHIPPING|ADDRESS|CITY|STATE|POSTAL|ZIP|COUNTRY|ADMIN_AREA/', $issue) === 1) {
                 return true;
             }
         }

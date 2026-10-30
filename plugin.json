@@ -5,7 +5,7 @@
         "ko": "페이팔",
         "en": "PayPal"
     },
-    "version": "2.0.0",
+    "version": "2.0.1",
     "license": "MIT",
     "description": {
         "ko": "해외 고객용 PayPal 결제 (Orders v2 · 외화 결제 · 부분환불 · 웹훅 서명 검증)",

@@ -1,0 +1,72 @@
+# plugin.json 의 version 이 바뀐 채로 main 에 올라오면 GitHub Release 를 자동으로 만든다.
+#
+# 그누보드7 은 github_url 이 있는 확장의 새 버전을 GitHub Release(releases/latest 의 tag_name)로 감지하고,
+# 그 Release 의 zip 으로 업데이트한다. Release 가 없으면 다른 사이트에 업데이트 알림이 가지 않는다.
+# 릴리스 노트는 CHANGELOG.md 의 해당 버전 구간을 그대로 쓴다.
+name: 릴리스 자동 생성
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - plugin.json
+      - .github/workflows/release.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 버전 읽기
+        id: version
+        run: |
+          VERSION=$(jq -r '.version' plugin.json)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: 이미 있는 릴리스인지 확인
+        id: exists
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "${{ steps.version.outputs.tag }}" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: CHANGELOG 에서 릴리스 노트 만들기
+        if: steps.exists.outputs.exists == 'false'
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          {
+            echo "그누보드7 PayPal 결제 플러그인 (hwaryeon-paypal) ${VERSION}"
+            echo
+            echo "**설치**: 관리자 > 플러그인 > GitHub에서 설치 → \`https://github.com/${{ github.repository }}\` (이커머스 모듈 필요)"
+            echo "**업데이트**: 관리자 > 플러그인 목록의 업데이트 버튼"
+            echo
+            # "## [버전]" 줄부터 다음 "## [" 줄 전까지
+            awk -v v="$VERSION" '
+              index($0, "## [" v "]") == 1 { on = 1; next }
+              on && /^## \[/ { exit }
+              on { print }
+            ' CHANGELOG.md
+            echo
+            echo "전체 변경 이력: [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md)"
+          } > release-notes.md
+          cat release-notes.md
+
+      - name: 릴리스 생성
+        if: steps.exists.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ steps.version.outputs.tag }}" \
+            --target "${{ github.sha }}" \
+            --title "${{ steps.version.outputs.tag }}" \
+            --notes-file release-notes.md

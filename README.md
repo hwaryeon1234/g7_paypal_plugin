@@ -5,7 +5,7 @@
 
 <!-- @generated:badges START — ext:docgen 이 갱신. 이 블록 안은 직접 수정하지 않는다 -->
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.0.1-0066FF?style=flat-square" alt="version 1.0.1">
+  <img src="https://img.shields.io/badge/version-1.0.2-0066FF?style=flat-square" alt="version 1.0.2">
   <img src="https://img.shields.io/badge/type-%ED%94%8C%EB%9F%AC%EA%B7%B8%EC%9D%B8-555555?style=flat-square" alt="type 플러그인">
   <img src="https://img.shields.io/badge/%EA%B7%B8%EB%88%84%EB%B3%B4%EB%93%9C7-%3E%3D7.1.1-1F883D?style=flat-square" alt="그누보드7 &gt;=7.1.1">
   <img src="https://img.shields.io/badge/license-MIT-8250DF?style=flat-square" alt="license MIT">
@@ -92,6 +92,8 @@ php artisan plugin:activate hwaryeon-paypal
 # 업데이트 (번들 소스 기준 강제 반영)
 php artisan plugin:update hwaryeon-paypal --force
 ```
+
+저장소: https://github.com/hwaryeon1234/g7_paypal_plugin
 <!-- @generated:install END -->
 
 ## 관리자 설정
@@ -125,13 +127,23 @@ php artisan plugin:update hwaryeon-paypal --force
 ## 사용 방법
 
 <!-- @intent START -->
-**이 저장소에서 설치하기** — 디렉터리 이름이 플러그인 식별자(`hwaryeon-paypal`)와 같아야 합니다.
+**설치하기** — 관리자 > 플러그인 > GitHub 에서 설치에 아래 주소를 넣습니다. 이커머스(sirsoft-ecommerce) 모듈이 먼저 설치돼 있어야 합니다.
+
+```text
+https://github.com/hwaryeon1234/g7_paypal_plugin
+```
+
+설치 후 「활성화」를 누릅니다. 새 버전은 GitHub Release 로 배포되며, 관리자 > 플러그인 목록에 업데이트 알림이 뜨면 「업데이트」를 누르면 됩니다.
+
+명령줄로 설치하려면 G7 루트에서 원본을 `plugins/_pending/hwaryeon-paypal` 에 두고 설치합니다(디렉터리 이름은 반드시 `hwaryeon-paypal`).
 
 ```bash
-git clone https://github.com/hwaryeon1234/g7_paypal_plugin plugins/_bundled/hwaryeon-paypal
+git clone --depth 1 https://github.com/hwaryeon1234/g7_paypal_plugin plugins/_pending/hwaryeon-paypal
 php artisan plugin:install hwaryeon-paypal
 php artisan plugin:activate hwaryeon-paypal
 ```
+
+이미 설치한 사이트에서 Release zip 으로 직접 업데이트하려면 `php artisan plugin:update hwaryeon-paypal --zip=/경로/파일.zip` 을 씁니다.
 
 **처음 연결하기**
 1. [developer.paypal.com](https://developer.paypal.com) > Apps & Credentials 에서 앱을 만들고 Sandbox Client ID·Secret 을 관리자 > 플러그인 > PayPal 설정에 입력합니다.

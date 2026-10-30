@@ -3,6 +3,16 @@
 이 프로젝트의 모든 주요 변경 사항은 이 파일에 기록됩니다.
 형식은 [Keep a Changelog](https://keepachangelog.com/ko/1.1.0/) 를 따르며, [Semantic Versioning](https://semver.org/lang/ko/) 을 준수합니다.
 
+## [1.0.2] - 2026-10-30
+
+### Added
+
+- `plugin.json` 에 `github_url`·`github_changelog_url` — 관리자 화면 GitHub 설치·업데이트 감지(GitHub Release 기준) 지원
+
+### Changed
+
+- README 설치 안내를 관리자 화면 GitHub 설치·업데이트 기준으로 변경
+
 ## [1.0.1] - 2026-10-30
 
 ### Fixed

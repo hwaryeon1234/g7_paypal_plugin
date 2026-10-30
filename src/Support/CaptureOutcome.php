@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Support;
+namespace Plugins\G7plus\Paypal\Support;
 
 /**
  * PayPal 캡처 시도의 결과.

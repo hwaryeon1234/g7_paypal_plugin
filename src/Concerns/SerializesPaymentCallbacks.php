@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Concerns;
+namespace Plugins\G7plus\Paypal\Concerns;
 
 use Illuminate\Contracts\Cache\Lock;
 use Illuminate\Contracts\Cache\LockTimeoutException;
@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Log;
  *
  * 브라우저 복귀(return)와 웹훅(CHECKOUT.ORDER.APPROVED·PAYMENT.CAPTURE.COMPLETED)은 같은 주문에 거의
  * 동시에 도착할 수 있다. 둘 다 「결제 대기」를 보고 각자 결제완료를 처리하면 마일리지·알림이 두 번 발화한다.
- * 키는 `hwaryeon-paypal:callback:{sha1(주문번호)}` 하나로, 복귀와 웹훅이 같은 락을 잡는다.
+ * 키는 `g7plus-paypal:callback:{sha1(주문번호)}` 하나로, 복귀와 웹훅이 같은 락을 잡는다.
  * 번들 PG 플러그인들과 같은 규약(TTL 30초, 대기 10초)이다.
  */
 trait SerializesPaymentCallbacks
@@ -29,7 +29,7 @@ trait SerializesPaymentCallbacks
      */
     protected function acquireOrderCallbackLock(string $orderNumber): Lock
     {
-        $key = 'hwaryeon-paypal:callback:'.sha1(trim($orderNumber));
+        $key = 'g7plus-paypal:callback:'.sha1(trim($orderNumber));
         $lock = Cache::lock($key, 30);
 
         try {

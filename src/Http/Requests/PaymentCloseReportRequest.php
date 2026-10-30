@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Http\Requests;
+namespace Plugins\G7plus\Paypal\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 

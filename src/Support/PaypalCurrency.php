@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Support;
+namespace Plugins\G7plus\Paypal\Support;
 
 use InvalidArgumentException;
 

@@ -36,7 +36,7 @@
                                     "props": {
                                         "className": "text-sm font-semibold text-gray-800 dark:text-gray-200"
                                     },
-                                    "text": "$t:hwaryeon-paypal.admin.payment_panel_title"
+                                    "text": "$t:g7plus-paypal.admin.payment_panel_title"
                                 }
                             ]
                         },
@@ -63,7 +63,7 @@
                                             "props": {
                                                 "className": "text-sm text-gray-500 dark:text-gray-400"
                                             },
-                                            "text": "$t:hwaryeon-paypal.admin.capture_id"
+                                            "text": "$t:g7plus-paypal.admin.capture_id"
                                         },
                                         {
                                             "type": "basic",
@@ -90,7 +90,7 @@
                                             "props": {
                                                 "className": "text-sm text-gray-500 dark:text-gray-400"
                                             },
-                                            "text": "$t:hwaryeon-paypal.admin.funding_source"
+                                            "text": "$t:g7plus-paypal.admin.funding_source"
                                         },
                                         {
                                             "type": "basic",
@@ -116,7 +116,7 @@
                                             "props": {
                                                 "className": "text-sm text-gray-500 dark:text-gray-400"
                                             },
-                                            "text": "$t:hwaryeon-paypal.admin.charged"
+                                            "text": "$t:g7plus-paypal.admin.charged"
                                         },
                                         {
                                             "type": "basic",
@@ -134,7 +134,7 @@
                                     "props": {
                                         "className": "text-xs text-gray-500 dark:text-gray-400 pt-2"
                                     },
-                                    "text": "$t:hwaryeon-paypal.admin.dashboard_hint"
+                                    "text": "$t:g7plus-paypal.admin.dashboard_hint"
                                 }
                             ]
                         }

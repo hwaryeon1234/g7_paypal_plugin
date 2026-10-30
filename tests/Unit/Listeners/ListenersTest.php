@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Tests\Unit\Listeners;
+namespace Plugins\G7plus\Paypal\Tests\Unit\Listeners;
 
 use Illuminate\Http\Client\Request as HttpRequest;
 use Illuminate\Support\Facades\Http;
 use Modules\Sirsoft\Ecommerce\Enums\OrderStatusEnum;
 use Modules\Sirsoft\Ecommerce\Enums\PaymentStatusEnum;
 use Modules\Sirsoft\Ecommerce\Models\OrderRefund;
-use Plugins\Hwaryeon\Paypal\Listeners\PaymentRefundListener;
-use Plugins\Hwaryeon\Paypal\Listeners\RegisterPaypalPaymentMethodListener;
-use Plugins\Hwaryeon\Paypal\Listeners\RegisterPgProviderListener;
-use Plugins\Hwaryeon\Paypal\Listeners\RestrictPaymentMethodsForCurrencyListener;
-use Plugins\Hwaryeon\Paypal\Listeners\ValidateSettingsListener;
-use Plugins\Hwaryeon\Paypal\Tests\Concerns\CreatesPaypalOrders;
-use Plugins\Hwaryeon\Paypal\Tests\PluginTestCase;
+use Plugins\G7plus\Paypal\Listeners\PaymentRefundListener;
+use Plugins\G7plus\Paypal\Listeners\RegisterPaypalPaymentMethodListener;
+use Plugins\G7plus\Paypal\Listeners\RegisterPgProviderListener;
+use Plugins\G7plus\Paypal\Listeners\RestrictPaymentMethodsForCurrencyListener;
+use Plugins\G7plus\Paypal\Listeners\ValidateSettingsListener;
+use Plugins\G7plus\Paypal\Tests\Concerns\CreatesPaypalOrders;
+use Plugins\G7plus\Paypal\Tests\PluginTestCase;
 
 /**
  * 이커머스 레지스트리·통화 제한·환불·설정 검증 리스너.
@@ -35,7 +35,7 @@ class ListenersTest extends PluginTestCase
         $providers = (new RegisterPgProviderListener)->registerProvider([['id' => 'tosspayments']]);
 
         $paypal = collect($providers)->firstWhere('id', 'paypal');
-        $this->assertSame('hwaryeon-paypal.requestPayment', $paypal['payment_handler']);
+        $this->assertSame('g7plus-paypal.requestPayment', $paypal['payment_handler']);
         $this->assertSame([], $paypal['supported_methods']);
     }
 
@@ -146,7 +146,7 @@ class ListenersTest extends PluginTestCase
 
     public function test_settings_rules_reject_krw_and_unsafe_redirects(): void
     {
-        $rules = (new ValidateSettingsListener)->rules([], 'hwaryeon-paypal');
+        $rules = (new ValidateSettingsListener)->rules([], 'g7plus-paypal');
 
         $validator = validator([
             'allowed_currencies' => ['USD', 'KRW'],

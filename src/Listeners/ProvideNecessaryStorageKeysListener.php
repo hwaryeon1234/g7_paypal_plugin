@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Listeners;
+namespace Plugins\G7plus\Paypal\Listeners;
 
 use App\Contracts\Extension\HookListenerInterface;
 
@@ -21,7 +21,7 @@ class ProvideNecessaryStorageKeysListener implements HookListenerInterface
      */
     private const KEYS = [
         'sessionStorage' => [
-            'g7:hwaryeon-paypal:pendingClose',
+            'g7:g7plus-paypal:pendingClose',
         ],
     ];
 

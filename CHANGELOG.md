@@ -3,6 +3,14 @@
 이 프로젝트의 모든 주요 변경 사항은 이 파일에 기록됩니다.
 형식은 [Keep a Changelog](https://keepachangelog.com/ko/1.1.0/) 를 따르며, [Semantic Versioning](https://semver.org/lang/ko/) 을 준수합니다.
 
+## [2.0.0] - 2026-10-30
+
+### Changed
+
+- 플러그인 식별자를 `hwaryeon-paypal` 에서 `g7plus-paypal` 로 변경 (네임스페이스 `Plugins\G7plus\Paypal`, 벤더 `g7plus`) — 그누보드7 은 식별자가 다르면 다른 플러그인으로 인식하므로, 1.x 를 설치한 사이트는 기존 플러그인을 삭제하고 새로 설치한 뒤 PayPal 키·허용 통화를 다시 입력해야 합니다. 결제수단 id(`paypal`)와 PG id(`paypal`)는 그대로라 기존 PayPal 주문의 환불은 새 플러그인이 처리합니다
+- 발행 훅 이름 접두사 변경: `hwaryeon-paypal.payment.*` → `g7plus-paypal.payment.*`
+- API·콜백 주소 변경: `/plugins/g7plus-paypal/...`, `/api/plugins/g7plus-paypal/...` — PayPal 개발자 대시보드의 웹훅 URL 을 새 주소로 바꿔야 합니다
+
 ## [1.0.2] - 2026-10-30
 
 ### Added

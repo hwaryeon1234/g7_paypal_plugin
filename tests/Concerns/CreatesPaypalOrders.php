@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Tests\Concerns;
+namespace Plugins\G7plus\Paypal\Tests\Concerns;
 
 use App\Models\User;
 use App\Services\PluginSettingsService;

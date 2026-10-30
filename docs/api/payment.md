@@ -1,6 +1,6 @@
 # Payment API 레퍼런스
 
-> **소유**: plugin `hwaryeon-paypal` · **생성**: `php artisan api:docgen` (실측 기반). @generated 블록은 재생성 시 갱신되며, 사람이 작성한 설명은 보존됩니다.
+> **소유**: plugin `g7plus-paypal` · **생성**: `php artisan api:docgen` (실측 기반). @generated 블록은 재생성 시 갱신되며, 사람이 작성한 설명은 보존됩니다.
 
 ---
 
@@ -17,10 +17,10 @@
 ---
 
 
-### POST /api/plugins/hwaryeon-paypal/payment/checkout
-<!-- @generated:start:api.plugins.hwaryeon-paypal.payment.checkout -->
-- **라우트명**: `api.plugins.hwaryeon-paypal.payment.checkout`
-- **컨트롤러**: `Plugins\Hwaryeon\Paypal\Controllers\CheckoutController@store`
+### POST /api/plugins/g7plus-paypal/payment/checkout
+<!-- @generated:start:api.plugins.g7plus-paypal.payment.checkout -->
+- **라우트명**: `api.plugins.g7plus-paypal.payment.checkout`
+- **컨트롤러**: `Plugins\G7plus\Paypal\Controllers\CheckoutController@store`
 - **인증/권한**: `optional.sanctum` (선택적 인증: 회원/비회원 모두 접근)
 
 **요청 파라미터**
@@ -30,7 +30,7 @@ _요청 파라미터 없음._
 **요청 예시**
 
 ```http
-POST /api/plugins/hwaryeon-paypal/payment/checkout HTTP/1.1
+POST /api/plugins/g7plus-paypal/payment/checkout HTTP/1.1
 Host: api.example.com
 Accept: application/json
 Authorization: Bearer {YOUR_TOKEN}   (optional.sanctum: 비회원은 헤더 생략 가능)
@@ -56,10 +56,10 @@ _대표 에러 없음 (공개 조회). <!-- TODO: 도메인 특이 에러가 있
 실패 `errors.code`: `currency_not_allowed`·`invalid_amount`·`order_not_payable`·`payment_method_mismatch`(422), `not_configured`(503), `create_failed`(502). IP+주문 기준 분당 10회 제한(429).
 
 
-### POST /api/plugins/hwaryeon-paypal/payment/close-report
-<!-- @generated:start:api.plugins.hwaryeon-paypal.payment.close-report -->
-- **라우트명**: `api.plugins.hwaryeon-paypal.payment.close-report`
-- **컨트롤러**: `Plugins\Hwaryeon\Paypal\Controllers\PaymentCloseReportController@store`
+### POST /api/plugins/g7plus-paypal/payment/close-report
+<!-- @generated:start:api.plugins.g7plus-paypal.payment.close-report -->
+- **라우트명**: `api.plugins.g7plus-paypal.payment.close-report`
+- **컨트롤러**: `Plugins\G7plus\Paypal\Controllers\PaymentCloseReportController@store`
 - **인증/권한**: `optional.sanctum` (선택적 인증: 회원/비회원 모두 접근)
 
 **요청 파라미터**
@@ -69,7 +69,7 @@ _요청 파라미터 없음._
 **요청 예시**
 
 ```http
-POST /api/plugins/hwaryeon-paypal/payment/close-report HTTP/1.1
+POST /api/plugins/g7plus-paypal/payment/close-report HTTP/1.1
 Host: api.example.com
 Accept: application/json
 Authorization: Bearer {YOUR_TOKEN}   (optional.sanctum: 비회원은 헤더 생략 가능)
@@ -93,10 +93,10 @@ _대표 에러 없음 (공개 조회). <!-- TODO: 도메인 특이 에러가 있
 주문 소유자 확인 + 금액 대조 후 주문을 결제 실패로 기록한다. 이미 결제됐거나 캡처가 진행된 주문은 `status: ignored` 로 무시한다. 프론트 `paymentCloseReport.ts` 가 PayPal 취소 복귀 화면에서 자동으로 보낸다.
 
 
-### GET /plugins/hwaryeon-paypal/payment/cancel
-<!-- @generated:start:web.plugins.hwaryeon-paypal.payment.cancel -->
-- **라우트명**: `web.plugins.hwaryeon-paypal.payment.cancel`
-- **컨트롤러**: `Plugins\Hwaryeon\Paypal\Controllers\PaymentCallbackController@cancel`
+### GET /plugins/g7plus-paypal/payment/cancel
+<!-- @generated:start:web.plugins.g7plus-paypal.payment.cancel -->
+- **라우트명**: `web.plugins.g7plus-paypal.payment.cancel`
+- **컨트롤러**: `Plugins\G7plus\Paypal\Controllers\PaymentCallbackController@cancel`
 - **인증/권한**: 공개 (인증 불필요)
 
 **요청 파라미터**
@@ -106,7 +106,7 @@ _요청 파라미터 없음._
 **요청 예시**
 
 ```http
-GET /plugins/hwaryeon-paypal/payment/cancel HTTP/1.1
+GET /plugins/g7plus-paypal/payment/cancel HTTP/1.1
 Host: api.example.com
 Accept: application/json
 ```
@@ -128,10 +128,10 @@ _대표 에러 없음 (공개 조회). <!-- TODO: 도메인 특이 에러가 있
 **설명** PayPal 화면에서 취소 후 브라우저 복귀 (`?order=&token=`). 주문 상태를 바꾸지 않고 실패 화면(`error=USER_CANCEL`)으로 리다이렉트한다.
 
 
-### GET /plugins/hwaryeon-paypal/payment/return
-<!-- @generated:start:web.plugins.hwaryeon-paypal.payment.return -->
-- **라우트명**: `web.plugins.hwaryeon-paypal.payment.return`
-- **컨트롤러**: `Plugins\Hwaryeon\Paypal\Controllers\PaymentCallbackController@return`
+### GET /plugins/g7plus-paypal/payment/return
+<!-- @generated:start:web.plugins.g7plus-paypal.payment.return -->
+- **라우트명**: `web.plugins.g7plus-paypal.payment.return`
+- **컨트롤러**: `Plugins\G7plus\Paypal\Controllers\PaymentCallbackController@return`
 - **인증/권한**: 공개 (인증 불필요)
 
 **요청 파라미터**
@@ -141,7 +141,7 @@ _요청 파라미터 없음._
 **요청 예시**
 
 ```http
-GET /plugins/hwaryeon-paypal/payment/return HTTP/1.1
+GET /plugins/g7plus-paypal/payment/return HTTP/1.1
 Host: api.example.com
 Accept: application/json
 ```

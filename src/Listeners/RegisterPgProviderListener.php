@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Listeners;
+namespace Plugins\G7plus\Paypal\Listeners;
 
 use App\Contracts\Extension\HookListenerInterface;
-use Plugins\Hwaryeon\Paypal\Services\PaypalCheckoutService;
+use Plugins\G7plus\Paypal\Services\PaypalCheckoutService;
 
 /**
  * PG 제공자 등록 리스너.
@@ -58,11 +58,11 @@ class RegisterPgProviderListener implements HookListenerInterface
     {
         $providers[] = [
             'id' => PaypalCheckoutService::PROVIDER_ID,
-            'name_key' => 'hwaryeon-paypal::provider.name',
-            'name' => localized_label(nameKey: 'hwaryeon-paypal::provider.name'),
+            'name_key' => 'g7plus-paypal::provider.name',
+            'name' => localized_label(nameKey: 'g7plus-paypal::provider.name'),
             'icon' => 'wallet',
             'supported_methods' => [],
-            'payment_handler' => 'hwaryeon-paypal.requestPayment',
+            'payment_handler' => 'g7plus-paypal.requestPayment',
         ];
 
         return $providers;
@@ -84,7 +84,7 @@ class RegisterPgProviderListener implements HookListenerInterface
         }
 
         return array_merge($config, [
-            'checkout_endpoint' => '/api/plugins/hwaryeon-paypal/payment/checkout',
+            'checkout_endpoint' => '/api/plugins/g7plus-paypal/payment/checkout',
             'allowed_currencies' => app(PaypalCheckoutService::class)->allowedCurrencies(),
         ]);
     }

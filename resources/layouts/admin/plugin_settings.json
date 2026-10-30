@@ -5,13 +5,13 @@
     "extends": "_admin_base",
     "meta": {
         "leave_guard": "{{_local.hasChanges === true}}",
-        "title": "$t:hwaryeon-paypal.settings.title",
-        "description": "$t:hwaryeon-paypal.settings.description"
+        "title": "$t:g7plus-paypal.settings.title",
+        "description": "$t:g7plus-paypal.settings.description"
     },
     "data_sources": [
         {
             "id": "settings",
-            "label_key": "$t:hwaryeon-paypal.editor.data_source.settings",
+            "label_key": "$t:g7plus-paypal.editor.data_source.settings",
             "type": "api",
             "endpoint": "/api/admin/plugins/{{route.identifier}}/settings",
             "method": "GET",
@@ -50,9 +50,9 @@
         },
         {
             "id": "paypal_meta",
-            "label_key": "$t:hwaryeon-paypal.editor.data_source.paypal_meta",
+            "label_key": "$t:g7plus-paypal.editor.data_source.paypal_meta",
             "type": "api",
-            "endpoint": "/api/plugins/hwaryeon-paypal/admin/meta",
+            "endpoint": "/api/plugins/g7plus-paypal/admin/meta",
             "method": "GET",
             "auto_fetch": true,
             "auth_required": true,
@@ -84,8 +84,8 @@
                         "type": "composite",
                         "name": "PageHeader",
                         "props": {
-                            "title": "$t:hwaryeon-paypal.settings.title",
-                            "description": "$t:hwaryeon-paypal.settings.description",
+                            "title": "$t:g7plus-paypal.settings.title",
+                            "description": "$t:g7plus-paypal.settings.description",
                             "backPath": "/admin/plugins",
                             "backLabel": "$t:admin.plugins.back_to_list"
                         }
@@ -114,7 +114,7 @@
                                 "props": {
                                     "className": "paypal-tone-warning"
                                 },
-                                "text": "$t:hwaryeon-paypal.plugin_read_only"
+                                "text": "$t:g7plus-paypal.plugin_read_only"
                             }
                         ]
                     },
@@ -198,7 +198,7 @@
                                 "props": {
                                     "className": "text-sm font-semibold text-blue-900 dark:text-blue-200"
                                 },
-                                "text": "$t:hwaryeon-paypal.settings.guide_title"
+                                "text": "$t:g7plus-paypal.settings.guide_title"
                             },
                             {
                                 "type": "basic",
@@ -206,7 +206,7 @@
                                 "props": {
                                     "className": "text-sm text-blue-800 dark:text-blue-300"
                                 },
-                                "text": "$t:hwaryeon-paypal.settings.guide_step1"
+                                "text": "$t:g7plus-paypal.settings.guide_step1"
                             },
                             {
                                 "type": "basic",
@@ -214,7 +214,7 @@
                                 "props": {
                                     "className": "text-sm text-blue-800 dark:text-blue-300"
                                 },
-                                "text": "$t:hwaryeon-paypal.settings.guide_step2"
+                                "text": "$t:g7plus-paypal.settings.guide_step2"
                             },
                             {
                                 "type": "basic",
@@ -222,7 +222,7 @@
                                 "props": {
                                     "className": "text-sm text-blue-800 dark:text-blue-300"
                                 },
-                                "text": "$t:hwaryeon-paypal.settings.guide_step3"
+                                "text": "$t:g7plus-paypal.settings.guide_step3"
                             },
                             {
                                 "type": "basic",
@@ -230,7 +230,7 @@
                                 "props": {
                                     "className": "text-sm text-blue-800 dark:text-blue-300"
                                 },
-                                "text": "$t:hwaryeon-paypal.settings.guide_step4"
+                                "text": "$t:g7plus-paypal.settings.guide_step4"
                             }
                         ]
                     },
@@ -267,7 +267,7 @@
                                                         "props": {
                                                             "className": "form-label"
                                                         },
-                                                        "text": "$t:hwaryeon-paypal.settings.is_sandbox"
+                                                        "text": "$t:g7plus-paypal.settings.is_sandbox"
                                                     },
                                                     {
                                                         "type": "basic",
@@ -275,7 +275,7 @@
                                                         "props": {
                                                             "className": "form-hint"
                                                         },
-                                                        "text": "$t:hwaryeon-paypal.settings.is_sandbox_hint"
+                                                        "text": "$t:g7plus-paypal.settings.is_sandbox_hint"
                                                     }
                                                 ]
                                             },
@@ -314,7 +314,7 @@
                                         "props": {
                                             "className": "section-heading-md"
                                         },
-                                        "text": "$t:hwaryeon-paypal.settings.section_sandbox"
+                                        "text": "$t:g7plus-paypal.settings.section_sandbox"
                                     }
                                 ]
                             },
@@ -346,7 +346,7 @@
                                                         "props": {
                                                             "className": "form-label"
                                                         },
-                                                        "text": "$t:hwaryeon-paypal.settings.client_id"
+                                                        "text": "$t:g7plus-paypal.settings.client_id"
                                                     },
                                                     {
                                                         "type": "basic",
@@ -354,7 +354,7 @@
                                                         "props": {
                                                             "className": "form-hint"
                                                         },
-                                                        "text": "$t:hwaryeon-paypal.settings.client_id_hint"
+                                                        "text": "$t:g7plus-paypal.settings.client_id_hint"
                                                     }
                                                 ]
                                             },
@@ -401,7 +401,7 @@
                                                         "props": {
                                                             "className": "form-label"
                                                         },
-                                                        "text": "$t:hwaryeon-paypal.settings.client_secret"
+                                                        "text": "$t:g7plus-paypal.settings.client_secret"
                                                     },
                                                     {
                                                         "type": "basic",
@@ -409,7 +409,7 @@
                                                         "props": {
                                                             "className": "form-hint"
                                                         },
-                                                        "text": "$t:hwaryeon-paypal.settings.client_secret_hint"
+                                                        "text": "$t:g7plus-paypal.settings.client_secret_hint"
                                                     }
                                                 ]
                                             },
@@ -456,7 +456,7 @@
                                                         "props": {
                                                             "className": "form-label"
                                                         },
-                                                        "text": "$t:hwaryeon-paypal.settings.webhook_id"
+                                                        "text": "$t:g7plus-paypal.settings.webhook_id"
                                                     },
                                                     {
                                                         "type": "basic",
@@ -464,7 +464,7 @@
                                                         "props": {
                                                             "className": "form-hint"
                                                         },
-                                                        "text": "$t:hwaryeon-paypal.settings.webhook_id_hint"
+                                                        "text": "$t:g7plus-paypal.settings.webhook_id_hint"
                                                     }
                                                 ]
                                             },
@@ -515,7 +515,7 @@
                                         "props": {
                                             "className": "section-heading-md"
                                         },
-                                        "text": "$t:hwaryeon-paypal.settings.section_live"
+                                        "text": "$t:g7plus-paypal.settings.section_live"
                                     }
                                 ]
                             },
@@ -547,7 +547,7 @@
                                                         "props": {
                                                             "className": "form-label"
                                                         },
-                                                        "text": "$t:hwaryeon-paypal.settings.client_id"
+                                                        "text": "$t:g7plus-paypal.settings.client_id"
                                                     }
                                                 ]
                                             },
@@ -594,7 +594,7 @@
                                                         "props": {
                                                             "className": "form-label"
                                                         },
-                                                        "text": "$t:hwaryeon-paypal.settings.client_secret"
+                                                        "text": "$t:g7plus-paypal.settings.client_secret"
                                                     },
                                                     {
                                                         "type": "basic",
@@ -602,7 +602,7 @@
                                                         "props": {
                                                             "className": "form-hint"
                                                         },
-                                                        "text": "$t:hwaryeon-paypal.settings.client_secret_hint"
+                                                        "text": "$t:g7plus-paypal.settings.client_secret_hint"
                                                     }
                                                 ]
                                             },
@@ -649,7 +649,7 @@
                                                         "props": {
                                                             "className": "form-label"
                                                         },
-                                                        "text": "$t:hwaryeon-paypal.settings.webhook_id"
+                                                        "text": "$t:g7plus-paypal.settings.webhook_id"
                                                     },
                                                     {
                                                         "type": "basic",
@@ -657,7 +657,7 @@
                                                         "props": {
                                                             "className": "form-hint"
                                                         },
-                                                        "text": "$t:hwaryeon-paypal.settings.webhook_id_hint"
+                                                        "text": "$t:g7plus-paypal.settings.webhook_id_hint"
                                                     }
                                                 ]
                                             },
@@ -708,7 +708,7 @@
                                         "props": {
                                             "className": "section-heading-md"
                                         },
-                                        "text": "$t:hwaryeon-paypal.settings.section_currencies"
+                                        "text": "$t:g7plus-paypal.settings.section_currencies"
                                     }
                                 ]
                             },
@@ -725,7 +725,7 @@
                                         "props": {
                                             "className": "form-hint"
                                         },
-                                        "text": "$t:hwaryeon-paypal.settings.currencies_hint"
+                                        "text": "$t:g7plus-paypal.settings.currencies_hint"
                                     },
                                     {
                                         "id": "currency_bulk_actions",
@@ -761,7 +761,7 @@
                                                     {
                                                         "type": "basic",
                                                         "name": "Span",
-                                                        "text": "$t:hwaryeon-paypal.settings.currencies_select_all"
+                                                        "text": "$t:g7plus-paypal.settings.currencies_select_all"
                                                     }
                                                 ]
                                             },
@@ -791,7 +791,7 @@
                                                     {
                                                         "type": "basic",
                                                         "name": "Span",
-                                                        "text": "$t:hwaryeon-paypal.settings.currencies_clear_all"
+                                                        "text": "$t:g7plus-paypal.settings.currencies_clear_all"
                                                     }
                                                 ]
                                             },
@@ -881,7 +881,7 @@
                                         "props": {
                                             "className": "form-hint"
                                         },
-                                        "text": "$t:hwaryeon-paypal.settings.currencies_in_country_note"
+                                        "text": "$t:g7plus-paypal.settings.currencies_in_country_note"
                                     },
                                     {
                                         "type": "basic",
@@ -889,7 +889,7 @@
                                         "props": {
                                             "className": "form-hint"
                                         },
-                                        "text": "$t:hwaryeon-paypal.settings.currencies_krw_note"
+                                        "text": "$t:g7plus-paypal.settings.currencies_krw_note"
                                     }
                                 ]
                             }
@@ -916,7 +916,7 @@
                                         "props": {
                                             "className": "section-heading-md"
                                         },
-                                        "text": "$t:hwaryeon-paypal.settings.section_experience"
+                                        "text": "$t:g7plus-paypal.settings.section_experience"
                                     }
                                 ]
                             },
@@ -948,7 +948,7 @@
                                                         "props": {
                                                             "className": "form-label"
                                                         },
-                                                        "text": "$t:hwaryeon-paypal.settings.brand_name"
+                                                        "text": "$t:g7plus-paypal.settings.brand_name"
                                                     },
                                                     {
                                                         "type": "basic",
@@ -956,7 +956,7 @@
                                                         "props": {
                                                             "className": "form-hint"
                                                         },
-                                                        "text": "$t:hwaryeon-paypal.settings.brand_name_hint"
+                                                        "text": "$t:g7plus-paypal.settings.brand_name_hint"
                                                     }
                                                 ]
                                             },
@@ -1004,7 +1004,7 @@
                                                         "props": {
                                                             "className": "form-label"
                                                         },
-                                                        "text": "$t:hwaryeon-paypal.settings.landing_page"
+                                                        "text": "$t:g7plus-paypal.settings.landing_page"
                                                     },
                                                     {
                                                         "type": "basic",
@@ -1012,7 +1012,7 @@
                                                         "props": {
                                                             "className": "form-hint"
                                                         },
-                                                        "text": "$t:hwaryeon-paypal.settings.landing_page_hint"
+                                                        "text": "$t:g7plus-paypal.settings.landing_page_hint"
                                                     }
                                                 ]
                                             },
@@ -1032,15 +1032,15 @@
                                                             "options": [
                                                                 {
                                                                     "value": "NO_PREFERENCE",
-                                                                    "label": "$t:hwaryeon-paypal.settings.landing_page_no_preference"
+                                                                    "label": "$t:g7plus-paypal.settings.landing_page_no_preference"
                                                                 },
                                                                 {
                                                                     "value": "LOGIN",
-                                                                    "label": "$t:hwaryeon-paypal.settings.landing_page_login"
+                                                                    "label": "$t:g7plus-paypal.settings.landing_page_login"
                                                                 },
                                                                 {
                                                                     "value": "GUEST_CHECKOUT",
-                                                                    "label": "$t:hwaryeon-paypal.settings.landing_page_guest"
+                                                                    "label": "$t:g7plus-paypal.settings.landing_page_guest"
                                                                 }
                                                             ]
                                                         }
@@ -1074,7 +1074,7 @@
                                         "props": {
                                             "className": "section-heading-md"
                                         },
-                                        "text": "$t:hwaryeon-paypal.settings.section_webhook"
+                                        "text": "$t:g7plus-paypal.settings.section_webhook"
                                     }
                                 ]
                             },
@@ -1099,7 +1099,7 @@
                                                 "props": {
                                                     "className": "form-label"
                                                 },
-                                                "text": "$t:hwaryeon-paypal.settings.webhook_url_label"
+                                                "text": "$t:g7plus-paypal.settings.webhook_url_label"
                                             },
                                             {
                                                 "type": "basic",
@@ -1121,7 +1121,7 @@
                                                         "props": {
                                                             "className": "flex-1 overflow-x-auto font-mono text-sm bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded px-3 py-2 whitespace-nowrap"
                                                         },
-                                                        "text": "{{_local.paypalMeta?.webhook_url ?? '/plugins/hwaryeon-paypal/webhook'}}"
+                                                        "text": "{{_local.paypalMeta?.webhook_url ?? '/plugins/g7plus-paypal/webhook'}}"
                                                     },
                                                     {
                                                         "id": "webhook_copy_button",
@@ -1139,15 +1139,15 @@
                                                             {
                                                                 "comment": "운영자가 PayPal 개발자 대시보드에 직접 등록해야 웹훅이 들어온다. 그래서 보여 주기만 하지 않고 복사까지 시켜 준다",
                                                                 "type": "click",
-                                                                "handler": "hwaryeon-paypal.copyToClipboard",
+                                                                "handler": "g7plus-paypal.copyToClipboard",
                                                                 "params": {
-                                                                    "text": "{{_local.paypalMeta?.webhook_url ?? '/plugins/hwaryeon-paypal/webhook'}}"
+                                                                    "text": "{{_local.paypalMeta?.webhook_url ?? '/plugins/g7plus-paypal/webhook'}}"
                                                                 },
                                                                 "onSuccess": {
                                                                     "handler": "toast",
                                                                     "params": {
                                                                         "type": "success",
-                                                                        "message": "$t:hwaryeon-paypal.settings.webhook_url_copied"
+                                                                        "message": "$t:g7plus-paypal.settings.webhook_url_copied"
                                                                     }
                                                                 }
                                                             }
@@ -1160,7 +1160,7 @@
                                                             {
                                                                 "type": "basic",
                                                                 "name": "Span",
-                                                                "text": "$t:hwaryeon-paypal.settings.webhook_url_copy"
+                                                                "text": "$t:g7plus-paypal.settings.webhook_url_copy"
                                                             }
                                                         ]
                                                     }
@@ -1172,7 +1172,7 @@
                                                 "props": {
                                                     "className": "form-hint"
                                                 },
-                                                "text": "$t:hwaryeon-paypal.settings.webhook_url_hint"
+                                                "text": "$t:g7plus-paypal.settings.webhook_url_hint"
                                             }
                                         ]
                                     },
@@ -1190,7 +1190,7 @@
                                                 "props": {
                                                     "className": "form-label"
                                                 },
-                                                "text": "$t:hwaryeon-paypal.settings.webhook_events_label"
+                                                "text": "$t:g7plus-paypal.settings.webhook_events_label"
                                             },
                                             {
                                                 "type": "basic",
@@ -1240,7 +1240,7 @@
                                         "props": {
                                             "className": "section-heading-md"
                                         },
-                                        "text": "$t:hwaryeon-paypal.settings.section_redirect"
+                                        "text": "$t:g7plus-paypal.settings.section_redirect"
                                     }
                                 ]
                             },
@@ -1272,7 +1272,7 @@
                                                         "props": {
                                                             "className": "form-label"
                                                         },
-                                                        "text": "$t:hwaryeon-paypal.settings.redirect_success_url"
+                                                        "text": "$t:g7plus-paypal.settings.redirect_success_url"
                                                     },
                                                     {
                                                         "type": "basic",
@@ -1280,7 +1280,7 @@
                                                         "props": {
                                                             "className": "form-hint"
                                                         },
-                                                        "text": "$t:hwaryeon-paypal.settings.redirect_success_url_hint"
+                                                        "text": "$t:g7plus-paypal.settings.redirect_success_url_hint"
                                                     }
                                                 ]
                                             },
@@ -1327,7 +1327,7 @@
                                                         "props": {
                                                             "className": "form-label"
                                                         },
-                                                        "text": "$t:hwaryeon-paypal.settings.redirect_fail_url"
+                                                        "text": "$t:g7plus-paypal.settings.redirect_fail_url"
                                                     },
                                                     {
                                                         "type": "basic",
@@ -1335,7 +1335,7 @@
                                                         "props": {
                                                             "className": "form-hint"
                                                         },
-                                                        "text": "$t:hwaryeon-paypal.settings.redirect_fail_url_hint"
+                                                        "text": "$t:g7plus-paypal.settings.redirect_fail_url_hint"
                                                     }
                                                 ]
                                             },

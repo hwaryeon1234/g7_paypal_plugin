@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Services;
+namespace Plugins\G7plus\Paypal\Services;
 
 use App\Contracts\Extension\CacheInterface;
 use App\Services\PluginSettingsService;
@@ -10,7 +10,7 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Plugins\Hwaryeon\Paypal\Exceptions\PaypalApiException;
+use Plugins\G7plus\Paypal\Exceptions\PaypalApiException;
 
 /**
  * PayPal REST API 호출 서비스 (Orders v2 · Payments v2 · Webhooks v1).
@@ -23,7 +23,7 @@ use Plugins\Hwaryeon\Paypal\Exceptions\PaypalApiException;
  */
 class PaypalApiService
 {
-    private const PLUGIN_IDENTIFIER = 'hwaryeon-paypal';
+    private const PLUGIN_IDENTIFIER = 'g7plus-paypal';
 
     private const LIVE_BASE_URL = 'https://api-m.paypal.com';
 
@@ -316,7 +316,7 @@ class PaypalApiService
     private function accessToken(): string
     {
         if (! $this->isConfigured()) {
-            throw new PaypalApiException(__('hwaryeon-paypal::messages.errors.not_configured'), 0, 'NOT_CONFIGURED');
+            throw new PaypalApiException(__('g7plus-paypal::messages.errors.not_configured'), 0, 'NOT_CONFIGURED');
         }
 
         $cached = $this->cache->get($this->tokenCacheKey());
@@ -346,7 +346,7 @@ class PaypalApiService
                 'sandbox' => $this->sandbox,
             ]);
 
-            throw new PaypalApiException(__('hwaryeon-paypal::messages.errors.auth_failed'), $response->status(), 'AUTHENTICATION_FAILURE');
+            throw new PaypalApiException(__('g7plus-paypal::messages.errors.auth_failed'), $response->status(), 'AUTHENTICATION_FAILURE');
         }
 
         // 만료 1분 전에 버린다 — 요청 도중 만료돼 401 을 맞는 일을 줄인다.

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Exceptions;
+namespace Plugins\G7plus\Paypal\Exceptions;
 
 use RuntimeException;
 
@@ -21,6 +21,6 @@ class PaypalCheckoutException extends RuntimeException
         public readonly string $errorCode,
         public readonly int $httpStatus = 422,
     ) {
-        parent::__construct(__('hwaryeon-paypal::messages.errors.'.$errorCode));
+        parent::__construct(__('g7plus-paypal::messages.errors.'.$errorCode));
     }
 }

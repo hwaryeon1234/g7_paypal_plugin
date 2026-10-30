@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Services;
+namespace Plugins\G7plus\Paypal\Services;
 
 use App\Extension\HookManager;
 use App\Support\LocalizedValue;
@@ -18,11 +18,11 @@ use Modules\Sirsoft\Ecommerce\Helpers\DeviceDetector;
 use Modules\Sirsoft\Ecommerce\Models\Order;
 use Modules\Sirsoft\Ecommerce\Services\CurrencyConversionService;
 use Modules\Sirsoft\Ecommerce\Services\OrderProcessingService;
-use Plugins\Hwaryeon\Paypal\Concerns\SerializesPaymentCallbacks;
-use Plugins\Hwaryeon\Paypal\Exceptions\PaypalApiException;
-use Plugins\Hwaryeon\Paypal\Exceptions\PaypalCheckoutException;
-use Plugins\Hwaryeon\Paypal\Support\CaptureOutcome;
-use Plugins\Hwaryeon\Paypal\Support\PaypalCurrency;
+use Plugins\G7plus\Paypal\Concerns\SerializesPaymentCallbacks;
+use Plugins\G7plus\Paypal\Exceptions\PaypalApiException;
+use Plugins\G7plus\Paypal\Exceptions\PaypalCheckoutException;
+use Plugins\G7plus\Paypal\Support\CaptureOutcome;
+use Plugins\G7plus\Paypal\Support\PaypalCurrency;
 
 /**
  * PayPal 결제 흐름 (주문 생성 → 구매자 승인 → 서버 캡처 → 금액 대조 → 결제완료).
@@ -38,7 +38,7 @@ class PaypalCheckoutService
 {
     use SerializesPaymentCallbacks;
 
-    public const PLUGIN_IDENTIFIER = 'hwaryeon-paypal';
+    public const PLUGIN_IDENTIFIER = 'g7plus-paypal';
 
     /** PG 제공자 id (registered_pg_providers) */
     public const PROVIDER_ID = 'paypal';
@@ -185,7 +185,7 @@ class PaypalCheckoutService
 
         $payload = $this->buildOrderPayload($order, $charge, withShipping: true);
 
-        HookManager::doAction('hwaryeon-paypal.payment.before_create', $order, $payload);
+        HookManager::doAction('g7plus-paypal.payment.before_create', $order, $payload);
 
         try {
             $paypalOrder = $this->api->createOrder($payload, $requestId);
@@ -437,7 +437,7 @@ class PaypalCheckoutService
      */
     private function recordCapture(Order $order, array $capture, string $paypalOrderId, array $paypalOrder, ?Request $request): CaptureOutcome
     {
-        HookManager::doAction('hwaryeon-paypal.payment.after_capture', $order, $capture);
+        HookManager::doAction('g7plus-paypal.payment.after_capture', $order, $capture);
 
         $captureId = (string) ($capture['id'] ?? '');
         $status = (string) ($capture['status'] ?? '');
@@ -604,7 +604,7 @@ class PaypalCheckoutService
                 $captureId,
                 null,
                 (string) ($capture['amount']['currency_code'] ?? 'USD'),
-                __('hwaryeon-paypal::messages.refund.verification_failed_note'),
+                __('g7plus-paypal::messages.refund.verification_failed_note'),
                 'g7-void-'.$captureId,
             );
 
@@ -692,7 +692,7 @@ class PaypalCheckoutService
             : (string) ($first ?? '');
 
         if ($options->count() > 1) {
-            $name .= ' '.__('hwaryeon-paypal::messages.order_description_more', ['count' => $options->count() - 1], 'en');
+            $name .= ' '.__('g7plus-paypal::messages.order_description_more', ['count' => $options->count() - 1], 'en');
         }
 
         $name = trim($name) !== '' ? $name : 'Order '.$order->order_number;

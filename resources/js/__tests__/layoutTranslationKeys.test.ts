@@ -3,7 +3,7 @@ import { join, resolve } from 'path';
 import { describe, expect, it } from 'vitest';
 
 const ROOT = resolve(__dirname, '../../..');
-const PREFIX = 'hwaryeon-paypal.';
+const PREFIX = 'g7plus-paypal.';
 
 function collectFiles(dir: string, ext: string): string[] {
     return readdirSync(dir).flatMap((name) => {
@@ -30,7 +30,7 @@ function usedKeys(): string[] {
 
     for (const file of sources) {
         const text = readFileSync(file, 'utf8');
-        for (const match of text.matchAll(/\$t:hwaryeon-paypal\.([A-Za-z0-9_.]+)/g)) {
+        for (const match of text.matchAll(/\$t:g7plus-paypal\.([A-Za-z0-9_.]+)/g)) {
             keys.add(match[1].replace(/\.$/, ''));
         }
         for (const match of text.matchAll(/\bt\('([A-Za-z0-9_.]+)'/g)) {

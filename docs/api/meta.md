@@ -1,6 +1,6 @@
 # Meta API 레퍼런스
 
-> **소유**: plugin `hwaryeon-paypal` · **생성**: `php artisan api:docgen` (실측 기반). @generated 블록은 재생성 시 갱신되며, 사람이 작성한 설명은 보존됩니다.
+> **소유**: plugin `g7plus-paypal` · **생성**: `php artisan api:docgen` (실측 기반). @generated 블록은 재생성 시 갱신되며, 사람이 작성한 설명은 보존됩니다.
 
 ---
 
@@ -17,9 +17,9 @@
 ---
 
 
-### GET /api/plugins/hwaryeon-paypal/admin/meta
-<!-- @generated:start:api.plugins.hwaryeon-paypal.admin.meta -->
-- **라우트명**: `api.plugins.hwaryeon-paypal.admin.meta`
+### GET /api/plugins/g7plus-paypal/admin/meta
+<!-- @generated:start:api.plugins.g7plus-paypal.admin.meta -->
+- **라우트명**: `api.plugins.g7plus-paypal.admin.meta`
 - **인증/권한**: `auth:sanctum` + `permission:sirsoft-ecommerce.settings.read`
 
 **요청 파라미터**
@@ -29,7 +29,7 @@ _요청 파라미터 없음._
 **요청 예시**
 
 ```http
-GET /api/plugins/hwaryeon-paypal/admin/meta HTTP/1.1
+GET /api/plugins/g7plus-paypal/admin/meta HTTP/1.1
 Host: api.example.com
 Accept: application/json
 Authorization: Bearer {YOUR_TOKEN}

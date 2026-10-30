@@ -9,10 +9,10 @@
 
 | 훅 이름 | 유형 | 설명 | 발행 위치 |
 |---|---|---|---|
-| `hwaryeon-paypal.payment.after_capture` | action | PayPal 결제 캡처 완료 후 (금액 대조 전) | `src/Services/PaypalCheckoutService.php:440` |
-| `hwaryeon-paypal.payment.after_refund` | action | PayPal 환불 완료 후 | `src/Listeners/PaymentRefundListener.php:166` |
-| `hwaryeon-paypal.payment.before_create` | action | PayPal 주문(Orders v2) 생성 API 호출 전 | `src/Services/PaypalCheckoutService.php:188` |
-| `hwaryeon-paypal.payment.before_refund` | action | PayPal 환불 API 호출 전 | `src/Listeners/PaymentRefundListener.php:136` |
+| `g7plus-paypal.payment.after_capture` | action | PayPal 결제 캡처 완료 후 (금액 대조 전) | `src/Services/PaypalCheckoutService.php:440` |
+| `g7plus-paypal.payment.after_refund` | action | PayPal 환불 완료 후 | `src/Listeners/PaymentRefundListener.php:166` |
+| `g7plus-paypal.payment.before_create` | action | PayPal 주문(Orders v2) 생성 API 호출 전 | `src/Services/PaypalCheckoutService.php:188` |
+| `g7plus-paypal.payment.before_refund` | action | PayPal 환불 API 호출 전 | `src/Listeners/PaymentRefundListener.php:136` |
 <!-- @generated:hooks-published END -->
 
 <!-- @intent START -->

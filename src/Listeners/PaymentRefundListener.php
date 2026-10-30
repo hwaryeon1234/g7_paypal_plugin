@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Listeners;
+namespace Plugins\G7plus\Paypal\Listeners;
 
 use App\Contracts\Extension\HookListenerInterface;
 use App\Extension\HookManager;
@@ -12,10 +12,10 @@ use InvalidArgumentException;
 use Modules\Sirsoft\Ecommerce\Models\Order;
 use Modules\Sirsoft\Ecommerce\Models\OrderPayment;
 use Modules\Sirsoft\Ecommerce\Models\OrderRefund;
-use Plugins\Hwaryeon\Paypal\Exceptions\PaypalApiException;
-use Plugins\Hwaryeon\Paypal\Services\PaypalApiService;
-use Plugins\Hwaryeon\Paypal\Services\PaypalCheckoutService;
-use Plugins\Hwaryeon\Paypal\Support\PaypalCurrency;
+use Plugins\G7plus\Paypal\Exceptions\PaypalApiException;
+use Plugins\G7plus\Paypal\Services\PaypalApiService;
+use Plugins\G7plus\Paypal\Services\PaypalCheckoutService;
+use Plugins\G7plus\Paypal\Support\PaypalCurrency;
 
 /**
  * PayPal 환불 리스너.
@@ -106,7 +106,7 @@ class PaymentRefundListener implements HookListenerInterface
 
         $captureId = (string) ($payment->transaction_id ?? '');
         if ($captureId === '') {
-            return $this->failure('MISSING_CAPTURE_ID', __('hwaryeon-paypal::messages.refund.missing_capture_id'));
+            return $this->failure('MISSING_CAPTURE_ID', __('g7plus-paypal::messages.refund.missing_capture_id'));
         }
 
         $currency = strtoupper((string) ($payment->currency ?: ($order->currency_snapshot['order_currency'] ?? '')));
@@ -121,11 +121,11 @@ class PaymentRefundListener implements HookListenerInterface
                 'error' => $e->getMessage(),
             ]);
 
-            return $this->failure('INVALID_REFUND_AMOUNT', __('hwaryeon-paypal::messages.refund.invalid_amount'));
+            return $this->failure('INVALID_REFUND_AMOUNT', __('g7plus-paypal::messages.refund.invalid_amount'));
         }
 
         if ((float) $value <= 0) {
-            return $this->failure('INVALID_REFUND_AMOUNT', __('hwaryeon-paypal::messages.refund.invalid_amount'));
+            return $this->failure('INVALID_REFUND_AMOUNT', __('g7plus-paypal::messages.refund.invalid_amount'));
         }
 
         // 같은 환불 레코드·같은 금액의 재시도는 PayPal 이 첫 응답을 돌려준다. 운영자가 금액을 고쳐 다시 실행하면 다른 요청이다.
@@ -133,14 +133,14 @@ class PaymentRefundListener implements HookListenerInterface
             ? 'g7-refund-'.$refund->id.'-'.$currency.'-'.$value
             : 'g7-refund-'.Str::uuid()->toString();
 
-        HookManager::doAction('hwaryeon-paypal.payment.before_refund', $order, $payment, $value, $currency);
+        HookManager::doAction('g7plus-paypal.payment.before_refund', $order, $payment, $value, $currency);
 
         try {
             $response = $this->api()->refundCapture(
                 $captureId,
                 $value,
                 $currency,
-                $reason ?: __('hwaryeon-paypal::messages.refund.default_note'),
+                $reason ?: __('g7plus-paypal::messages.refund.default_note'),
                 $requestId,
             );
         } catch (PaypalApiException $e) {
@@ -160,10 +160,10 @@ class PaymentRefundListener implements HookListenerInterface
         if (! in_array($status, ['COMPLETED', 'PENDING'], true)) {
             Log::error('PayPal: refund not accepted', ['order_id' => $order->id, 'status' => $status]);
 
-            return $this->failure('REFUND_'.($status ?: 'UNKNOWN'), __('hwaryeon-paypal::messages.refund.not_accepted'));
+            return $this->failure('REFUND_'.($status ?: 'UNKNOWN'), __('g7plus-paypal::messages.refund.not_accepted'));
         }
 
-        HookManager::doAction('hwaryeon-paypal.payment.after_refund', $order, $payment, $response);
+        HookManager::doAction('g7plus-paypal.payment.after_refund', $order, $payment, $response);
 
         Log::info('PayPal: refund succeeded', [
             'order_id' => $order->id,
@@ -211,11 +211,11 @@ class PaymentRefundListener implements HookListenerInterface
     {
         foreach (['REFUND_AMOUNT_EXCEEDED', 'CAPTURE_FULLY_REFUNDED', 'REFUND_TIME_LIMIT_EXCEEDED', 'TRANSACTION_REFUSED', 'INSUFFICIENT_FUNDS'] as $issue) {
             if ($e->hasIssue($issue)) {
-                return __('hwaryeon-paypal::messages.refund.issues.'.$issue);
+                return __('g7plus-paypal::messages.refund.issues.'.$issue);
             }
         }
 
-        return __('hwaryeon-paypal::messages.refund.api_error', ['code' => $e->publicCode()]);
+        return __('g7plus-paypal::messages.refund.api_error', ['code' => $e->publicCode()]);
     }
 
     /**

@@ -2,17 +2,17 @@
 
 use App\Support\SiteUrl;
 use Illuminate\Support\Facades\Route;
-use Plugins\Hwaryeon\Paypal\Controllers\CheckoutController;
-use Plugins\Hwaryeon\Paypal\Controllers\PaymentCloseReportController;
-use Plugins\Hwaryeon\Paypal\Services\PaypalCheckoutService;
-use Plugins\Hwaryeon\Paypal\Support\PaypalCurrency;
+use Plugins\G7plus\Paypal\Controllers\CheckoutController;
+use Plugins\G7plus\Paypal\Controllers\PaymentCloseReportController;
+use Plugins\G7plus\Paypal\Services\PaypalCheckoutService;
+use Plugins\G7plus\Paypal\Support\PaypalCurrency;
 
 /*
 |--------------------------------------------------------------------------
 | PayPal Plugin API Routes
 |--------------------------------------------------------------------------
 |
-| 프리픽스: /api/plugins/hwaryeon-paypal (PluginRouteServiceProvider 자동 적용)
+| 프리픽스: /api/plugins/g7plus-paypal (PluginRouteServiceProvider 자동 적용)
 | 미들웨어: api (PluginRouteServiceProvider 자동 적용)
 |
 */
@@ -33,7 +33,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum', 'admin'])->g
         return response()->json([
             'success' => true,
             'data' => [
-                'webhook_url' => SiteUrl::absolute('/plugins/hwaryeon-paypal/webhook'),
+                'webhook_url' => SiteUrl::absolute('/plugins/g7plus-paypal/webhook'),
                 'webhook_events' => [
                     'CHECKOUT.ORDER.APPROVED',
                     'PAYMENT.CAPTURE.COMPLETED',

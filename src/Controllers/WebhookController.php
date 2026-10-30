@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Controllers;
+namespace Plugins\G7plus\Paypal\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Modules\Sirsoft\Ecommerce\Models\Order;
 use Modules\Sirsoft\Ecommerce\Services\OrderProcessingService;
-use Plugins\Hwaryeon\Paypal\Concerns\RecordsPaymentFailure;
-use Plugins\Hwaryeon\Paypal\Services\PaypalApiService;
-use Plugins\Hwaryeon\Paypal\Services\PaypalCheckoutService;
+use Plugins\G7plus\Paypal\Concerns\RecordsPaymentFailure;
+use Plugins\G7plus\Paypal\Services\PaypalApiService;
+use Plugins\G7plus\Paypal\Services\PaypalCheckoutService;
 
 /**
  * PayPal 웹훅 수신.
@@ -55,7 +55,7 @@ class WebhookController
     /**
      * 웹훅을 받습니다.
      *
-     * POST /plugins/hwaryeon-paypal/webhook
+     * POST /plugins/g7plus-paypal/webhook
      *
      * @param  Request  $request  웹훅 요청 (원문 본문 그대로)
      * @return JsonResponse 처리 결과
@@ -165,7 +165,7 @@ class WebhookController
             $this->orderService,
             $order,
             'CAPTURE_DENIED',
-            __('hwaryeon-paypal::messages.errors.capture_declined'),
+            __('g7plus-paypal::messages.errors.capture_declined'),
             'payment_failed',
         );
 

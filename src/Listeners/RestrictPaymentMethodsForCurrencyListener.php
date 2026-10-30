@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Listeners;
+namespace Plugins\G7plus\Paypal\Listeners;
 
 use App\Contracts\Extension\HookListenerInterface;
-use Plugins\Hwaryeon\Paypal\Services\PaypalCheckoutService;
+use Plugins\G7plus\Paypal\Services\PaypalCheckoutService;
 
 /**
  * 결제 통화별 PayPal 노출 제한.

@@ -52,8 +52,8 @@ _등록하는 메뉴가 없습니다._
 <!-- @generated:routes START — ext:docgen 이 갱신. 이 블록 안은 직접 수정하지 않는다 -->
 | 종류 | 파일 | URL prefix |
 |---|---|---|
-| `api` | `/home/user/g7_paypal_plugin/src/routes/api.php` | `/api/plugins/hwaryeon-paypal/...` |
-| `web` | `/home/user/g7_paypal_plugin/src/routes/web.php` | `/plugins/hwaryeon-paypal/...` |
+| `api` | `/home/user/g7_paypal_plugin/src/routes/api.php` | `/api/plugins/g7plus-paypal/...` |
+| `web` | `/home/user/g7_paypal_plugin/src/routes/web.php` | `/plugins/g7plus-paypal/...` |
 
 확장 라우트는 **활성 상태인 확장의 것만** 등록됩니다. 라우트 정의를 바꾸면 라우트 캐시 재생성이 필요합니다.
 <!-- @generated:routes END -->

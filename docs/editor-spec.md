@@ -7,7 +7,7 @@
 <!-- @generated:editor-spec-summary START — ext:docgen 이 갱신. 이 블록 안은 직접 수정하지 않는다 -->
 | 항목 | 값 |
 |---|---|
-| manifest | `plugins/_bundled/hwaryeon-paypal/editor-spec.json` |
+| manifest | `plugins/_bundled/g7plus-paypal/editor-spec.json` |
 | 형태 | 단일 파일 (인라인) |
 | 스펙 버전 | `1.0.0` |
 | 스타일 시스템 | - |
@@ -50,7 +50,7 @@ _이 확장은 `componentPalette` 를 선언하지 않습니다 — 편집기 �
 |---|---|---|---|
 | `sampleData.byDataSourceId` | 레이아웃 `data_sources` ID 로 붙는 프리뷰 응답 | 2 | `settings` · `paypal_meta` |
 | `sampleData.byEndpointPattern` | 엔드포인트 패턴으로 붙는 프리뷰 응답 | 미선언 | - |
-| `states.groups` | 상태 변종을 적용할 범위(라우트·베이스 레이아웃) | 1 | `*/admin/plugins/hwaryeon-paypal/settings` |
+| `states.groups` | 상태 변종을 적용할 범위(라우트·베이스 레이아웃) | 1 | `*/admin/plugins/g7plus-paypal/settings` |
 
 _이 확장 레이아웃의 `data_source` 는 전부 프리뷰 샘플이 붙습니다 (이 확장 또는 번들 템플릿 스펙이 커버)._
 <!-- @generated:editor-spec-samples END -->
@@ -73,7 +73,7 @@ _이 확장 레이아웃의 `data_source` 는 전부 프리뷰 샘플이 붙습�
 편집기 스펙은 JSON 이므로 빌드가 필요 없습니다. 다만 편집기 서빙은 **활성 디렉토리만** 읽으므로(`_bundled` 폴백 없음) 편집 후 반드시 반영합니다:
 
 ```bash
-php artisan plugin:update hwaryeon-paypal --force
+php artisan plugin:update g7plus-paypal --force
 ```
 <!-- @generated:editor-spec-obligations END -->
 

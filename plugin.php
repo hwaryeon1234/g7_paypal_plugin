@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugins\Hwaryeon\Paypal;
+namespace Plugins\G7plus\Paypal;
 
 use App\Extension\AbstractPlugin;
 
@@ -33,7 +33,7 @@ class Plugin extends AbstractPlugin
     public function getMetadata(): array
     {
         return [
-            'author' => 'hwaryeon',
+            'author' => 'g7plus',
             'license' => 'MIT',
             'keywords' => ['payment', 'paypal', 'pg', 'global', 'ecommerce'],
         ];
@@ -173,7 +173,7 @@ class Plugin extends AbstractPlugin
     {
         return [
             [
-                'name' => 'hwaryeon-paypal.payment.before_create',
+                'name' => 'g7plus-paypal.payment.before_create',
                 'type' => 'action',
                 'description' => [
                     'ko' => 'PayPal 주문(Orders v2) 생성 API 호출 전',
@@ -181,7 +181,7 @@ class Plugin extends AbstractPlugin
                 ],
             ],
             [
-                'name' => 'hwaryeon-paypal.payment.after_capture',
+                'name' => 'g7plus-paypal.payment.after_capture',
                 'type' => 'action',
                 'description' => [
                     'ko' => 'PayPal 결제 캡처 완료 후 (금액 대조 전)',
@@ -189,7 +189,7 @@ class Plugin extends AbstractPlugin
                 ],
             ],
             [
-                'name' => 'hwaryeon-paypal.payment.before_refund',
+                'name' => 'g7plus-paypal.payment.before_refund',
                 'type' => 'action',
                 'description' => [
                     'ko' => 'PayPal 환불 API 호출 전',
@@ -197,7 +197,7 @@ class Plugin extends AbstractPlugin
                 ],
             ],
             [
-                'name' => 'hwaryeon-paypal.payment.after_refund',
+                'name' => 'g7plus-paypal.payment.after_refund',
                 'type' => 'action',
                 'description' => [
                     'ko' => 'PayPal 환불 완료 후',

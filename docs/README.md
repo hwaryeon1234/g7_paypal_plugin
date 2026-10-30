@@ -1,6 +1,6 @@
 # 그누보드7 페이팔 플러그인 개발자 문서
 
-> plugins/_bundled/hwaryeon-paypal · 플러그인
+> plugins/_bundled/g7plus-paypal · 플러그인
 
 <!-- @generated:stats START — ext:docgen 이 갱신. 이 블록 안은 직접 수정하지 않는다 -->
 **훅 수**: 4 · **구독 훅 수**: 8 · **라우트 수**: 6 · **모델 수**: 0 · **테이블 수**: 0 · **마이그레이션 수**: 0 · **레이아웃 수**: 1 · **핸들러 수**: 2

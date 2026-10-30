@@ -1,0 +1,69 @@
+{
+    "editor": {
+        "data_source": {
+            "settings": "결제 설정",
+            "paypal_meta": "웹훅 URL·지원 통화"
+        }
+    },
+    "plugin_name": "PayPal",
+    "plugin_description": "해외 고객용 PayPal 결제",
+    "plugin_read_only": "이 플러그인 설정을 바꿀 권한이 없습니다. 읽기 전용으로 표시합니다.",
+    "settings": {
+        "title": "PayPal 설정",
+        "description": "PayPal REST 앱 키, 결제 허용 통화, 웹훅을 설정합니다.",
+        "guide_title": "처음 설정하는 순서",
+        "guide_step1": "1. PayPal 개발자 대시보드(developer.paypal.com) > Apps & Credentials 에서 앱을 만들고 Client ID·Secret 을 아래에 입력합니다.",
+        "guide_step2": "2. 같은 앱의 Webhooks 에 아래 웹훅 URL 을 등록하고(안내된 이벤트 선택), 발급된 Webhook ID 를 입력합니다.",
+        "guide_step3": "3. 이커머스 설정 > 언어·통화에서 USD·EUR 등 외화 통화를 추가하고, PayPal 로 받을 통화를 아래에서 고릅니다.",
+        "guide_step4": "4. 이커머스 설정 > 주문 설정 > 결제수단에서 「PayPal」을 켭니다. 외화로 주문할 때만 체크아웃에 나타납니다.",
+        "is_sandbox": "샌드박스 모드",
+        "is_sandbox_hint": "켜 두면 샌드박스 키로 테스트 결제만 합니다. 실제 판매 전 반드시 끄세요.",
+        "section_sandbox": "샌드박스 앱 키",
+        "section_live": "라이브 앱 키",
+        "client_id": "Client ID",
+        "client_id_hint": "Apps & Credentials 의 앱 상세에서 확인합니다.",
+        "client_secret": "Secret",
+        "client_secret_hint": "외부에 노출되지 않도록 주의하세요. 저장 후에는 가려서 표시됩니다.",
+        "webhook_id": "Webhook ID",
+        "webhook_id_hint": "웹훅 서명 검증에 씁니다. 비워 두면 모든 웹훅을 거절합니다(결제 자체는 동작).",
+        "section_currencies": "PayPal 결제 허용 통화",
+        "currencies_hint": "고른 통화로 주문할 때만 체크아웃에 PayPal 이 나타납니다. 기본값은 PayPal 이 지원하는 해외 통화 전체입니다.",
+        "currencies_select_all": "전체 선택",
+        "currencies_clear_all": "전체 해제",
+        "currencies_in_country_note": "* BRL·CNY·MYR 은 해당 국가에 등록된 PayPal 계정만 받을 수 있습니다.",
+        "currencies_krw_note": "원화(KRW)는 PayPal 이 지원하지 않아 원화 주문에는 PayPal 이 나타나지 않습니다. 쇼핑몰에 없는 통화를 골라도 체크아웃에는 영향이 없습니다.",
+        "section_experience": "PayPal 결제창",
+        "brand_name": "상호명",
+        "brand_name_hint": "PayPal 승인 화면에 보일 상점 이름입니다. 비워 두면 PayPal 계정의 상호를 씁니다.",
+        "landing_page": "첫 화면",
+        "landing_page_hint": "PayPal 승인 화면을 열었을 때 먼저 보일 화면입니다.",
+        "landing_page_no_preference": "PayPal 이 결정 (권장)",
+        "landing_page_login": "PayPal 로그인",
+        "landing_page_guest": "카드 결제 (게스트)",
+        "section_webhook": "웹훅",
+        "webhook_url_label": "웹훅 URL",
+        "webhook_url_copy": "복사",
+        "webhook_url_copied": "웹훅 URL 을 복사했습니다.",
+        "webhook_url_hint": "PayPal 앱의 Webhooks 에 이 주소를 등록하세요. 구매자가 승인 후 창을 닫아도 웹훅이 결제를 마무리합니다.",
+        "webhook_events_label": "구독할 이벤트",
+        "section_redirect": "결제 후 이동 주소",
+        "redirect_success_url": "결제 성공 리다이렉트 URL",
+        "redirect_success_url_hint": "{shopBase}는 상점 주소로, {orderId}는 주문번호로 자동 치환됩니다. 전체 URL(https://...)도 됩니다.",
+        "redirect_fail_url": "결제 실패 리다이렉트 URL",
+        "redirect_fail_url_hint": "{shopBase}는 상점 주소로 치환됩니다. 오류 정보(error, message, orderId)는 쿼리로 붙습니다."
+    },
+    "payment_error_title": "PayPal 결제 오류",
+    "payment": {
+        "error": {
+            "start_failed": "PayPal 결제를 시작하지 못했습니다. 다시 시도해 주세요.",
+            "untrusted_url": "PayPal 주소가 올바르지 않아 결제를 진행하지 않았습니다."
+        }
+    },
+    "admin": {
+        "payment_panel_title": "PayPal 거래 정보",
+        "capture_id": "캡처 ID (거래 ID)",
+        "funding_source": "결제수단",
+        "charged": "청구 금액",
+        "dashboard_hint": "PayPal 대시보드 > 활동에서 캡처 ID 로 거래를 찾을 수 있습니다. 환불은 이 쇼핑몰의 주문 취소·환불로 처리하세요."
+    }
+}

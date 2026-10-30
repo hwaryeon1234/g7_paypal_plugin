@@ -1,0 +1,1506 @@
+{
+    "comment": "PayPal 결제 연동 설정 화면. 샌드박스/라이브 앱 키, PayPal 로 받을 외화 통화, 웹훅 등록 정보를 여기서 정한다",
+    "version": "1.0.0",
+    "layout_name": "plugin_settings",
+    "extends": "_admin_base",
+    "meta": {
+        "leave_guard": "{{_local.hasChanges === true}}",
+        "title": "$t:hwaryeon-paypal.settings.title",
+        "description": "$t:hwaryeon-paypal.settings.description"
+    },
+    "data_sources": [
+        {
+            "id": "settings",
+            "label_key": "$t:hwaryeon-paypal.editor.data_source.settings",
+            "type": "api",
+            "endpoint": "/api/admin/plugins/{{route.identifier}}/settings",
+            "method": "GET",
+            "auto_fetch": true,
+            "auth_required": true,
+            "initLocal": "form",
+            "refetchOnMount": true,
+            "errorHandling": {
+                "default": {
+                    "comment": "처음 받기 실패만 본문 오류 화면 — 빈 폼이 기본값으로 저장되지 않게 한다. 다시 받기 실패는 받아 둔 값을 두고 알린다",
+                    "handler": "conditions",
+                    "conditions": [
+                        {
+                            "if": "{{error.refetch}}",
+                            "then": {
+                                "handler": "toast",
+                                "params": {
+                                    "type": "error",
+                                    "message": "$t:core.errors.refresh_failed"
+                                }
+                            }
+                        },
+                        {
+                            "then": {
+                                "handler": "showErrorPage",
+                                "params": {
+                                    "errorCode": "{{error.status}}",
+                                    "target": "content"
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            "comment": "저장된 플러그인 설정을 폼 초기값으로 싣는다. refetchOnMount 라 저장하고 돌아와도 서버 값이 다시 실린다"
+        },
+        {
+            "id": "paypal_meta",
+            "label_key": "$t:hwaryeon-paypal.editor.data_source.paypal_meta",
+            "type": "api",
+            "endpoint": "/api/plugins/hwaryeon-paypal/admin/meta",
+            "method": "GET",
+            "auto_fetch": true,
+            "auth_required": true,
+            "initLocal": "paypalMeta",
+            "comment": "웹훅 전체 URL·구독할 이벤트·PayPal 지원 통화 목록 — 통화 목록의 SSoT 는 서버(PaypalCurrency)다"
+        }
+    ],
+    "computed": {
+        "isPluginReadOnly": "{{settings?.data?.abilities?.can_update !== true}}",
+        "allCurrencyCodes": "{{(_local.paypalMeta?.currencies ?? []).map(c => c.code)}}"
+    },
+    "permissions": [
+        "core.plugins.update"
+    ],
+    "slots": {
+        "content": [
+            {
+                "id": "plugin_settings_content",
+                "type": "basic",
+                "name": "Div",
+                "dataKey": "form",
+                "trackChanges": true,
+                "props": {
+                    "className": "admin-page-content-responsive"
+                },
+                "children": [
+                    {
+                        "id": "page_header",
+                        "type": "composite",
+                        "name": "PageHeader",
+                        "props": {
+                            "title": "$t:hwaryeon-paypal.settings.title",
+                            "description": "$t:hwaryeon-paypal.settings.description",
+                            "backPath": "/admin/plugins",
+                            "backLabel": "$t:admin.plugins.back_to_list"
+                        }
+                    },
+                    {
+                        "id": "plugin_read_only_banner",
+                        "type": "basic",
+                        "name": "Div",
+                        "if": "{{_computed.isPluginReadOnly && !!settings?.data}}",
+                        "props": {
+                            "role": "status",
+                            "className": "alert-warning mt-6"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "Icon",
+                                "props": {
+                                    "name": "lock",
+                                    "className": "text-xl text-amber-600 dark:text-amber-400 flex-shrink-0"
+                                }
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Span",
+                                "props": {
+                                    "className": "paypal-tone-warning"
+                                },
+                                "text": "$t:hwaryeon-paypal.plugin_read_only"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "validation_error",
+                        "type": "basic",
+                        "name": "Div",
+                        "if": "{{_local.errors}}",
+                        "props": {
+                            "className": "alert-danger"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "props": {
+                                    "className": "flex gap-3"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "Icon",
+                                        "props": {
+                                            "name": "triangle-exclamation",
+                                            "size": "md",
+                                            "className": "text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5"
+                                        }
+                                    },
+                                    {
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "H3",
+                                                "props": {
+                                                    "className": "text-error-strong"
+                                                },
+                                                "text": "$t:admin.plugins.settings.validation_error"
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Ul",
+                                                "if": "{{typeof _local.errors === 'object' && Object.keys(_local.errors).length > 0}}",
+                                                "iteration": {
+                                                    "source": "Object.entries(_local.errors ?? {}).flatMap(([field, messages]) => Array.isArray(messages) ? messages : [messages])",
+                                                    "item_var": "message"
+                                                },
+                                                "props": {
+                                                    "className": "mt-2 list-disc list-inside space-y-1"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Li",
+                                                        "props": {
+                                                            "className": "text-error-soft"
+                                                        },
+                                                        "text": "{{message}}"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "comment": "처음 켜는 운영자를 위한 순서 안내 — 결제수단을 이커머스 주문 설정에서 따로 켜야 체크아웃에 나타난다",
+                        "id": "setup_guide",
+                        "type": "basic",
+                        "name": "Div",
+                        "props": {
+                            "className": "mt-6 rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 p-4 space-y-1"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "P",
+                                "props": {
+                                    "className": "text-sm font-semibold text-blue-900 dark:text-blue-200"
+                                },
+                                "text": "$t:hwaryeon-paypal.settings.guide_title"
+                            },
+                            {
+                                "type": "basic",
+                                "name": "P",
+                                "props": {
+                                    "className": "text-sm text-blue-800 dark:text-blue-300"
+                                },
+                                "text": "$t:hwaryeon-paypal.settings.guide_step1"
+                            },
+                            {
+                                "type": "basic",
+                                "name": "P",
+                                "props": {
+                                    "className": "text-sm text-blue-800 dark:text-blue-300"
+                                },
+                                "text": "$t:hwaryeon-paypal.settings.guide_step2"
+                            },
+                            {
+                                "type": "basic",
+                                "name": "P",
+                                "props": {
+                                    "className": "text-sm text-blue-800 dark:text-blue-300"
+                                },
+                                "text": "$t:hwaryeon-paypal.settings.guide_step3"
+                            },
+                            {
+                                "type": "basic",
+                                "name": "P",
+                                "props": {
+                                    "className": "text-sm text-blue-800 dark:text-blue-300"
+                                },
+                                "text": "$t:hwaryeon-paypal.settings.guide_step4"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "mode_card",
+                        "type": "basic",
+                        "name": "Div",
+                        "props": {
+                            "className": "mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "props": {
+                                    "className": "p-6"
+                                },
+                                "children": [
+                                    {
+                                        "id": "field_is_sandbox",
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "props": {
+                                            "className": "flex-between"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Label",
+                                                        "props": {
+                                                            "className": "form-label"
+                                                        },
+                                                        "text": "$t:hwaryeon-paypal.settings.is_sandbox"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "props": {
+                                                            "className": "form-hint"
+                                                        },
+                                                        "text": "$t:hwaryeon-paypal.settings.is_sandbox_hint"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "composite",
+                                                "name": "Toggle",
+                                                "props": {
+                                                    "name": "is_sandbox",
+                                                    "disabled": "{{_computed.isPluginReadOnly}}"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": "sandbox_keys_section",
+                        "type": "basic",
+                        "name": "Div",
+                        "props": {
+                            "className": "mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "props": {
+                                    "className": "panel-header-row"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "H3",
+                                        "props": {
+                                            "className": "section-heading-md"
+                                        },
+                                        "text": "$t:hwaryeon-paypal.settings.section_sandbox"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "props": {
+                                    "className": "p-6 space-y-6"
+                                },
+                                "children": [
+                                    {
+                                        "id": "field_sandbox_client_id",
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "props": {
+                                            "className": "grid-3col-responsive"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "lg:col-span-1"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Label",
+                                                        "props": {
+                                                            "className": "form-label"
+                                                        },
+                                                        "text": "$t:hwaryeon-paypal.settings.client_id"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "props": {
+                                                            "className": "form-hint"
+                                                        },
+                                                        "text": "$t:hwaryeon-paypal.settings.client_id_hint"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "lg:col-span-2"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Input",
+                                                        "props": {
+                                                            "type": "text",
+                                                            "name": "sandbox_client_id",
+                                                            "placeholder": "AXxx...",
+                                                            "className": "focus:border-transparent font-mono",
+                                                            "disabled": "{{_computed.isPluginReadOnly}}"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "id": "field_sandbox_client_secret",
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "props": {
+                                            "className": "grid-3col-responsive"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "lg:col-span-1"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Label",
+                                                        "props": {
+                                                            "className": "form-label"
+                                                        },
+                                                        "text": "$t:hwaryeon-paypal.settings.client_secret"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "props": {
+                                                            "className": "form-hint"
+                                                        },
+                                                        "text": "$t:hwaryeon-paypal.settings.client_secret_hint"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "lg:col-span-2"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Input",
+                                                        "props": {
+                                                            "type": "password",
+                                                            "name": "sandbox_client_secret",
+                                                            "placeholder": "EHxx...",
+                                                            "className": "focus:border-transparent font-mono",
+                                                            "disabled": "{{_computed.isPluginReadOnly}}"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "id": "field_sandbox_webhook_id",
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "props": {
+                                            "className": "grid-3col-responsive"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "lg:col-span-1"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Label",
+                                                        "props": {
+                                                            "className": "form-label"
+                                                        },
+                                                        "text": "$t:hwaryeon-paypal.settings.webhook_id"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "props": {
+                                                            "className": "form-hint"
+                                                        },
+                                                        "text": "$t:hwaryeon-paypal.settings.webhook_id_hint"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "lg:col-span-2"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Input",
+                                                        "props": {
+                                                            "type": "text",
+                                                            "name": "sandbox_webhook_id",
+                                                            "placeholder": "1AB23456CD789012E",
+                                                            "className": "focus:border-transparent font-mono",
+                                                            "disabled": "{{_computed.isPluginReadOnly}}"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": "live_keys_section",
+                        "type": "basic",
+                        "name": "Div",
+                        "props": {
+                            "className": "mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "props": {
+                                    "className": "panel-header-row"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "H3",
+                                        "props": {
+                                            "className": "section-heading-md"
+                                        },
+                                        "text": "$t:hwaryeon-paypal.settings.section_live"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "props": {
+                                    "className": "p-6 space-y-6"
+                                },
+                                "children": [
+                                    {
+                                        "id": "field_live_client_id",
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "props": {
+                                            "className": "grid-3col-responsive"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "lg:col-span-1"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Label",
+                                                        "props": {
+                                                            "className": "form-label"
+                                                        },
+                                                        "text": "$t:hwaryeon-paypal.settings.client_id"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "lg:col-span-2"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Input",
+                                                        "props": {
+                                                            "type": "text",
+                                                            "name": "live_client_id",
+                                                            "placeholder": "AXxx...",
+                                                            "className": "focus:border-transparent font-mono",
+                                                            "disabled": "{{_computed.isPluginReadOnly}}"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "id": "field_live_client_secret",
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "props": {
+                                            "className": "grid-3col-responsive"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "lg:col-span-1"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Label",
+                                                        "props": {
+                                                            "className": "form-label"
+                                                        },
+                                                        "text": "$t:hwaryeon-paypal.settings.client_secret"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "props": {
+                                                            "className": "form-hint"
+                                                        },
+                                                        "text": "$t:hwaryeon-paypal.settings.client_secret_hint"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "lg:col-span-2"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Input",
+                                                        "props": {
+                                                            "type": "password",
+                                                            "name": "live_client_secret",
+                                                            "placeholder": "EHxx...",
+                                                            "className": "focus:border-transparent font-mono",
+                                                            "disabled": "{{_computed.isPluginReadOnly}}"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "id": "field_live_webhook_id",
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "props": {
+                                            "className": "grid-3col-responsive"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "lg:col-span-1"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Label",
+                                                        "props": {
+                                                            "className": "form-label"
+                                                        },
+                                                        "text": "$t:hwaryeon-paypal.settings.webhook_id"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "props": {
+                                                            "className": "form-hint"
+                                                        },
+                                                        "text": "$t:hwaryeon-paypal.settings.webhook_id_hint"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "lg:col-span-2"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Input",
+                                                        "props": {
+                                                            "type": "text",
+                                                            "name": "live_webhook_id",
+                                                            "placeholder": "1AB23456CD789012E",
+                                                            "className": "focus:border-transparent font-mono",
+                                                            "disabled": "{{_computed.isPluginReadOnly}}"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": "currencies_section",
+                        "type": "basic",
+                        "name": "Div",
+                        "props": {
+                            "className": "mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "props": {
+                                    "className": "panel-header-row"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "H3",
+                                        "props": {
+                                            "className": "section-heading-md"
+                                        },
+                                        "text": "$t:hwaryeon-paypal.settings.section_currencies"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "props": {
+                                    "className": "p-6 space-y-4"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "P",
+                                        "props": {
+                                            "className": "form-hint"
+                                        },
+                                        "text": "$t:hwaryeon-paypal.settings.currencies_hint"
+                                    },
+                                    {
+                                        "id": "currency_bulk_actions",
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "props": {
+                                            "className": "flex items-center gap-2"
+                                        },
+                                        "children": [
+                                            {
+                                                "id": "currency_select_all",
+                                                "type": "basic",
+                                                "name": "Button",
+                                                "actions": [
+                                                    {
+                                                        "comment": "전체 선택 — 서버가 준 PayPal 지원 통화 전부로 갈아 끼운다",
+                                                        "type": "click",
+                                                        "handler": "setState",
+                                                        "if": "{{!_computed.isPluginReadOnly}}",
+                                                        "params": {
+                                                            "target": "local",
+                                                            "form.allowed_currencies": "{{_computed.allCurrencyCodes}}",
+                                                            "hasChanges": true
+                                                        }
+                                                    }
+                                                ],
+                                                "props": {
+                                                    "type": "button",
+                                                    "className": "btn btn-secondary btn-sm",
+                                                    "disabled": "{{_computed.isPluginReadOnly}}"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "text": "$t:hwaryeon-paypal.settings.currencies_select_all"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "id": "currency_clear_all",
+                                                "type": "basic",
+                                                "name": "Button",
+                                                "actions": [
+                                                    {
+                                                        "comment": "전체 해제 — 저장하면 체크아웃 어디에도 PayPal 이 나타나지 않는다",
+                                                        "type": "click",
+                                                        "handler": "setState",
+                                                        "if": "{{!_computed.isPluginReadOnly}}",
+                                                        "params": {
+                                                            "target": "local",
+                                                            "form.allowed_currencies": "{{[]}}",
+                                                            "hasChanges": true
+                                                        }
+                                                    }
+                                                ],
+                                                "props": {
+                                                    "type": "button",
+                                                    "className": "btn btn-secondary btn-sm",
+                                                    "disabled": "{{_computed.isPluginReadOnly}}"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "text": "$t:hwaryeon-paypal.settings.currencies_clear_all"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Span",
+                                                "props": {
+                                                    "className": "text-sm paypal-text-muted"
+                                                },
+                                                "text": "{{(_local.form?.allowed_currencies ?? []).length}} / {{_computed.allCurrencyCodes.length}}"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "id": "currency_grid",
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "responsive": {
+                                            "portable": {
+                                                "props": {
+                                                    "className": "grid grid-cols-2 gap-2"
+                                                }
+                                            }
+                                        },
+                                        "props": {
+                                            "className": "grid grid-cols-4 gap-2"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Label",
+                                                "iteration": {
+                                                    "source": "_local.paypalMeta?.currencies ?? []",
+                                                    "item_var": "currency"
+                                                },
+                                                "props": {
+                                                    "className": "flex items-center gap-2 cursor-pointer rounded-md border border-gray-200 dark:border-gray-700 px-3 py-2 text-sm text-gray-700 dark:text-gray-300"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "comment": "통화 토글 — allowed_currencies 배열에 넣고 빼며 새 배열로 갈아 끼운다. 자동바인딩을 끄는 것은 이 칸이 배열의 한 원소라서다",
+                                                        "type": "basic",
+                                                        "name": "Checkbox",
+                                                        "actions": [
+                                                            {
+                                                                "type": "change",
+                                                                "handler": "setState",
+                                                                "if": "{{!_computed.isPluginReadOnly}}",
+                                                                "params": {
+                                                                    "target": "local",
+                                                                    "form.allowed_currencies": "{{(_local.form?.allowed_currencies ?? []).includes(currency.code) ? (_local.form?.allowed_currencies ?? []).filter(c => c !== currency.code) : [...(_local.form?.allowed_currencies ?? []), currency.code]}}",
+                                                                    "hasChanges": true
+                                                                }
+                                                            }
+                                                        ],
+                                                        "props": {
+                                                            "autoBinding": false,
+                                                            "checked": "{{(_local.form?.allowed_currencies ?? []).includes(currency.code)}}",
+                                                            "aria-label": "{{currency.code}}",
+                                                            "disabled": "{{_computed.isPluginReadOnly}}"
+                                                        }
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "props": {
+                                                            "className": "font-mono font-semibold"
+                                                        },
+                                                        "text": "{{currency.code}}"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "if": "{{currency.in_country_only}}",
+                                                        "props": {
+                                                            "className": "text-xs paypal-tone-warning"
+                                                        },
+                                                        "text": "*"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "basic",
+                                        "name": "P",
+                                        "props": {
+                                            "className": "form-hint"
+                                        },
+                                        "text": "$t:hwaryeon-paypal.settings.currencies_in_country_note"
+                                    },
+                                    {
+                                        "type": "basic",
+                                        "name": "P",
+                                        "props": {
+                                            "className": "form-hint"
+                                        },
+                                        "text": "$t:hwaryeon-paypal.settings.currencies_krw_note"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": "experience_section",
+                        "type": "basic",
+                        "name": "Div",
+                        "props": {
+                            "className": "mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "props": {
+                                    "className": "panel-header-row"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "H3",
+                                        "props": {
+                                            "className": "section-heading-md"
+                                        },
+                                        "text": "$t:hwaryeon-paypal.settings.section_experience"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "props": {
+                                    "className": "p-6 space-y-6"
+                                },
+                                "children": [
+                                    {
+                                        "id": "field_brand_name",
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "props": {
+                                            "className": "grid-3col-responsive"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "lg:col-span-1"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Label",
+                                                        "props": {
+                                                            "className": "form-label"
+                                                        },
+                                                        "text": "$t:hwaryeon-paypal.settings.brand_name"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "props": {
+                                                            "className": "form-hint"
+                                                        },
+                                                        "text": "$t:hwaryeon-paypal.settings.brand_name_hint"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "lg:col-span-2"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Input",
+                                                        "props": {
+                                                            "type": "text",
+                                                            "name": "brand_name",
+                                                            "maxlength": "127",
+                                                            "placeholder": "My Store",
+                                                            "className": "focus:border-transparent",
+                                                            "disabled": "{{_computed.isPluginReadOnly}}"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "id": "field_landing_page",
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "props": {
+                                            "className": "grid-3col-responsive"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "lg:col-span-1"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Label",
+                                                        "props": {
+                                                            "className": "form-label"
+                                                        },
+                                                        "text": "$t:hwaryeon-paypal.settings.landing_page"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "props": {
+                                                            "className": "form-hint"
+                                                        },
+                                                        "text": "$t:hwaryeon-paypal.settings.landing_page_hint"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "lg:col-span-2"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Select",
+                                                        "props": {
+                                                            "name": "landing_page",
+                                                            "disabled": "{{_computed.isPluginReadOnly}}",
+                                                            "options": [
+                                                                {
+                                                                    "value": "NO_PREFERENCE",
+                                                                    "label": "$t:hwaryeon-paypal.settings.landing_page_no_preference"
+                                                                },
+                                                                {
+                                                                    "value": "LOGIN",
+                                                                    "label": "$t:hwaryeon-paypal.settings.landing_page_login"
+                                                                },
+                                                                {
+                                                                    "value": "GUEST_CHECKOUT",
+                                                                    "label": "$t:hwaryeon-paypal.settings.landing_page_guest"
+                                                                }
+                                                            ]
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": "webhook_section",
+                        "type": "basic",
+                        "name": "Div",
+                        "props": {
+                            "className": "mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "props": {
+                                    "className": "panel-header-row"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "H3",
+                                        "props": {
+                                            "className": "section-heading-md"
+                                        },
+                                        "text": "$t:hwaryeon-paypal.settings.section_webhook"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "props": {
+                                    "className": "p-6 space-y-4"
+                                },
+                                "children": [
+                                    {
+                                        "id": "field_webhook_url",
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "props": {
+                                            "className": "space-y-2"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Label",
+                                                "props": {
+                                                    "className": "form-label"
+                                                },
+                                                "text": "$t:hwaryeon-paypal.settings.webhook_url_label"
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "responsive": {
+                                                    "portable": {
+                                                        "props": {
+                                                            "className": "flex flex-col items-stretch gap-2"
+                                                        }
+                                                    }
+                                                },
+                                                "props": {
+                                                    "className": "flex items-center gap-2"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Div",
+                                                        "props": {
+                                                            "className": "flex-1 overflow-x-auto font-mono text-sm bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded px-3 py-2 whitespace-nowrap"
+                                                        },
+                                                        "text": "{{_local.paypalMeta?.webhook_url ?? '/plugins/hwaryeon-paypal/webhook'}}"
+                                                    },
+                                                    {
+                                                        "id": "webhook_copy_button",
+                                                        "type": "basic",
+                                                        "name": "Button",
+                                                        "responsive": {
+                                                            "portable": {
+                                                                "props": {
+                                                                    "type": "button",
+                                                                    "className": "btn btn-secondary btn-sm w-full"
+                                                                }
+                                                            }
+                                                        },
+                                                        "actions": [
+                                                            {
+                                                                "comment": "운영자가 PayPal 개발자 대시보드에 직접 등록해야 웹훅이 들어온다. 그래서 보여 주기만 하지 않고 복사까지 시켜 준다",
+                                                                "type": "click",
+                                                                "handler": "hwaryeon-paypal.copyToClipboard",
+                                                                "params": {
+                                                                    "text": "{{_local.paypalMeta?.webhook_url ?? '/plugins/hwaryeon-paypal/webhook'}}"
+                                                                },
+                                                                "onSuccess": {
+                                                                    "handler": "toast",
+                                                                    "params": {
+                                                                        "type": "success",
+                                                                        "message": "$t:hwaryeon-paypal.settings.webhook_url_copied"
+                                                                    }
+                                                                }
+                                                            }
+                                                        ],
+                                                        "props": {
+                                                            "type": "button",
+                                                            "className": "btn btn-secondary btn-sm flex-shrink-0"
+                                                        },
+                                                        "children": [
+                                                            {
+                                                                "type": "basic",
+                                                                "name": "Span",
+                                                                "text": "$t:hwaryeon-paypal.settings.webhook_url_copy"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "P",
+                                                "props": {
+                                                    "className": "form-hint"
+                                                },
+                                                "text": "$t:hwaryeon-paypal.settings.webhook_url_hint"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "id": "webhook_events",
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "props": {
+                                            "className": "space-y-1"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Label",
+                                                "props": {
+                                                    "className": "form-label"
+                                                },
+                                                "text": "$t:hwaryeon-paypal.settings.webhook_events_label"
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Ul",
+                                                "props": {
+                                                    "className": "list-disc list-inside space-y-0.5"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Li",
+                                                        "iteration": {
+                                                            "source": "_local.paypalMeta?.webhook_events ?? []",
+                                                            "item_var": "eventName"
+                                                        },
+                                                        "props": {
+                                                            "className": "font-mono text-sm text-gray-700 dark:text-gray-300"
+                                                        },
+                                                        "text": "{{eventName}}"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": "redirect_section",
+                        "type": "basic",
+                        "name": "Div",
+                        "props": {
+                            "className": "mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "props": {
+                                    "className": "panel-header-row"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "H3",
+                                        "props": {
+                                            "className": "section-heading-md"
+                                        },
+                                        "text": "$t:hwaryeon-paypal.settings.section_redirect"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "props": {
+                                    "className": "p-6 space-y-6"
+                                },
+                                "children": [
+                                    {
+                                        "id": "field_redirect_success_url",
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "props": {
+                                            "className": "grid-3col-responsive"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "lg:col-span-1"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Label",
+                                                        "props": {
+                                                            "className": "form-label"
+                                                        },
+                                                        "text": "$t:hwaryeon-paypal.settings.redirect_success_url"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "props": {
+                                                            "className": "form-hint"
+                                                        },
+                                                        "text": "$t:hwaryeon-paypal.settings.redirect_success_url_hint"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "lg:col-span-2"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Input",
+                                                        "props": {
+                                                            "type": "text",
+                                                            "name": "redirect_success_url",
+                                                            "placeholder": "{shopBase}/orders/{orderId}/complete",
+                                                            "className": "focus:border-transparent",
+                                                            "disabled": "{{_computed.isPluginReadOnly}}"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "id": "field_redirect_fail_url",
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "props": {
+                                            "className": "grid-3col-responsive"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "lg:col-span-1"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Label",
+                                                        "props": {
+                                                            "className": "form-label"
+                                                        },
+                                                        "text": "$t:hwaryeon-paypal.settings.redirect_fail_url"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "props": {
+                                                            "className": "form-hint"
+                                                        },
+                                                        "text": "$t:hwaryeon-paypal.settings.redirect_fail_url_hint"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "lg:col-span-2"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Input",
+                                                        "props": {
+                                                            "type": "text",
+                                                            "name": "redirect_fail_url",
+                                                            "placeholder": "{shopBase}/checkout",
+                                                            "className": "focus:border-transparent",
+                                                            "disabled": "{{_computed.isPluginReadOnly}}"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": "footer_buttons",
+                        "type": "basic",
+                        "name": "Div",
+                        "props": {
+                            "className": "sticky-footer-buttons"
+                        },
+                        "children": [
+                            {
+                                "id": "cancel_button",
+                                "type": "basic",
+                                "name": "A",
+                                "actions": [
+                                    {
+                                        "type": "click",
+                                        "handler": "navigate",
+                                        "params": {
+                                            "bypassLeaveGuard": true
+                                        }
+                                    }
+                                ],
+                                "props": {
+                                    "href": "/admin/plugins",
+                                    "className": "button btn btn-secondary"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "Span",
+                                        "text": "$t:common.cancel"
+                                    }
+                                ]
+                            },
+                            {
+                                "id": "save_button",
+                                "type": "basic",
+                                "name": "Button",
+                                "actions": [
+                                    {
+                                        "comment": "저장. 직전 오류를 먼저 지워야 이번 시도의 결과만 남는다. 성공 후 다시 불러오는 것은 서버가 Secret 을 마스크해 돌려주기 때문이다",
+                                        "type": "click",
+                                        "handler": "sequence",
+                                        "actions": [
+                                            {
+                                                "handler": "setState",
+                                                "params": {
+                                                    "target": "local",
+                                                    "isSaving": true,
+                                                    "errors": null
+                                                }
+                                            },
+                                            {
+                                                "handler": "apiCall",
+                                                "target": "/api/admin/plugins/{{route.identifier}}/settings",
+                                                "auth_required": true,
+                                                "params": {
+                                                    "method": "PUT",
+                                                    "body": "{{_local.form}}"
+                                                },
+                                                "onSuccess": [
+                                                    {
+                                                        "handler": "setState",
+                                                        "params": {
+                                                            "target": "local",
+                                                            "isSaving": false,
+                                                            "hasChanges": false
+                                                        }
+                                                    },
+                                                    {
+                                                        "handler": "toast",
+                                                        "params": {
+                                                            "type": "success",
+                                                            "message": "$t:admin.plugins.settings.save_success"
+                                                        }
+                                                    },
+                                                    {
+                                                        "handler": "refetchDataSource",
+                                                        "params": {
+                                                            "dataSourceId": "settings"
+                                                        }
+                                                    }
+                                                ],
+                                                "onError": [
+                                                    {
+                                                        "handler": "setState",
+                                                        "params": {
+                                                            "target": "local",
+                                                            "isSaving": false,
+                                                            "errors": "{{error.errors}}"
+                                                        }
+                                                    },
+                                                    {
+                                                        "handler": "toast",
+                                                        "params": {
+                                                            "type": "error",
+                                                            "message": "{{error.message ?? '$t:admin.plugins.settings.save_error'}}"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "props": {
+                                    "type": "button",
+                                    "disabled": "{{_computed.isPluginReadOnly || (!_local.hasChanges || _local.isSaving)}}",
+                                    "className": "btn btn-primary flex-center gap-1.5"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "Icon",
+                                        "if": "{{_local.isSaving}}",
+                                        "props": {
+                                            "name": "spinner",
+                                            "className": "spinner-sm"
+                                        }
+                                    },
+                                    {
+                                        "type": "basic",
+                                        "name": "Span",
+                                        "if": "{{!_local.isSaving}}",
+                                        "text": "$t:common.save"
+                                    },
+                                    {
+                                        "type": "basic",
+                                        "name": "Span",
+                                        "if": "{{_local.isSaving}}",
+                                        "text": "$t:common.saving"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,292 @@
+<!-- PayPal 결제 연동 설정 화면. 샌드박스/라이브 앱 키, PayPal 로 받을 외화 통화, 웹훅 등록 정보를 여기서 정한다 -->
+<layout name="plugin_settings" version="1.0.0" extends="_admin_base">
+  <meta leave_guard="{{_local.hasChanges === true}}" title="$t:hwaryeon-paypal.settings.title" description="$t:hwaryeon-paypal.settings.description"/>
+  <!-- 저장된 플러그인 설정을 폼 초기값으로 싣는다. refetchOnMount 라 저장하고 돌아와도 서버 값이 다시 실린다 -->
+  <data-source id="settings" label_key="$t:hwaryeon-paypal.editor.data_source.settings" type="api" endpoint="/api/admin/plugins/{{route.identifier}}/settings" method="GET" :auto_fetch="true" :auth_required="true" initLocal="form" :refetchOnMount="true">
+    <error-handling>
+      <default>
+        <!-- 처음 받기 실패만 본문 오류 화면 — 빈 폼이 기본값으로 저장되지 않게 한다. 다시 받기 실패는 받아 둔 값을 두고 알린다 -->
+        <conditions>
+          <when if="{{error.refetch}}">
+            <toast type="error" message="$t:core.errors.refresh_failed"/>
+          </when>
+          <else>
+            <show-error-page errorCode="{{error.status}}" target="content"/>
+          </else>
+        </conditions>
+      </default>
+    </error-handling>
+  </data-source>
+  <!-- 웹훅 전체 URL·구독할 이벤트·PayPal 지원 통화 목록 — 통화 목록의 SSoT 는 서버(PaypalCurrency)다 -->
+  <data-source id="paypal_meta" label_key="$t:hwaryeon-paypal.editor.data_source.paypal_meta" type="api" endpoint="/api/plugins/hwaryeon-paypal/admin/meta" method="GET" :auto_fetch="true" :auth_required="true" initLocal="paypalMeta"/>
+  <computed name="isPluginReadOnly">{{settings?.data?.abilities?.can_update !== true}}</computed>
+  <computed name="allCurrencyCodes">{{(_local.paypalMeta?.currencies ?? []).map(c => c.code)}}</computed>
+  <permissions>
+    <permission>core.plugins.update</permission>
+  </permissions>
+  <slot name="content">
+    <div data-ref="plugin_settings_content" data-key="form" data-track-changes class="admin-page-content-responsive">
+      <page-header data-type="composite" data-ref="page_header" title="$t:hwaryeon-paypal.settings.title" description="$t:hwaryeon-paypal.settings.description" backPath="/admin/plugins" backLabel="$t:admin.plugins.back_to_list"/>
+      <div data-ref="plugin_read_only_banner" data-if="{{_computed.isPluginReadOnly &amp;&amp; !!settings?.data}}" role="status" class="alert-warning mt-6">
+        <icon name="lock" class="text-xl text-amber-600 dark:text-amber-400 flex-shrink-0"/>
+        <span class="paypal-tone-warning">$t:hwaryeon-paypal.plugin_read_only</span>
+      </div>
+      <div data-ref="validation_error" data-if="{{_local.errors}}" class="alert-danger">
+        <div class="flex gap-3">
+          <icon name="triangle-exclamation" size="md" class="text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5"/>
+          <div>
+            <h3 class="text-error-strong">$t:admin.plugins.settings.validation_error</h3>
+            <ul data-if="{{typeof _local.errors === 'object' &amp;&amp; Object.keys(_local.errors).length > 0}}" data-each="message in Object.entries(_local.errors ?? {}).flatMap(([field, messages]) => Array.isArray(messages) ? messages : [messages])" class="mt-2 list-disc list-inside space-y-1">
+              <li class="text-error-soft">{{message}}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- 처음 켜는 운영자를 위한 순서 안내 — 결제수단을 이커머스 주문 설정에서 따로 켜야 체크아웃에 나타난다 -->
+      <div data-ref="setup_guide" class="mt-6 rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 p-4 space-y-1">
+        <p class="text-sm font-semibold text-blue-900 dark:text-blue-200">$t:hwaryeon-paypal.settings.guide_title</p>
+        <p class="text-sm text-blue-800 dark:text-blue-300">$t:hwaryeon-paypal.settings.guide_step1</p>
+        <p class="text-sm text-blue-800 dark:text-blue-300">$t:hwaryeon-paypal.settings.guide_step2</p>
+        <p class="text-sm text-blue-800 dark:text-blue-300">$t:hwaryeon-paypal.settings.guide_step3</p>
+        <p class="text-sm text-blue-800 dark:text-blue-300">$t:hwaryeon-paypal.settings.guide_step4</p>
+      </div>
+      <div data-ref="mode_card" class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="p-6">
+          <div data-ref="field_is_sandbox" class="flex-between">
+            <div>
+              <label class="form-label">$t:hwaryeon-paypal.settings.is_sandbox</label>
+              <p class="form-hint">$t:hwaryeon-paypal.settings.is_sandbox_hint</p>
+            </div>
+            <toggle data-type="composite" name="is_sandbox" disabled="{{_computed.isPluginReadOnly}}"/>
+          </div>
+        </div>
+      </div>
+      <div data-ref="sandbox_keys_section" class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="panel-header-row">
+          <h3 class="section-heading-md">$t:hwaryeon-paypal.settings.section_sandbox</h3>
+        </div>
+        <div class="p-6 space-y-6">
+          <div data-ref="field_sandbox_client_id" class="grid-3col-responsive">
+            <div class="lg:col-span-1">
+              <label class="form-label">$t:hwaryeon-paypal.settings.client_id</label>
+              <p class="form-hint">$t:hwaryeon-paypal.settings.client_id_hint</p>
+            </div>
+            <div class="lg:col-span-2">
+              <input type="text" name="sandbox_client_id" placeholder="AXxx..." class="focus:border-transparent font-mono" disabled="{{_computed.isPluginReadOnly}}"/>
+            </div>
+          </div>
+          <div data-ref="field_sandbox_client_secret" class="grid-3col-responsive">
+            <div class="lg:col-span-1">
+              <label class="form-label">$t:hwaryeon-paypal.settings.client_secret</label>
+              <p class="form-hint">$t:hwaryeon-paypal.settings.client_secret_hint</p>
+            </div>
+            <div class="lg:col-span-2">
+              <input type="password" name="sandbox_client_secret" placeholder="EHxx..." class="focus:border-transparent font-mono" disabled="{{_computed.isPluginReadOnly}}"/>
+            </div>
+          </div>
+          <div data-ref="field_sandbox_webhook_id" class="grid-3col-responsive">
+            <div class="lg:col-span-1">
+              <label class="form-label">$t:hwaryeon-paypal.settings.webhook_id</label>
+              <p class="form-hint">$t:hwaryeon-paypal.settings.webhook_id_hint</p>
+            </div>
+            <div class="lg:col-span-2">
+              <input type="text" name="sandbox_webhook_id" placeholder="1AB23456CD789012E" class="focus:border-transparent font-mono" disabled="{{_computed.isPluginReadOnly}}"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-ref="live_keys_section" class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="panel-header-row">
+          <h3 class="section-heading-md">$t:hwaryeon-paypal.settings.section_live</h3>
+        </div>
+        <div class="p-6 space-y-6">
+          <div data-ref="field_live_client_id" class="grid-3col-responsive">
+            <div class="lg:col-span-1">
+              <label class="form-label">$t:hwaryeon-paypal.settings.client_id</label>
+            </div>
+            <div class="lg:col-span-2">
+              <input type="text" name="live_client_id" placeholder="AXxx..." class="focus:border-transparent font-mono" disabled="{{_computed.isPluginReadOnly}}"/>
+            </div>
+          </div>
+          <div data-ref="field_live_client_secret" class="grid-3col-responsive">
+            <div class="lg:col-span-1">
+              <label class="form-label">$t:hwaryeon-paypal.settings.client_secret</label>
+              <p class="form-hint">$t:hwaryeon-paypal.settings.client_secret_hint</p>
+            </div>
+            <div class="lg:col-span-2">
+              <input type="password" name="live_client_secret" placeholder="EHxx..." class="focus:border-transparent font-mono" disabled="{{_computed.isPluginReadOnly}}"/>
+            </div>
+          </div>
+          <div data-ref="field_live_webhook_id" class="grid-3col-responsive">
+            <div class="lg:col-span-1">
+              <label class="form-label">$t:hwaryeon-paypal.settings.webhook_id</label>
+              <p class="form-hint">$t:hwaryeon-paypal.settings.webhook_id_hint</p>
+            </div>
+            <div class="lg:col-span-2">
+              <input type="text" name="live_webhook_id" placeholder="1AB23456CD789012E" class="focus:border-transparent font-mono" disabled="{{_computed.isPluginReadOnly}}"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-ref="currencies_section" class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="panel-header-row">
+          <h3 class="section-heading-md">$t:hwaryeon-paypal.settings.section_currencies</h3>
+        </div>
+        <div class="p-6 space-y-4">
+          <p class="form-hint">$t:hwaryeon-paypal.settings.currencies_hint</p>
+          <div data-ref="currency_bulk_actions" class="flex items-center gap-2">
+            <button data-ref="currency_select_all" type="button" class="btn btn-secondary btn-sm" disabled="{{_computed.isPluginReadOnly}}">
+              <on type="click">
+                <!-- 전체 선택 — 서버가 준 PayPal 지원 통화 전부로 갈아 끼운다 -->
+                <set-state if="{{!_computed.isPluginReadOnly}}" target="local" form.allowed_currencies="{{_computed.allCurrencyCodes}}" :hasChanges="true"/>
+              </on>
+              <span>$t:hwaryeon-paypal.settings.currencies_select_all</span>
+            </button>
+            <button data-ref="currency_clear_all" type="button" class="btn btn-secondary btn-sm" disabled="{{_computed.isPluginReadOnly}}">
+              <on type="click">
+                <!-- 전체 해제 — 저장하면 체크아웃 어디에도 PayPal 이 나타나지 않는다 -->
+                <set-state if="{{!_computed.isPluginReadOnly}}" target="local" form.allowed_currencies="{{[]}}" :hasChanges="true"/>
+              </on>
+              <span>$t:hwaryeon-paypal.settings.currencies_clear_all</span>
+            </button>
+            <span class="text-sm paypal-text-muted">{{(_local.form?.allowed_currencies ?? []).length}} / {{_computed.allCurrencyCodes.length}}</span>
+          </div>
+          <div data-ref="currency_grid" class="grid grid-cols-4 gap-2">
+            <responsive on="portable" class="grid grid-cols-2 gap-2"/>
+            <label data-each="currency in _local.paypalMeta?.currencies ?? []" class="flex items-center gap-2 cursor-pointer rounded-md border border-gray-200 dark:border-gray-700 px-3 py-2 text-sm text-gray-700 dark:text-gray-300">
+              <!-- 통화 토글 — allowed_currencies 배열에 넣고 빼며 새 배열로 갈아 끼운다. 자동바인딩을 끄는 것은 이 칸이 배열의 한 원소라서다 -->
+              <checkbox :autoBinding="false" checked="{{(_local.form?.allowed_currencies ?? []).includes(currency.code)}}" aria-label="{{currency.code}}" disabled="{{_computed.isPluginReadOnly}}">
+                <on type="change">
+                  <set-state if="{{!_computed.isPluginReadOnly}}" target="local" form.allowed_currencies="{{(_local.form?.allowed_currencies ?? []).includes(currency.code) ? (_local.form?.allowed_currencies ?? []).filter(c => c !== currency.code) : [...(_local.form?.allowed_currencies ?? []), currency.code]}}" :hasChanges="true"/>
+                </on>
+              </checkbox>
+              <span class="font-mono font-semibold">{{currency.code}}</span>
+              <span data-if="{{currency.in_country_only}}" class="text-xs paypal-tone-warning">*</span>
+            </label>
+          </div>
+          <p class="form-hint">$t:hwaryeon-paypal.settings.currencies_in_country_note</p>
+          <p class="form-hint">$t:hwaryeon-paypal.settings.currencies_krw_note</p>
+        </div>
+      </div>
+      <div data-ref="experience_section" class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="panel-header-row">
+          <h3 class="section-heading-md">$t:hwaryeon-paypal.settings.section_experience</h3>
+        </div>
+        <div class="p-6 space-y-6">
+          <div data-ref="field_brand_name" class="grid-3col-responsive">
+            <div class="lg:col-span-1">
+              <label class="form-label">$t:hwaryeon-paypal.settings.brand_name</label>
+              <p class="form-hint">$t:hwaryeon-paypal.settings.brand_name_hint</p>
+            </div>
+            <div class="lg:col-span-2">
+              <input type="text" name="brand_name" maxlength="127" placeholder="My Store" class="focus:border-transparent" disabled="{{_computed.isPluginReadOnly}}"/>
+            </div>
+          </div>
+          <div data-ref="field_landing_page" class="grid-3col-responsive">
+            <div class="lg:col-span-1">
+              <label class="form-label">$t:hwaryeon-paypal.settings.landing_page</label>
+              <p class="form-hint">$t:hwaryeon-paypal.settings.landing_page_hint</p>
+            </div>
+            <div class="lg:col-span-2">
+              <select name="landing_page" disabled="{{_computed.isPluginReadOnly}}">
+                <options>
+                  <option value="NO_PREFERENCE">$t:hwaryeon-paypal.settings.landing_page_no_preference</option>
+                  <option value="LOGIN">$t:hwaryeon-paypal.settings.landing_page_login</option>
+                  <option value="GUEST_CHECKOUT">$t:hwaryeon-paypal.settings.landing_page_guest</option>
+                </options>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-ref="webhook_section" class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="panel-header-row">
+          <h3 class="section-heading-md">$t:hwaryeon-paypal.settings.section_webhook</h3>
+        </div>
+        <div class="p-6 space-y-4">
+          <div data-ref="field_webhook_url" class="space-y-2">
+            <label class="form-label">$t:hwaryeon-paypal.settings.webhook_url_label</label>
+            <div class="flex items-center gap-2">
+              <responsive on="portable" class="flex flex-col items-stretch gap-2"/>
+              <div class="flex-1 overflow-x-auto font-mono text-sm bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded px-3 py-2 whitespace-nowrap">{{_local.paypalMeta?.webhook_url ?? '/plugins/hwaryeon-paypal/webhook'}}</div>
+              <button data-ref="webhook_copy_button" type="button" class="btn btn-secondary btn-sm flex-shrink-0">
+                <responsive on="portable" type="button" class="btn btn-secondary btn-sm w-full"/>
+                <on type="click">
+                  <!-- 운영자가 PayPal 개발자 대시보드에 직접 등록해야 웹훅이 들어온다. 그래서 보여 주기만 하지 않고 복사까지 시켜 준다 -->
+                  <action handler="hwaryeon-paypal.copyToClipboard" text="{{_local.paypalMeta?.webhook_url ?? '/plugins/hwaryeon-paypal/webhook'}}">
+                    <success>
+                      <toast type="success" message="$t:hwaryeon-paypal.settings.webhook_url_copied"/>
+                    </success>
+                  </action>
+                </on>
+                <span>$t:hwaryeon-paypal.settings.webhook_url_copy</span>
+              </button>
+            </div>
+            <p class="form-hint">$t:hwaryeon-paypal.settings.webhook_url_hint</p>
+          </div>
+          <div data-ref="webhook_events" class="space-y-1">
+            <label class="form-label">$t:hwaryeon-paypal.settings.webhook_events_label</label>
+            <ul class="list-disc list-inside space-y-0.5">
+              <li data-each="eventName in _local.paypalMeta?.webhook_events ?? []" class="font-mono text-sm text-gray-700 dark:text-gray-300">{{eventName}}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div data-ref="redirect_section" class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="panel-header-row">
+          <h3 class="section-heading-md">$t:hwaryeon-paypal.settings.section_redirect</h3>
+        </div>
+        <div class="p-6 space-y-6">
+          <div data-ref="field_redirect_success_url" class="grid-3col-responsive">
+            <div class="lg:col-span-1">
+              <label class="form-label">$t:hwaryeon-paypal.settings.redirect_success_url</label>
+              <p class="form-hint">$t:hwaryeon-paypal.settings.redirect_success_url_hint</p>
+            </div>
+            <div class="lg:col-span-2">
+              <input type="text" name="redirect_success_url" placeholder="{shopBase}/orders/{orderId}/complete" class="focus:border-transparent" disabled="{{_computed.isPluginReadOnly}}"/>
+            </div>
+          </div>
+          <div data-ref="field_redirect_fail_url" class="grid-3col-responsive">
+            <div class="lg:col-span-1">
+              <label class="form-label">$t:hwaryeon-paypal.settings.redirect_fail_url</label>
+              <p class="form-hint">$t:hwaryeon-paypal.settings.redirect_fail_url_hint</p>
+            </div>
+            <div class="lg:col-span-2">
+              <input type="text" name="redirect_fail_url" placeholder="{shopBase}/checkout" class="focus:border-transparent" disabled="{{_computed.isPluginReadOnly}}"/>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-ref="footer_buttons" class="sticky-footer-buttons">
+        <a href="/admin/plugins" data-ref="cancel_button" class="button btn btn-secondary">
+          <on type="click">
+            <navigate :bypassLeaveGuard="true"/>
+          </on>
+          <span>$t:common.cancel</span>
+        </a>
+        <button type="button" data-ref="save_button" disabled="{{_computed.isPluginReadOnly || (!_local.hasChanges || _local.isSaving)}}" class="btn btn-primary flex-center gap-1.5">
+          <on type="click">
+            <!-- 저장. 직전 오류를 먼저 지워야 이번 시도의 결과만 남는다. 성공 후 다시 불러오는 것은 서버가 Secret 을 마스크해 돌려주기 때문이다 -->
+            <sequence>
+              <set-state target="local" :isSaving="true" :errors="null"/>
+              <api-call :auth_required="true" target="/api/admin/plugins/{{route.identifier}}/settings" method="PUT" body="{{_local.form}}">
+                <success>
+                  <set-state target="local" :isSaving="false" :hasChanges="false"/>
+                  <toast type="success" message="$t:admin.plugins.settings.save_success"/>
+                  <refetch-data-source dataSourceId="settings"/>
+                </success>
+                <fail>
+                  <set-state target="local" :isSaving="false" errors="{{error.errors}}"/>
+                  <toast type="error" message="{{error.message ?? '$t:admin.plugins.settings.save_error'}}"/>
+                </fail>
+              </api-call>
+            </sequence>
+          </on>
+          <icon data-if="{{_local.isSaving}}" name="spinner" class="spinner-sm"/>
+          <span data-if="{{!_local.isSaving}}">$t:common.save</span>
+          <span data-if="{{_local.isSaving}}">$t:common.saving</span>
+        </button>
+      </div>
+    </div>
+  </slot>
+</layout>

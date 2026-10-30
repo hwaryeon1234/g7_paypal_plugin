@@ -1,0 +1,20 @@
+{
+    "name": "plugins/hwaryeon-paypal",
+    "description": "PayPal checkout plugin for Gnuboard7 (sirsoft-ecommerce)",
+    "version": "1.0.0",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "hwaryeon"
+        }
+    ],
+    "require": {
+        "php": "^8.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Plugins\\Hwaryeon\\Paypal\\": ["src/", "./"]
+        }
+    }
+}

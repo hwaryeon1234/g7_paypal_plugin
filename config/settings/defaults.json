@@ -1,0 +1,37 @@
+{
+    "_meta": {
+        "version": "1.0.0",
+        "description": "PayPal 결제 플러그인 환경설정"
+    },
+    "defaults": {
+        "is_sandbox": true,
+        "sandbox_client_id": "",
+        "sandbox_client_secret": "",
+        "sandbox_webhook_id": "",
+        "live_client_id": "",
+        "live_client_secret": "",
+        "live_webhook_id": "",
+        "allowed_currencies": [
+            "AUD", "BRL", "CAD", "CNY", "CZK", "DKK", "EUR", "HKD", "HUF", "ILS", "JPY", "MYR",
+            "MXN", "TWD", "NZD", "NOK", "PHP", "PLN", "GBP", "SGD", "SEK", "CHF", "THB", "USD"
+        ],
+        "brand_name": "",
+        "landing_page": "NO_PREFERENCE",
+        "redirect_success_url": "{shopBase}/orders/{orderId}/complete",
+        "redirect_fail_url": "{shopBase}/checkout"
+    },
+    "frontend_schema": {
+        "is_sandbox": { "expose": false },
+        "sandbox_client_id": { "expose": false },
+        "sandbox_client_secret": { "expose": false },
+        "sandbox_webhook_id": { "expose": false },
+        "live_client_id": { "expose": false },
+        "live_client_secret": { "expose": false },
+        "live_webhook_id": { "expose": false },
+        "allowed_currencies": { "expose": false },
+        "brand_name": { "expose": false },
+        "landing_page": { "expose": false },
+        "redirect_success_url": { "expose": false },
+        "redirect_fail_url": { "expose": false }
+    }
+}

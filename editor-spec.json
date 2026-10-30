@@ -1,0 +1,701 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$comment": "레이아웃 편집기 스펙 — PayPal 플러그인. admin/plugin_settings.g7.html 의 settings 데이터소스 응답 shape(입력칸 name= 전수)와 paypal_meta(웹훅 URL·구독 이벤트·지원 통화) 응답 shape, 화면 변종(샌드박스/라이브·검증 실패)을 담는다. 자격증명은 릴리즈 페이로드에 실리므로 빈 값으로 둔다.",
+  "pluginId": "hwaryeon-paypal",
+  "version": "1.0.0",
+  "description": "PayPal 플러그인 레이아웃 편집기 샘플 데이터·화면 상태.",
+  "sampleData": {
+    "byDataSourceId": {
+      "settings": {
+        "data": {
+          "is_sandbox": true,
+          "sandbox_client_id": "",
+          "sandbox_client_secret": "",
+          "sandbox_webhook_id": "",
+          "live_client_id": "",
+          "live_client_secret": "",
+          "live_webhook_id": "",
+          "allowed_currencies": [
+            "USD",
+            "EUR",
+            "JPY",
+            "GBP"
+          ],
+          "brand_name": "My Store",
+          "landing_page": "NO_PREFERENCE",
+          "redirect_success_url": "{shopBase}/orders/{orderId}/complete",
+          "redirect_fail_url": "{shopBase}/checkout",
+          "abilities": {
+            "can_update": true
+          }
+        }
+      },
+      "paypal_meta": {
+        "data": {
+          "webhook_url": "https://example.com/plugins/hwaryeon-paypal/webhook",
+          "webhook_events": [
+            "CHECKOUT.ORDER.APPROVED",
+            "PAYMENT.CAPTURE.COMPLETED",
+            "PAYMENT.CAPTURE.DENIED",
+            "PAYMENT.CAPTURE.REFUNDED",
+            "PAYMENT.CAPTURE.REVERSED"
+          ],
+          "currencies": [
+            {
+              "code": "AUD",
+              "decimals": 2,
+              "in_country_only": false
+            },
+            {
+              "code": "BRL",
+              "decimals": 2,
+              "in_country_only": true
+            },
+            {
+              "code": "CAD",
+              "decimals": 2,
+              "in_country_only": false
+            },
+            {
+              "code": "CNY",
+              "decimals": 2,
+              "in_country_only": true
+            },
+            {
+              "code": "CZK",
+              "decimals": 2,
+              "in_country_only": false
+            },
+            {
+              "code": "DKK",
+              "decimals": 2,
+              "in_country_only": false
+            },
+            {
+              "code": "EUR",
+              "decimals": 2,
+              "in_country_only": false
+            },
+            {
+              "code": "HKD",
+              "decimals": 2,
+              "in_country_only": false
+            },
+            {
+              "code": "HUF",
+              "decimals": 0,
+              "in_country_only": false
+            },
+            {
+              "code": "ILS",
+              "decimals": 2,
+              "in_country_only": false
+            },
+            {
+              "code": "JPY",
+              "decimals": 0,
+              "in_country_only": false
+            },
+            {
+              "code": "MYR",
+              "decimals": 2,
+              "in_country_only": true
+            },
+            {
+              "code": "MXN",
+              "decimals": 2,
+              "in_country_only": false
+            },
+            {
+              "code": "TWD",
+              "decimals": 0,
+              "in_country_only": false
+            },
+            {
+              "code": "NZD",
+              "decimals": 2,
+              "in_country_only": false
+            },
+            {
+              "code": "NOK",
+              "decimals": 2,
+              "in_country_only": false
+            },
+            {
+              "code": "PHP",
+              "decimals": 2,
+              "in_country_only": false
+            },
+            {
+              "code": "PLN",
+              "decimals": 2,
+              "in_country_only": false
+            },
+            {
+              "code": "GBP",
+              "decimals": 2,
+              "in_country_only": false
+            },
+            {
+              "code": "SGD",
+              "decimals": 2,
+              "in_country_only": false
+            },
+            {
+              "code": "SEK",
+              "decimals": 2,
+              "in_country_only": false
+            },
+            {
+              "code": "CHF",
+              "decimals": 2,
+              "in_country_only": false
+            },
+            {
+              "code": "THB",
+              "decimals": 2,
+              "in_country_only": false
+            },
+            {
+              "code": "USD",
+              "decimals": 2,
+              "in_country_only": false
+            }
+          ],
+          "allowed_currencies": [
+            "USD",
+            "EUR",
+            "JPY",
+            "GBP"
+          ]
+        }
+      }
+    }
+  },
+  "states": {
+    "comment": "결제 플러그인 설정 변종. 입력칸은 settings 의 initLocal 로 채워지는데 편집기는 그 흐름을 실행하지 않아 _local.form 을 직접 시드해야 값이 보인다.",
+    "groups": [
+      {
+        "scope": {
+          "kind": "route",
+          "match": "*/admin/plugins/hwaryeon-paypal/settings"
+        },
+        "items": [
+          {
+            "id": "sandbox_on",
+            "label": "$t:editor.state.test_mode_on",
+            "default": true,
+            "initialState": {
+              "local": {
+                "isSaving": false,
+                "hasChanges": false,
+                "errors": null,
+                "form": {
+                  "is_sandbox": true,
+                  "sandbox_client_id": "",
+                  "sandbox_client_secret": "",
+                  "sandbox_webhook_id": "",
+                  "live_client_id": "",
+                  "live_client_secret": "",
+                  "live_webhook_id": "",
+                  "allowed_currencies": [
+                    "USD",
+                    "EUR",
+                    "JPY",
+                    "GBP"
+                  ],
+                  "brand_name": "My Store",
+                  "landing_page": "NO_PREFERENCE",
+                  "redirect_success_url": "{shopBase}/orders/{orderId}/complete",
+                  "redirect_fail_url": "{shopBase}/checkout"
+                },
+                "paypalMeta": {
+                  "webhook_url": "https://example.com/plugins/hwaryeon-paypal/webhook",
+                  "webhook_events": [
+                    "CHECKOUT.ORDER.APPROVED",
+                    "PAYMENT.CAPTURE.COMPLETED",
+                    "PAYMENT.CAPTURE.DENIED",
+                    "PAYMENT.CAPTURE.REFUNDED",
+                    "PAYMENT.CAPTURE.REVERSED"
+                  ],
+                  "currencies": [
+                    {
+                      "code": "AUD",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "BRL",
+                      "decimals": 2,
+                      "in_country_only": true
+                    },
+                    {
+                      "code": "CAD",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "CNY",
+                      "decimals": 2,
+                      "in_country_only": true
+                    },
+                    {
+                      "code": "CZK",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "DKK",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "EUR",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "HKD",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "HUF",
+                      "decimals": 0,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "ILS",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "JPY",
+                      "decimals": 0,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "MYR",
+                      "decimals": 2,
+                      "in_country_only": true
+                    },
+                    {
+                      "code": "MXN",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "TWD",
+                      "decimals": 0,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "NZD",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "NOK",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "PHP",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "PLN",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "GBP",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "SGD",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "SEK",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "CHF",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "THB",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "USD",
+                      "decimals": 2,
+                      "in_country_only": false
+                    }
+                  ],
+                  "allowed_currencies": [
+                    "USD",
+                    "EUR",
+                    "JPY",
+                    "GBP"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "id": "sandbox_off",
+            "label": "$t:editor.state.test_mode_off",
+            "comment": "라이브 모드 — 실제 결제가 일어난다.",
+            "initialState": {
+              "local": {
+                "isSaving": false,
+                "hasChanges": false,
+                "errors": null,
+                "form": {
+                  "is_sandbox": false,
+                  "sandbox_client_id": "",
+                  "sandbox_client_secret": "",
+                  "sandbox_webhook_id": "",
+                  "live_client_id": "",
+                  "live_client_secret": "",
+                  "live_webhook_id": "",
+                  "allowed_currencies": [
+                    "USD",
+                    "EUR",
+                    "JPY",
+                    "GBP"
+                  ],
+                  "brand_name": "My Store",
+                  "landing_page": "NO_PREFERENCE",
+                  "redirect_success_url": "{shopBase}/orders/{orderId}/complete",
+                  "redirect_fail_url": "{shopBase}/checkout"
+                },
+                "paypalMeta": {
+                  "webhook_url": "https://example.com/plugins/hwaryeon-paypal/webhook",
+                  "webhook_events": [
+                    "CHECKOUT.ORDER.APPROVED",
+                    "PAYMENT.CAPTURE.COMPLETED",
+                    "PAYMENT.CAPTURE.DENIED",
+                    "PAYMENT.CAPTURE.REFUNDED",
+                    "PAYMENT.CAPTURE.REVERSED"
+                  ],
+                  "currencies": [
+                    {
+                      "code": "AUD",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "BRL",
+                      "decimals": 2,
+                      "in_country_only": true
+                    },
+                    {
+                      "code": "CAD",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "CNY",
+                      "decimals": 2,
+                      "in_country_only": true
+                    },
+                    {
+                      "code": "CZK",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "DKK",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "EUR",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "HKD",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "HUF",
+                      "decimals": 0,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "ILS",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "JPY",
+                      "decimals": 0,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "MYR",
+                      "decimals": 2,
+                      "in_country_only": true
+                    },
+                    {
+                      "code": "MXN",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "TWD",
+                      "decimals": 0,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "NZD",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "NOK",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "PHP",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "PLN",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "GBP",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "SGD",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "SEK",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "CHF",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "THB",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "USD",
+                      "decimals": 2,
+                      "in_country_only": false
+                    }
+                  ],
+                  "allowed_currencies": [
+                    "USD",
+                    "EUR",
+                    "JPY",
+                    "GBP"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "id": "validation_failed",
+            "label": "$t:editor.state.validation_failed",
+            "initialState": {
+              "local": {
+                "isSaving": false,
+                "hasChanges": true,
+                "form": {
+                  "is_sandbox": false,
+                  "sandbox_client_id": "",
+                  "sandbox_client_secret": "",
+                  "sandbox_webhook_id": "",
+                  "live_client_id": "",
+                  "live_client_secret": "",
+                  "live_webhook_id": "",
+                  "allowed_currencies": [
+                    "USD",
+                    "EUR",
+                    "JPY",
+                    "GBP"
+                  ],
+                  "brand_name": "My Store",
+                  "landing_page": "NO_PREFERENCE",
+                  "redirect_success_url": "{shopBase}/orders/{orderId}/complete",
+                  "redirect_fail_url": "{shopBase}/checkout"
+                },
+                "paypalMeta": {
+                  "webhook_url": "https://example.com/plugins/hwaryeon-paypal/webhook",
+                  "webhook_events": [
+                    "CHECKOUT.ORDER.APPROVED",
+                    "PAYMENT.CAPTURE.COMPLETED",
+                    "PAYMENT.CAPTURE.DENIED",
+                    "PAYMENT.CAPTURE.REFUNDED",
+                    "PAYMENT.CAPTURE.REVERSED"
+                  ],
+                  "currencies": [
+                    {
+                      "code": "AUD",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "BRL",
+                      "decimals": 2,
+                      "in_country_only": true
+                    },
+                    {
+                      "code": "CAD",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "CNY",
+                      "decimals": 2,
+                      "in_country_only": true
+                    },
+                    {
+                      "code": "CZK",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "DKK",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "EUR",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "HKD",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "HUF",
+                      "decimals": 0,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "ILS",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "JPY",
+                      "decimals": 0,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "MYR",
+                      "decimals": 2,
+                      "in_country_only": true
+                    },
+                    {
+                      "code": "MXN",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "TWD",
+                      "decimals": 0,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "NZD",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "NOK",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "PHP",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "PLN",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "GBP",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "SGD",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "SEK",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "CHF",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "THB",
+                      "decimals": 2,
+                      "in_country_only": false
+                    },
+                    {
+                      "code": "USD",
+                      "decimals": 2,
+                      "in_country_only": false
+                    }
+                  ],
+                  "allowed_currencies": [
+                    "USD",
+                    "EUR",
+                    "JPY",
+                    "GBP"
+                  ]
+                }
+              }
+            },
+            "formErrors": {
+              "_local.errors.allowed_currencies.0": [
+                "선택한 allowed_currencies.0 이(가) 올바르지 않습니다."
+              ],
+              "_local.errors.redirect_fail_url": [
+                "주소는 {shopBase}, / 또는 http(s):// 로 시작해야 하며 공백을 포함할 수 없습니다."
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

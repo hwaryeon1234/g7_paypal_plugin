@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Tests\Unit\Support;
+namespace Plugins\G7plus\Paypal\Tests\Unit\Support;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Plugins\Hwaryeon\Paypal\Support\PaypalCurrency;
+use Plugins\G7plus\Paypal\Support\PaypalCurrency;
 
 /**
  * 금액 표현 변환 — 정수 연산만 쓰고, 표현할 수 없는 금액은 반올림하지 않고 거절한다.

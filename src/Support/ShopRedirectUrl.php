@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Support;
+namespace Plugins\G7plus\Paypal\Support;
 
 use App\Support\SiteUrl;
 use Modules\Sirsoft\Ecommerce\Support\ShopPathResolver;
@@ -16,7 +16,7 @@ use Modules\Sirsoft\Ecommerce\Support\ShopPathResolver;
  */
 final class ShopRedirectUrl
 {
-    private const PLUGIN_IDENTIFIER = 'hwaryeon-paypal';
+    private const PLUGIN_IDENTIFIER = 'g7plus-paypal';
 
     /** 결제 성공 후 이동할 기본 주소 */
     public const DEFAULT_SUCCESS_URL = '{shopBase}/orders/{orderId}/complete';

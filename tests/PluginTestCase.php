@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugins\Hwaryeon\Paypal\Tests;
+namespace Plugins\G7plus\Paypal\Tests;
 
 use App\Enums\ExtensionStatus;
 use App\Enums\PermissionType;
@@ -18,7 +18,7 @@ use Modules\Sirsoft\Ecommerce\Database\Seeders\TestingSeeder;
 use Modules\Sirsoft\Ecommerce\Providers\EcommerceServiceProvider;
 use Modules\Sirsoft\Ecommerce\Services\CurrencyConversionService;
 use Modules\Sirsoft\Ecommerce\Support\CurrencySettingsCache;
-use Plugins\Hwaryeon\Paypal\Providers\PaypalServiceProvider;
+use Plugins\G7plus\Paypal\Providers\PaypalServiceProvider;
 use Tests\TestCase;
 
 /**
@@ -238,18 +238,18 @@ abstract class PluginTestCase extends TestCase
     }
 
     /**
-     * 이 테스트 파일이 속한 플러그인 디렉터리의 src 를 기준으로 Plugins\Hwaryeon\Paypal\ 네임스페이스 오토로더를 등록합니다.
+     * 이 테스트 파일이 속한 플러그인 디렉터리의 src 를 기준으로 Plugins\G7plus\Paypal\ 네임스페이스 오토로더를 등록합니다.
      *
      * @return void 반환값 없음
      */
     protected function registerPluginAutoload(): void
     {
-        // 활성 디렉토리(plugins/hwaryeon-paypal)가 아닌 자기 자신 기준 경로 —
+        // 활성 디렉토리(plugins/g7plus-paypal)가 아닌 자기 자신 기준 경로 —
         // _bundled 에서 직접 실행할 때도 소스를 찾도록 한다.
         $pluginBasePath = dirname(__DIR__).'/src/';
 
         spl_autoload_register(function ($class) use ($pluginBasePath) {
-            $prefix = 'Plugins\\Hwaryeon\\Paypal\\';
+            $prefix = 'Plugins\\G7plus\\Paypal\\';
             $len = strlen($prefix);
 
             if (strncmp($prefix, $class, $len) !== 0) {
@@ -287,7 +287,7 @@ abstract class PluginTestCase extends TestCase
     }
 
     /**
-     * 이 플러그인의 web 라우트를 web.plugins.hwaryeon-paypal., api 라우트를 api.plugins.hwaryeon-paypal. 이름 접두사로 등록합니다.
+     * 이 플러그인의 web 라우트를 web.plugins.g7plus-paypal., api 라우트를 api.plugins.g7plus-paypal. 이름 접두사로 등록합니다.
      *
      * @return void 반환값 없음
      */
@@ -298,8 +298,8 @@ abstract class PluginTestCase extends TestCase
         if (file_exists($webRoutesFile)) {
             // 프로덕션 PluginRouteServiceProvider 와 동일한 'web.plugins.' 이름 접두사 —
             // 코어 self-gate 미들웨어가 라우트명(web.plugins.{id}.*)으로 타게팅하므로 정합 필수.
-            Route::prefix('plugins/hwaryeon-paypal')
-                ->name('web.plugins.hwaryeon-paypal.')
+            Route::prefix('plugins/g7plus-paypal')
+                ->name('web.plugins.g7plus-paypal.')
                 ->middleware('web')
                 ->group($webRoutesFile);
         }
@@ -308,8 +308,8 @@ abstract class PluginTestCase extends TestCase
 
         if (file_exists($apiRoutesFile)) {
             // 프로덕션 PluginRouteServiceProvider 와 동일한 프리픽스·이름 규약을 따른다.
-            Route::prefix('api/plugins/hwaryeon-paypal')
-                ->name('api.plugins.hwaryeon-paypal.')
+            Route::prefix('api/plugins/g7plus-paypal')
+                ->name('api.plugins.g7plus-paypal.')
                 ->middleware('api')
                 ->group($apiRoutesFile);
         }

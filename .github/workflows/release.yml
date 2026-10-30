@@ -46,7 +46,7 @@ jobs:
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           {
-            echo "그누보드7 PayPal 결제 플러그인 (hwaryeon-paypal) ${VERSION}"
+            echo "그누보드7 PayPal 결제 플러그인 (g7plus-paypal) ${VERSION}"
             echo
             echo "**설치**: 관리자 > 플러그인 > GitHub에서 설치 → \`https://github.com/${{ github.repository }}\` (이커머스 모듈 필요)"
             echo "**업데이트**: 관리자 > 플러그인 목록의 업데이트 버튼"

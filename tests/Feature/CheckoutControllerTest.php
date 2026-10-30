@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Tests\Feature;
+namespace Plugins\G7plus\Paypal\Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Http\Client\Request as HttpRequest;
@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Http;
 use Modules\Sirsoft\Ecommerce\Enums\OrderStatusEnum;
 use Modules\Sirsoft\Ecommerce\Enums\PaymentStatusEnum;
 use Modules\Sirsoft\Ecommerce\Models\OrderAddress;
-use Plugins\Hwaryeon\Paypal\Tests\Concerns\CreatesPaypalOrders;
-use Plugins\Hwaryeon\Paypal\Tests\PluginTestCase;
+use Plugins\G7plus\Paypal\Tests\Concerns\CreatesPaypalOrders;
+use Plugins\G7plus\Paypal\Tests\PluginTestCase;
 
 /**
  * PayPal 결제 시작 API — 서버가 주문 청구액으로 PayPal 주문을 만든다.
@@ -20,7 +20,7 @@ class CheckoutControllerTest extends PluginTestCase
 {
     use CreatesPaypalOrders;
 
-    private const URL = '/api/plugins/hwaryeon-paypal/payment/checkout';
+    private const URL = '/api/plugins/g7plus-paypal/payment/checkout';
 
     protected function setUp(): void
     {
@@ -70,7 +70,7 @@ class CheckoutControllerTest extends PluginTestCase
             return $unit['amount'] === ['currency_code' => 'USD', 'value' => '12.50']
                 && $unit['custom_id'] === $order->order_number
                 && $request->data()['intent'] === 'CAPTURE'
-                && str_contains($request->data()['payment_source']['paypal']['experience_context']['return_url'], '/plugins/hwaryeon-paypal/payment/return?order=')
+                && str_contains($request->data()['payment_source']['paypal']['experience_context']['return_url'], '/plugins/g7plus-paypal/payment/return?order=')
                 && $request->hasHeader('PayPal-Request-Id', 'g7-order-'.$order->order_number.'-USD-1250');
         });
 

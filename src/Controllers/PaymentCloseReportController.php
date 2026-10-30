@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Controllers;
+namespace Plugins\G7plus\Paypal\Controllers;
 
 use App\Helpers\ResponseHelper;
 use Illuminate\Http\JsonResponse;
@@ -11,9 +11,9 @@ use InvalidArgumentException;
 use Modules\Sirsoft\Ecommerce\Services\CurrencyConversionService;
 use Modules\Sirsoft\Ecommerce\Services\GuestOrderAuthService;
 use Modules\Sirsoft\Ecommerce\Services\OrderProcessingService;
-use Plugins\Hwaryeon\Paypal\Concerns\RecordsPaymentFailure;
-use Plugins\Hwaryeon\Paypal\Concerns\VerifiesOrderOwnership;
-use Plugins\Hwaryeon\Paypal\Http\Requests\PaymentCloseReportRequest;
+use Plugins\G7plus\Paypal\Concerns\RecordsPaymentFailure;
+use Plugins\G7plus\Paypal\Concerns\VerifiesOrderOwnership;
+use Plugins\G7plus\Paypal\Http\Requests\PaymentCloseReportRequest;
 
 /**
  * PayPal 결제 취소·실패 보고.
@@ -42,7 +42,7 @@ class PaymentCloseReportController
     /**
      * 결제 취소·실패를 기록합니다.
      *
-     * POST /api/plugins/hwaryeon-paypal/payment/close-report
+     * POST /api/plugins/g7plus-paypal/payment/close-report
      *
      * @param  PaymentCloseReportRequest  $request  검증된 요청
      * @return JsonResponse 처리 결과
@@ -52,15 +52,15 @@ class PaymentCloseReportController
         $validated = $request->validated();
         $orderId = (string) $validated['orderId'];
 
-        $rateLimitKey = 'hwaryeon-paypal:close-report:'.sha1(($request->ip() ?? '').'|'.$orderId);
+        $rateLimitKey = 'g7plus-paypal:close-report:'.sha1(($request->ip() ?? '').'|'.$orderId);
         if (RateLimiter::tooManyAttempts($rateLimitKey, 20)) {
-            return ResponseHelper::pluginError('hwaryeon-paypal', 'messages.errors.too_many_attempts', 429);
+            return ResponseHelper::pluginError('g7plus-paypal', 'messages.errors.too_many_attempts', 429);
         }
         RateLimiter::hit($rateLimitKey, 60);
 
         $order = $this->orderService->findByOrderNumber($orderId);
         if (! $order) {
-            return ResponseHelper::pluginError('hwaryeon-paypal', 'messages.errors.order_not_found', 404);
+            return ResponseHelper::pluginError('g7plus-paypal', 'messages.errors.order_not_found', 404);
         }
 
         if (! $order->order_status->isBeforePayment()) {
@@ -74,17 +74,17 @@ class PaymentCloseReportController
         }
 
         if (! $this->requestOwnsOrder($request, $order, $this->guestOrderAuthService)) {
-            return ResponseHelper::pluginError('hwaryeon-paypal', 'messages.errors.ownership_failed', 403);
+            return ResponseHelper::pluginError('g7plus-paypal', 'messages.errors.ownership_failed', 403);
         }
 
         try {
             $expected = $this->currencyService->resolveOrderPaymentChargeAmount($order);
         } catch (InvalidArgumentException) {
-            return ResponseHelper::pluginError('hwaryeon-paypal', 'messages.errors.currency_not_allowed', 422);
+            return ResponseHelper::pluginError('g7plus-paypal', 'messages.errors.currency_not_allowed', 422);
         }
 
         if ((int) $validated['amount'] !== $expected) {
-            return ResponseHelper::pluginError('hwaryeon-paypal', 'messages.errors.amount_mismatch', 422);
+            return ResponseHelper::pluginError('g7plus-paypal', 'messages.errors.amount_mismatch', 422);
         }
 
         $code = trim((string) ($validated['code'] ?? ''));
@@ -94,7 +94,7 @@ class PaymentCloseReportController
             $this->orderService,
             $order,
             $code !== '' ? $code : self::DEFAULT_CODE,
-            $reason !== '' ? $reason : __('hwaryeon-paypal::messages.errors.USER_CANCEL'),
+            $reason !== '' ? $reason : __('g7plus-paypal::messages.errors.USER_CANCEL'),
             $code === '' || $code === self::DEFAULT_CODE ? 'window_closed' : 'payment_failed',
         );
 

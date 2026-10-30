@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Http\Requests;
+namespace Plugins\G7plus\Paypal\Http\Requests;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Log;
-use Plugins\Hwaryeon\Paypal\Support\ShopRedirectUrl;
+use Plugins\G7plus\Paypal\Support\ShopRedirectUrl;
 
 /**
  * PayPal 승인·취소 후 브라우저 복귀 요청 검증.
  *
- * GET /plugins/hwaryeon-paypal/payment/return?order={주문번호}&token={PayPal 주문 ID}&PayerID=...
- * GET /plugins/hwaryeon-paypal/payment/cancel?order={주문번호}&token={PayPal 주문 ID}
+ * GET /plugins/g7plus-paypal/payment/return?order={주문번호}&token={PayPal 주문 ID}&PayerID=...
+ * GET /plugins/g7plus-paypal/payment/cancel?order={주문번호}&token={PayPal 주문 ID}
  *
  * `order` 는 우리가 return_url 에 넣은 값이고, `token`·`PayerID` 는 PayPal 이 붙인다. 셋 다 브라우저를
  * 거치므로 서버는 token 이 그 주문에 저장된 PayPal 주문 ID 와 같은지 대조한 뒤에만 쓴다.

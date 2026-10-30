@@ -27,8 +27,8 @@
 
 | 핸들러 | 레이아웃에서 부르는 이름 |
 |---|---|
-| `requestPayment` | `hwaryeon-paypal.requestPayment` |
-| `copyToClipboard` | `hwaryeon-paypal.copyToClipboard` |
+| `requestPayment` | `g7plus-paypal.requestPayment` |
+| `copyToClipboard` | `g7plus-paypal.copyToClipboard` |
 <!-- @generated:handlers END -->
 
 <!-- @intent START -->
@@ -41,14 +41,14 @@
 | 항목 | 값 |
 |---|---|
 | 엔트리 파일 | `resources/js/index.ts` |
-| 전역 객체 | `window.__HwaryeonPaypal` |
+| 전역 객체 | `window.__G7plusPaypal` |
 | 재등록 진입점 | `initPlugin()` |
 
 로케일 전환 시 코어가 이 진입점을 호출해 핸들러를 다시 등록합니다. 진입점은 핸들러 재등록만 수행하고 1회성 부팅 작업을 포함하지 않습니다.
 <!-- @generated:frontend-entry END -->
 
 <!-- @intent START -->
-부팅 시 `reportPaymentFailureOnReturn()` 이 한 번 돕니다 — PayPal 에서 취소하고 돌아온 실패 화면이면 sessionStorage 의 주문 정보로 close-report 를 보냅니다. `window.__HwaryeonPaypal.initPlugin` 은 로케일 전환 후 핸들러 재등록용입니다.
+부팅 시 `reportPaymentFailureOnReturn()` 이 한 번 돕니다 — PayPal 에서 취소하고 돌아온 실패 화면이면 sessionStorage 의 주문 정보로 close-report 를 보냅니다. `window.__G7plusPaypal.initPlugin` 은 로케일 전환 후 핸들러 재등록용입니다.
 <!-- @intent END -->
 
 ## 에셋

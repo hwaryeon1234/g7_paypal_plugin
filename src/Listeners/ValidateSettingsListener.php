@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Listeners;
+namespace Plugins\G7plus\Paypal\Listeners;
 
 use App\Contracts\Extension\HookListenerInterface;
 use Illuminate\Validation\Rule;
-use Plugins\Hwaryeon\Paypal\Support\PaypalCurrency;
+use Plugins\G7plus\Paypal\Support\PaypalCurrency;
 
 /**
  * PayPal 설정 저장 검증 규칙.
@@ -18,7 +18,7 @@ use Plugins\Hwaryeon\Paypal\Support\PaypalCurrency;
  */
 class ValidateSettingsListener implements HookListenerInterface
 {
-    private const IDENTIFIER = 'hwaryeon-paypal';
+    private const IDENTIFIER = 'g7plus-paypal';
 
     /** 이동 주소 형식 — {shopBase}·/(뒤에 / 아님)·http(s):// 로 시작, 공백 없음 */
     private const REDIRECT_PATTERN = '/^(\{shopBase\}(\/(?![\/\\\\])\S*)?|\/(?![\/\\\\])\S*|https?:\/\/\S+)$/D';

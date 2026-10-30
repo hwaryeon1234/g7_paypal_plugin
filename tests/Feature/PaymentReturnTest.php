@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Tests\Feature;
+namespace Plugins\G7plus\Paypal\Tests\Feature;
 
 use Illuminate\Http\Client\Request as HttpRequest;
 use Illuminate\Support\Facades\Http;
 use Modules\Sirsoft\Ecommerce\Enums\OrderStatusEnum;
 use Modules\Sirsoft\Ecommerce\Enums\PaymentStatusEnum;
-use Plugins\Hwaryeon\Paypal\Tests\Concerns\CreatesPaypalOrders;
-use Plugins\Hwaryeon\Paypal\Tests\PluginTestCase;
+use Plugins\G7plus\Paypal\Tests\Concerns\CreatesPaypalOrders;
+use Plugins\G7plus\Paypal\Tests\PluginTestCase;
 
 /**
  * PayPal 승인 후 복귀 — 서버 캡처와 금액 대조.
@@ -36,7 +36,7 @@ class PaymentReturnTest extends PluginTestCase
      */
     private function returnUrl(string $orderNumber, string $token): string
     {
-        return '/plugins/hwaryeon-paypal/payment/return?'.http_build_query(['order' => $orderNumber, 'token' => $token, 'PayerID' => 'PAYER1']);
+        return '/plugins/g7plus-paypal/payment/return?'.http_build_query(['order' => $orderNumber, 'token' => $token, 'PayerID' => 'PAYER1']);
     }
 
     public function test_completed_capture_marks_the_order_paid(): void
@@ -211,7 +211,7 @@ class PaymentReturnTest extends PluginTestCase
         $order = $this->createPaypalOrder(12.50, 'USD', ['payment_meta' => $this->createdMeta('PPO-11')]);
         Http::fake();
 
-        $this->get('/plugins/hwaryeon-paypal/payment/cancel?'.http_build_query(['order' => $order->order_number, 'token' => 'PPO-11']))
+        $this->get('/plugins/g7plus-paypal/payment/cancel?'.http_build_query(['order' => $order->order_number, 'token' => 'PPO-11']))
             ->assertRedirectContains('error=USER_CANCEL');
 
         Http::assertNothingSent();

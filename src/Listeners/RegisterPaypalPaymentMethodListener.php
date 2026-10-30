@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Listeners;
+namespace Plugins\G7plus\Paypal\Listeners;
 
 use App\Contracts\Extension\HookListenerInterface;
-use Plugins\Hwaryeon\Paypal\Services\PaypalCheckoutService;
+use Plugins\G7plus\Paypal\Services\PaypalCheckoutService;
 
 /**
  * PayPal 결제수단을 이커머스 결제수단 카탈로그에 등록한다.
@@ -76,8 +76,8 @@ class RegisterPaypalPaymentMethodListener implements HookListenerInterface
      */
     private function buildEntry(): array
     {
-        $nameKey = 'hwaryeon-paypal::payment_methods.paypal.name';
-        $descriptionKey = 'hwaryeon-paypal::payment_methods.paypal.description';
+        $nameKey = 'g7plus-paypal::payment_methods.paypal.name';
+        $descriptionKey = 'g7plus-paypal::payment_methods.paypal.description';
 
         return [
             'id' => PaypalCheckoutService::METHOD_ID,
@@ -92,7 +92,7 @@ class RegisterPaypalPaymentMethodListener implements HookListenerInterface
             'icon' => 'wallet',
             // PayPal 브랜드 색(#003087 바탕, 흰 글자) 배지 — 다른 간편결제와 같은 형식.
             'brand_mark' => ['text' => 'P', 'class' => 'bg-blue-900 text-white'],
-            'source' => 'plugin:hwaryeon-paypal',
+            'source' => 'plugin:g7plus-paypal',
             'defaults' => [
                 'pg_provider' => PaypalCheckoutService::PROVIDER_ID,
                 'pg_locked' => true,

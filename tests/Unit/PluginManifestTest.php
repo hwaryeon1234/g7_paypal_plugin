@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Tests\Unit;
+namespace Plugins\G7plus\Paypal\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Plugins\Hwaryeon\Paypal\Plugin;
-use Plugins\Hwaryeon\Paypal\Support\PaypalCurrency;
+use Plugins\G7plus\Paypal\Plugin;
+use Plugins\G7plus\Paypal\Support\PaypalCurrency;
 
 /**
  * plugin.php 는 업데이트 때 src/ 오토로더 없이 읽힌다 — src 클래스를 참조하지 않으면서 같은 통화 목록을 가져야 한다.
@@ -25,6 +25,6 @@ class PluginManifestTest extends TestCase
     {
         $source = (string) file_get_contents(dirname(__DIR__, 2).'/plugin.php');
 
-        $this->assertDoesNotMatchRegularExpression('/^use Plugins\\\\Hwaryeon\\\\Paypal\\\\(Support|Services|Concerns|Exceptions|Controllers)\\\\/m', $source);
+        $this->assertDoesNotMatchRegularExpression('/^use Plugins\\\\G7plus\\\\Paypal\\\\(Support|Services|Concerns|Exceptions|Controllers)\\\\/m', $source);
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Concerns;
+namespace Plugins\G7plus\Paypal\Concerns;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

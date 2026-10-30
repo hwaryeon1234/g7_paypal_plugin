@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Tests\Feature;
+namespace Plugins\G7plus\Paypal\Tests\Feature;
 
 use Illuminate\Http\Client\Request as HttpRequest;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Testing\TestResponse;
 use Modules\Sirsoft\Ecommerce\Enums\OrderStatusEnum;
 use Modules\Sirsoft\Ecommerce\Enums\PaymentStatusEnum;
-use Plugins\Hwaryeon\Paypal\Tests\Concerns\CreatesPaypalOrders;
-use Plugins\Hwaryeon\Paypal\Tests\PluginTestCase;
+use Plugins\G7plus\Paypal\Tests\Concerns\CreatesPaypalOrders;
+use Plugins\G7plus\Paypal\Tests\PluginTestCase;
 
 /**
  * PayPal 웹훅 — 서명 검증을 통과한 이벤트만 처리한다.
@@ -19,7 +19,7 @@ class WebhookControllerTest extends PluginTestCase
 {
     use CreatesPaypalOrders;
 
-    private const URL = '/plugins/hwaryeon-paypal/webhook';
+    private const URL = '/plugins/g7plus-paypal/webhook';
 
     protected function setUp(): void
     {
@@ -163,7 +163,7 @@ class WebhookControllerTest extends PluginTestCase
             'api-m.sandbox.paypal.com/v2/checkout/orders/PPO-W6/capture' => Http::response($this->captureResponse('PPO-W6', $order->order_number), 201),
         ]);
 
-        $this->get('/plugins/hwaryeon-paypal/payment/return?'.http_build_query(['order' => $order->order_number, 'token' => 'PPO-W6']))
+        $this->get('/plugins/g7plus-paypal/payment/return?'.http_build_query(['order' => $order->order_number, 'token' => 'PPO-W6']))
             ->assertRedirectContains('/complete');
 
         $this->sendWebhook([

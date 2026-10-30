@@ -9,7 +9,7 @@
             "type": "composite",
             "name": "Modal",
             "props": {
-                "title": "$t:hwaryeon-paypal.payment_error_title",
+                "title": "$t:g7plus-paypal.payment_error_title",
                 "width": "420px"
             },
             "children": [

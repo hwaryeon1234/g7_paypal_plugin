@@ -2,15 +2,15 @@
 
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Support\Facades\Route;
-use Plugins\Hwaryeon\Paypal\Controllers\PaymentCallbackController;
-use Plugins\Hwaryeon\Paypal\Controllers\WebhookController;
+use Plugins\G7plus\Paypal\Controllers\PaymentCallbackController;
+use Plugins\G7plus\Paypal\Controllers\WebhookController;
 
 /*
 |--------------------------------------------------------------------------
 | PayPal Plugin Web Routes
 |--------------------------------------------------------------------------
 |
-| 프리픽스: /plugins/hwaryeon-paypal (PluginRouteServiceProvider 자동 적용)
+| 프리픽스: /plugins/g7plus-paypal (PluginRouteServiceProvider 자동 적용)
 | 미들웨어: web (PluginRouteServiceProvider 자동 적용)
 |
 */

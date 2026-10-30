@@ -1,6 +1,6 @@
 # Webhook API 레퍼런스
 
-> **소유**: plugin `hwaryeon-paypal` · **생성**: `php artisan api:docgen` (실측 기반). @generated 블록은 재생성 시 갱신되며, 사람이 작성한 설명은 보존됩니다.
+> **소유**: plugin `g7plus-paypal` · **생성**: `php artisan api:docgen` (실측 기반). @generated 블록은 재생성 시 갱신되며, 사람이 작성한 설명은 보존됩니다.
 
 ---
 
@@ -17,10 +17,10 @@
 ---
 
 
-### POST /plugins/hwaryeon-paypal/webhook
-<!-- @generated:start:web.plugins.hwaryeon-paypal.webhook.receive -->
-- **라우트명**: `web.plugins.hwaryeon-paypal.webhook.receive`
-- **컨트롤러**: `Plugins\Hwaryeon\Paypal\Controllers\WebhookController@handle`
+### POST /plugins/g7plus-paypal/webhook
+<!-- @generated:start:web.plugins.g7plus-paypal.webhook.receive -->
+- **라우트명**: `web.plugins.g7plus-paypal.webhook.receive`
+- **컨트롤러**: `Plugins\G7plus\Paypal\Controllers\WebhookController@handle`
 - **인증/권한**: 공개 (인증 불필요)
 
 **요청 파라미터**
@@ -30,7 +30,7 @@ _요청 파라미터 없음._
 **요청 예시**
 
 ```http
-POST /plugins/hwaryeon-paypal/webhook HTTP/1.1
+POST /plugins/g7plus-paypal/webhook HTTP/1.1
 Host: api.example.com
 Accept: application/json
 ```

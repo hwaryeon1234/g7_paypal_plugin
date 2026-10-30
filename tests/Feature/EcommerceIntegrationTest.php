@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Tests\Feature;
+namespace Plugins\G7plus\Paypal\Tests\Feature;
 
 use App\Extension\HookListenerRegistrar;
 use Mockery;
@@ -10,9 +10,9 @@ use Modules\Sirsoft\Ecommerce\Services\CheckoutPaymentMethodFilter;
 use Modules\Sirsoft\Ecommerce\Services\EcommerceSettingsService;
 use Modules\Sirsoft\Ecommerce\Services\OrderProcessingService;
 use Modules\Sirsoft\Ecommerce\Services\RefundExecutionService;
-use Plugins\Hwaryeon\Paypal\Plugin;
-use Plugins\Hwaryeon\Paypal\Tests\Concerns\CreatesPaypalOrders;
-use Plugins\Hwaryeon\Paypal\Tests\PluginTestCase;
+use Plugins\G7plus\Paypal\Plugin;
+use Plugins\G7plus\Paypal\Tests\Concerns\CreatesPaypalOrders;
+use Plugins\G7plus\Paypal\Tests\PluginTestCase;
 
 /**
  * 코어 리스너 등록기로 이 플러그인의 리스너를 등록한 뒤, 이커머스 서비스가 PayPal 을 실제로 인식하는지 확인합니다.
@@ -29,7 +29,7 @@ class EcommerceIntegrationTest extends PluginTestCase
         $this->usePaypalSettings();
 
         foreach ((new Plugin)->getHookListeners() as $listener) {
-            HookListenerRegistrar::register($listener, 'hwaryeon-paypal');
+            HookListenerRegistrar::register($listener, 'g7plus-paypal');
         }
     }
 
@@ -39,7 +39,7 @@ class EcommerceIntegrationTest extends PluginTestCase
         $paypal = collect($providers)->firstWhere('id', 'paypal');
 
         $this->assertNotNull($paypal);
-        $this->assertSame('hwaryeon-paypal.requestPayment', $paypal['payment_handler']);
+        $this->assertSame('g7plus-paypal.requestPayment', $paypal['payment_handler']);
     }
 
     public function test_payment_method_catalog_contains_paypal_locked_to_the_paypal_pg(): void

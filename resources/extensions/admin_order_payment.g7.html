@@ -4,22 +4,22 @@
     <div data-ref="paypal_payment_panel" data-if="{{(order.data?.payments?.filter(p => p.pg_provider === 'paypal' &amp;&amp; p.transaction_id) ?? []).length > 0}}" class="admin-card">
       <div data-ref="paypal_payment_header" class="flex items-center gap-2 mb-4">
         <div class="w-1.5 h-4 bg-blue-900 rounded-full flex-shrink-0"/>
-        <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200">$t:hwaryeon-paypal.admin.payment_panel_title</h3>
+        <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200">$t:g7plus-paypal.admin.payment_panel_title</h3>
       </div>
       <div data-ref="paypal_payment_rows" class="space-y-2">
         <div data-ref="paypal_capture_id_row" data-if="{{!!order.data?.payment?.transaction_id}}" class="flex-between text-sm">
-          <span class="text-sm text-gray-500 dark:text-gray-400">$t:hwaryeon-paypal.admin.capture_id</span>
+          <span class="text-sm text-gray-500 dark:text-gray-400">$t:g7plus-paypal.admin.capture_id</span>
           <span class="font-mono text-gray-900 dark:text-white">{{order.data?.payment?.transaction_id ?? ''}}</span>
         </div>
         <div data-ref="paypal_funding_row" data-if="{{!!order.data?.payment?.card_name}}" class="flex-between text-sm">
-          <span class="text-sm text-gray-500 dark:text-gray-400">$t:hwaryeon-paypal.admin.funding_source</span>
+          <span class="text-sm text-gray-500 dark:text-gray-400">$t:g7plus-paypal.admin.funding_source</span>
           <span class="text-gray-900 dark:text-white">{{(order.data?.payment?.card_name ?? '') + (order.data?.payment?.card_number_masked ? ' ' + order.data.payment.card_number_masked : '')}}</span>
         </div>
         <div data-ref="paypal_currency_row" class="flex-between text-sm">
-          <span class="text-sm text-gray-500 dark:text-gray-400">$t:hwaryeon-paypal.admin.charged</span>
+          <span class="text-sm text-gray-500 dark:text-gray-400">$t:g7plus-paypal.admin.charged</span>
           <span class="text-gray-900 dark:text-white font-medium">{{order.data?.payment?.paid_amount_formatted ?? ''}}</span>
         </div>
-        <p class="text-xs text-gray-500 dark:text-gray-400 pt-2">$t:hwaryeon-paypal.admin.dashboard_hint</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400 pt-2">$t:g7plus-paypal.admin.dashboard_hint</p>
       </div>
     </div>
   </inject>

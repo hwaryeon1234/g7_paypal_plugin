@@ -2,11 +2,11 @@
  * PayPal 결제 시작 핸들러
  *
  * 체크아웃 레이아웃이 주문 생성 API 성공 후 호출한다 (이커머스가 응답의 pg_payment_handler 로 이 이름을 내린다):
- *   handler: "hwaryeon-paypal.requestPayment"
+ *   handler: "g7plus-paypal.requestPayment"
  *   params: { pgPaymentData: response.data.pg_payment_data }
  *
  * 순서:
- *   1. POST /api/plugins/hwaryeon-paypal/payment/checkout — 서버가 주문 청구액으로 PayPal 주문을 만들고 승인 주소를 준다.
+ *   1. POST /api/plugins/g7plus-paypal/payment/checkout — 서버가 주문 청구액으로 PayPal 주문을 만들고 승인 주소를 준다.
  *      금액은 보내지 않는다. 서버가 주문 스냅샷으로 정한다.
  *   2. 취소 보고에 쓸 주문 정보를 sessionStorage 에 남긴다.
  *   3. 승인 주소(PayPal 도메인)로 이동한다. 승인 후 PayPal 이 /payment/return 으로 돌려보내면 서버가 캡처한다.
@@ -17,9 +17,9 @@
 import { buildGuestOwnershipHeaders } from '../guestOrderToken';
 import { rememberPendingClose } from '../paymentCloseReport';
 
-const PLUGIN_IDENTIFIER = 'hwaryeon-paypal';
+const PLUGIN_IDENTIFIER = 'g7plus-paypal';
 
-export const CHECKOUT_PATH = '/api/plugins/hwaryeon-paypal/payment/checkout';
+export const CHECKOUT_PATH = '/api/plugins/g7plus-paypal/payment/checkout';
 
 /** 승인 주소로 허용하는 호스트 (서버 PaypalCheckoutService::APPROVE_HOSTS 미러) */
 export const PAYPAL_APPROVE_HOSTS: readonly string[] = [

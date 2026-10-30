@@ -1,14 +1,14 @@
 /**
  * PayPal 플러그인 엔트리
  *
- * ActionDispatcher 에 핸들러를 등록해 레이아웃에서 "hwaryeon-paypal.requestPayment" 로 부를 수 있게 합니다.
+ * ActionDispatcher 에 핸들러를 등록해 레이아웃에서 "g7plus-paypal.requestPayment" 로 부를 수 있게 합니다.
  */
 
 import '../css/main.css';
 import { handlerMap } from './handlers';
 import { reportPaymentFailureOnReturn } from './paymentCloseReport';
 
-const PLUGIN_IDENTIFIER = 'hwaryeon-paypal';
+const PLUGIN_IDENTIFIER = 'g7plus-paypal';
 
 const logger = {
     info: (...args: unknown[]) => console.info(`[${PLUGIN_IDENTIFIER}]`, ...args),
@@ -86,7 +86,7 @@ export function initPlugin(): void {
 
 initPlugin();
 
-(window as any).__HwaryeonPaypal = {
+(window as any).__G7plusPaypal = {
     identifier: PLUGIN_IDENTIFIER,
     handlers: Object.keys(handlerMap),
     initPlugin,

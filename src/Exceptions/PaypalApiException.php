@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Plugins\Hwaryeon\Paypal\Exceptions;
+namespace Plugins\G7plus\Paypal\Exceptions;
 
 use RuntimeException;
 

@@ -11,11 +11,11 @@
 
 import { buildGuestOwnershipHeaders, waitForGuestOrderTokenContract } from './guestOrderToken';
 
-const PLUGIN_IDENTIFIER = 'hwaryeon-paypal';
+const PLUGIN_IDENTIFIER = 'g7plus-paypal';
 
-export const STORAGE_KEY = 'g7:hwaryeon-paypal:pendingClose';
+export const STORAGE_KEY = 'g7:g7plus-paypal:pendingClose';
 
-export const CLOSE_REPORT_PATH = '/api/plugins/hwaryeon-paypal/payment/close-report';
+export const CLOSE_REPORT_PATH = '/api/plugins/g7plus-paypal/payment/close-report';
 
 export interface PaymentCloseReportContext {
     orderId: string;

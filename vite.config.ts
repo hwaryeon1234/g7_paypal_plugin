@@ -5,7 +5,7 @@ export default defineConfig({
     build: {
         lib: {
             entry: resolve(__dirname, 'resources/js/index.ts'),
-            name: 'HwaryeonPaypal',
+            name: 'G7plusPaypal',
             formats: ['iife'],
         },
         outDir: 'dist',

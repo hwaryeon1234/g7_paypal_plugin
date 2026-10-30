@@ -109,6 +109,7 @@ PayPal 호출이 일어나지 않습니다(예: 특정 국가 배송지 차단).
 
 - [ ] `_bundled` 에서만 수정하고 `php artisan plugin:update hwaryeon-paypal --force` 로 반영
 - [ ] manifest version 상향 시 `package.json` · `package-lock.json` · `composer.json` 동기화 + CHANGELOG 기재
+- [ ] 배포는 자동이다 — `plugin.json` 의 version 을 올려 main 에 푸시하면 `.github/workflows/release.yml` 이 `v{version}` GitHub Release 를 만든다(노트는 CHANGELOG 의 해당 버전 구간). CHANGELOG 항목 제목은 `## [x.y.z] - YYYY-MM-DD` 형식을 지킨다
 - [ ] 발행 훅 추가·이름 변경 시 `php artisan ext:docgen` 재실행 (구독하는 확장의 계약이 바뀝니다)
 - [ ] API 표면 변경 시 `php artisan api:docgen --scope=plugin:hwaryeon-paypal` 재실행 + `docs/api/**` 갱신
 - [ ] 레이아웃은 `.g7.html` 을 고치고 `php artisan layout:decompile <경로> --sync` 로 짝 `.json` 을 다시 굽는다 (짝을 굽지 않으면 화면에 반영되지 않음) — 빌드 없이 update 만, 신규 Tailwind 클래스는 빌드된 CSS 에 존재하는지 확인

@@ -3,6 +3,17 @@
 이 프로젝트의 모든 주요 변경 사항은 이 파일에 기록됩니다.
 형식은 [Keep a Changelog](https://keepachangelog.com/ko/1.1.0/) 를 따르며, [Semantic Versioning](https://semver.org/lang/ko/) 을 준수합니다.
 
+## [1.0.1] - 2026-10-30
+
+### Fixed
+
+- 도시(city)가 없는 배송지(국내식 주소 입력)에서 PayPal 주문 생성이 `CITY_REQUIRED` 로 실패하던 문제 — 도시가 없으면 배송지를 싣지 않는다
+- PayPal 이 배송지 필드를 거절하면(오류 field 경로 `/shipping` 또는 주소 관련 issue) 배송지 없이 재시도하도록 판정 확대
+
+### Changed
+
+- 체크아웃 결제 오류 안내창에 서버·PayPal 오류 코드를 함께 표시 (예: `(CITY_REQUIRED)`)
+
 ## [1.0.0] - 2026-10-30
 
 ### Added

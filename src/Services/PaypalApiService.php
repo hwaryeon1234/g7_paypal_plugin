@@ -400,9 +400,13 @@ class PaypalApiService
         $json = is_array($json) ? $json : [];
 
         $issues = [];
+        $fields = [];
         foreach (($json['details'] ?? []) as $detail) {
             if (is_array($detail) && is_string($detail['issue'] ?? null)) {
                 $issues[] = $detail['issue'];
+            }
+            if (is_array($detail) && is_string($detail['field'] ?? null)) {
+                $fields[] = $detail['field'];
             }
         }
 
@@ -416,9 +420,10 @@ class PaypalApiService
             'http_status' => $response->status(),
             'name' => $name,
             'issues' => $issues,
+            'fields' => $fields,
             'debug_id' => $debugId,
         ]);
 
-        return new PaypalApiException($message, $response->status(), $name, $issues, $debugId);
+        return new PaypalApiException($message, $response->status(), $name, $issues, $debugId, $fields);
     }
 }

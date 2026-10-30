@@ -62,8 +62,8 @@
 |---|---|
 | `resources/extensions/admin_order_payment.g7.html` | 다른 확장/템플릿 레이아웃에 주입되는 조각 — 대상 레이아웃 `admin_ecommerce_order_detail` |
 | `resources/extensions/checkout-payment-error.g7.html` | 다른 확장/템플릿 레이아웃에 주입되는 조각 — 확장점 `shop_checkout_extensions` |
-| `/home/user/hwaryeon-paypal/resources/extensions/admin_order_payment.json` | `getLayoutExtensions()` 선언 |
-| `/home/user/hwaryeon-paypal/resources/extensions/checkout-payment-error.json` | `getLayoutExtensions()` 선언 |
+| `/home/user/g7_paypal_plugin/resources/extensions/admin_order_payment.json` | `getLayoutExtensions()` 선언 |
+| `/home/user/g7_paypal_plugin/resources/extensions/checkout-payment-error.json` | `getLayoutExtensions()` 선언 |
 <!-- @generated:layout-extensions END -->
 
 <!-- @intent START -->

@@ -20,7 +20,7 @@
 | `redirect_success_url` | `string` | `{shopBase}/orders/{orderId}/complete` | 결제 성공 리다이렉트 URL |
 | `redirect_fail_url` | `string` | `{shopBase}/checkout` | 결제 실패 리다이렉트 URL |
 
-기본값 파일: `/home/user/hwaryeon-paypal/config/settings/defaults.json` · 설정 화면 레이아웃: `/home/user/hwaryeon-paypal/resources/layouts/admin/plugin_settings.g7.html`
+기본값 파일: `/home/user/g7_paypal_plugin/config/settings/defaults.json` · 설정 화면 레이아웃: `/home/user/g7_paypal_plugin/resources/layouts/admin/plugin_settings.g7.html`
 <!-- @generated:settings-schema END -->
 
 <!-- @intent START -->
@@ -52,8 +52,8 @@ _등록하는 메뉴가 없습니다._
 <!-- @generated:routes START — ext:docgen 이 갱신. 이 블록 안은 직접 수정하지 않는다 -->
 | 종류 | 파일 | URL prefix |
 |---|---|---|
-| `api` | `/home/user/hwaryeon-paypal/src/routes/api.php` | `/api/plugins/hwaryeon-paypal/...` |
-| `web` | `/home/user/hwaryeon-paypal/src/routes/web.php` | `/plugins/hwaryeon-paypal/...` |
+| `api` | `/home/user/g7_paypal_plugin/src/routes/api.php` | `/api/plugins/hwaryeon-paypal/...` |
+| `web` | `/home/user/g7_paypal_plugin/src/routes/web.php` | `/plugins/hwaryeon-paypal/...` |
 
 확장 라우트는 **활성 상태인 확장의 것만** 등록됩니다. 라우트 정의를 바꾸면 라우트 캐시 재생성이 필요합니다.
 <!-- @generated:routes END -->

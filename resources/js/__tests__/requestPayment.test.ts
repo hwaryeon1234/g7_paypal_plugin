@@ -43,6 +43,11 @@ describe('extractErrorMessage', () => {
             .toBe('PayPal is not available for this currency.');
     });
 
+    it('appends the server error code', () => {
+        expect(extractErrorMessage({ response: { data: { message: 'Could not start PayPal checkout.', errors: { code: 'CITY_REQUIRED' } } } }))
+            .toBe('Could not start PayPal checkout. (CITY_REQUIRED)');
+    });
+
     it('falls back to a generic message', () => {
         expect(extractErrorMessage({})).toContain('PayPal');
     });

@@ -20,6 +20,7 @@ class PaypalApiException extends RuntimeException
      * @param  string|null  $errorName  PayPal 오류 이름
      * @param  list<string>  $issues  PayPal 오류 상세 issue 코드 목록
      * @param  string|null  $debugId  PayPal debug_id (PayPal 지원팀 문의용)
+     * @param  list<string>  $fields  PayPal 오류 상세의 문제 필드 경로 목록
      */
     public function __construct(
         string $message,
@@ -27,6 +28,7 @@ class PaypalApiException extends RuntimeException
         private readonly ?string $errorName = null,
         private readonly array $issues = [],
         private readonly ?string $debugId = null,
+        private readonly array $fields = [],
     ) {
         parent::__construct($message, $httpStatus);
     }
@@ -70,6 +72,16 @@ class PaypalApiException extends RuntimeException
     public function hasIssue(string $issue): bool
     {
         return in_array($issue, $this->issues, true);
+    }
+
+    /**
+     * 문제 필드의 JSON 경로 목록을 반환합니다.
+     *
+     * @return list<string> 필드 경로
+     */
+    public function getFields(): array
+    {
+        return $this->fields;
     }
 
     /**

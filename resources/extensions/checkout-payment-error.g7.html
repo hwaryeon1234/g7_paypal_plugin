@@ -1,0 +1,24 @@
+<!-- 주문서 화면에 PayPal 결제 시작 실패 안내창을 끼워 넣는다. PayPal 주문을 만들지 못했을 때(통화 미허용·키 미설정·네트워크) 주문서를 떠나지 않고 사유를 보여 준다 -->
+<extension extension-point="shop_checkout_extensions" priority="110">
+  <modal>
+    <!-- 사유는 서버가 돌려준 문구를 그대로 보여 주므로 여기서 문안을 정하지 않는다 -->
+    <modal data-type="composite" data-ref="paypal_payment_error_modal" title="$t:hwaryeon-paypal.payment_error_title" width="420px">
+      <div class="text-center py-4">
+        <icon name="exclamation-circle" class="text-red-500 text-4xl mb-4"/>
+        <p class="text-gray-700 dark:text-gray-300">{{_local.paypalErrorMessage ?? ''}}</p>
+      </div>
+      <div class="flex justify-center mt-6">
+        <button type="button" class="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">
+          <on type="click">
+            <!-- 닫기 전에 사유를 비운다. 남겨 두면 다음 시도가 실패하기도 전에 지난 사유가 그려진 채 창이 열린다 -->
+            <set-state target="local" :paypalErrorMessage="null"/>
+          </on>
+          <on type="click">
+            <close-modal/>
+          </on>
+          $t:common.confirm
+        </button>
+      </div>
+    </modal>
+  </modal>
+</extension>

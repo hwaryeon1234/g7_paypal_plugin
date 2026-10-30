@@ -1,0 +1,69 @@
+{
+    "editor": {
+        "data_source": {
+            "settings": "Payment settings",
+            "paypal_meta": "Webhook URL & currencies"
+        }
+    },
+    "plugin_name": "PayPal",
+    "plugin_description": "PayPal checkout for international customers",
+    "plugin_read_only": "You do not have permission to change this plugin's settings. Shown read-only.",
+    "settings": {
+        "title": "PayPal Settings",
+        "description": "Configure PayPal REST app credentials, accepted currencies and webhooks.",
+        "guide_title": "Getting started",
+        "guide_step1": "1. In the PayPal Developer Dashboard (developer.paypal.com) > Apps & Credentials, create an app and enter its Client ID and Secret below.",
+        "guide_step2": "2. In the same app's Webhooks, add the webhook URL below (with the listed events) and enter the Webhook ID.",
+        "guide_step3": "3. In Ecommerce settings > Language & Currency, add foreign currencies (USD, EUR, ...), then pick the ones PayPal should accept below.",
+        "guide_step4": "4. In Ecommerce settings > Order settings > Payment methods, enable \"PayPal\". It only appears at checkout for foreign-currency orders.",
+        "is_sandbox": "Sandbox Mode",
+        "is_sandbox_hint": "While on, only test payments are made with sandbox credentials. Turn it off before going live.",
+        "section_sandbox": "Sandbox App Credentials",
+        "section_live": "Live App Credentials",
+        "client_id": "Client ID",
+        "client_id_hint": "Found in the app details under Apps & Credentials.",
+        "client_secret": "Secret",
+        "client_secret_hint": "Keep this secret. It is masked after saving.",
+        "webhook_id": "Webhook ID",
+        "webhook_id_hint": "Used to verify webhook signatures. If blank, all webhooks are rejected (checkout still works).",
+        "section_currencies": "Currencies Accepted via PayPal",
+        "currencies_hint": "PayPal appears at checkout only for orders in the selected currencies. By default every currency PayPal supports is selected.",
+        "currencies_select_all": "Select all",
+        "currencies_clear_all": "Clear all",
+        "currencies_in_country_note": "* BRL, CNY and MYR can only be received by PayPal accounts registered in that country.",
+        "currencies_krw_note": "PayPal does not support KRW, so PayPal never appears for KRW orders. Selecting a currency your store does not offer has no effect.",
+        "section_experience": "PayPal Checkout Page",
+        "brand_name": "Brand name",
+        "brand_name_hint": "Store name shown on the PayPal approval page. Leave blank to use the PayPal account name.",
+        "landing_page": "Landing page",
+        "landing_page_hint": "Which screen PayPal shows first.",
+        "landing_page_no_preference": "Let PayPal decide (recommended)",
+        "landing_page_login": "PayPal login",
+        "landing_page_guest": "Card checkout (guest)",
+        "section_webhook": "Webhook",
+        "webhook_url_label": "Webhook URL",
+        "webhook_url_copy": "Copy",
+        "webhook_url_copied": "Webhook URL copied.",
+        "webhook_url_hint": "Register this URL in your PayPal app's Webhooks. The webhook completes the payment even if the buyer closes the window after approving.",
+        "webhook_events_label": "Events to subscribe",
+        "section_redirect": "Redirects After Payment",
+        "redirect_success_url": "Payment Success Redirect URL",
+        "redirect_success_url_hint": "{shopBase} becomes the storefront address and {orderId} the order number. A full URL (https://...) also works.",
+        "redirect_fail_url": "Payment Failure Redirect URL",
+        "redirect_fail_url_hint": "{shopBase} becomes the storefront address. Error details (error, message, orderId) are appended as query parameters."
+    },
+    "payment_error_title": "PayPal Payment Error",
+    "payment": {
+        "error": {
+            "start_failed": "Could not start PayPal checkout. Please try again.",
+            "untrusted_url": "The PayPal address is not valid. The payment was not started."
+        }
+    },
+    "admin": {
+        "payment_panel_title": "PayPal Transaction",
+        "capture_id": "Capture ID (Transaction ID)",
+        "funding_source": "Funding source",
+        "charged": "Charged",
+        "dashboard_hint": "Find the transaction in PayPal Dashboard > Activity by capture ID. Refund through this store's order cancellation/refund."
+    }
+}

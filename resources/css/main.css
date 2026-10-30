@@ -1,0 +1,42 @@
+/**
+ * hwaryeon-paypal 화면 스타일
+ *
+ * 관리자·사용자 템플릿은 자기 layouts/ 만 훑어 CSS 를 만들므로, 이 플러그인 레이아웃에만 있는 색 짝은 규칙이
+ * 생성되지 않을 수 있다. 그런 짝을 접두 클래스로 직접 제공한다(다른 확장·템플릿 클래스를 정의하거나 덮지 않는다).
+ * 다크 모드: 템플릿은 `<html class="dark">` 로 전환하므로 `.dark` 조상 선택자로 짝을 둔다.
+ */
+
+/* PayPal 브랜드 배지 */
+.paypal-brand-badge {
+    background-color: #003087;
+    color: #fff;
+}
+
+/* 보조 설명 글자 */
+.paypal-text-muted {
+    color: oklch(55.1% 0.027 264.364); /* gray-500 */
+}
+
+.dark .paypal-text-muted {
+    color: oklch(70.7% 0.022 261.325); /* gray-400 */
+}
+
+/* 경고 문구 */
+.paypal-tone-warning {
+    color: oklch(55.5% 0.163 48.998); /* amber-700 */
+}
+
+.dark .paypal-tone-warning {
+    color: oklch(82.8% 0.189 84.429); /* amber-400 */
+}
+
+/* 통화 선택 칩 — 선택됨 */
+.paypal-currency-chip-on {
+    border-color: #0070e0;
+    background-color: oklch(97% 0.014 254.604); /* blue-50 */
+}
+
+.dark .paypal-currency-chip-on {
+    border-color: #4a9eff;
+    background-color: oklch(28.2% 0.091 267.935 / 0.4); /* blue-950 */
+}

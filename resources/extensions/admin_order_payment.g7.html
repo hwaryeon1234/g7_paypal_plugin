@@ -1,0 +1,26 @@
+<!-- 관리자 주문 상세에 PayPal 거래 정보 패널을 덧붙인다. PayPal 캡처 ID(거래 ID)는 PayPal 대시보드에서 거래를 찾을 때 쓰는 값이라 코어 주문 화면이 알 수 없다 -->
+<extension target-layout="admin_ecommerce_order_detail">
+  <inject target-id="tab_content_area" position="append_child">
+    <div data-ref="paypal_payment_panel" data-if="{{(order.data?.payments?.filter(p => p.pg_provider === 'paypal' &amp;&amp; p.transaction_id) ?? []).length > 0}}" class="admin-card">
+      <div data-ref="paypal_payment_header" class="flex items-center gap-2 mb-4">
+        <div class="w-1.5 h-4 bg-blue-900 rounded-full flex-shrink-0"/>
+        <h3 class="text-sm font-semibold text-gray-800 dark:text-gray-200">$t:hwaryeon-paypal.admin.payment_panel_title</h3>
+      </div>
+      <div data-ref="paypal_payment_rows" class="space-y-2">
+        <div data-ref="paypal_capture_id_row" data-if="{{!!order.data?.payment?.transaction_id}}" class="flex-between text-sm">
+          <span class="text-sm text-gray-500 dark:text-gray-400">$t:hwaryeon-paypal.admin.capture_id</span>
+          <span class="font-mono text-gray-900 dark:text-white">{{order.data?.payment?.transaction_id ?? ''}}</span>
+        </div>
+        <div data-ref="paypal_funding_row" data-if="{{!!order.data?.payment?.card_name}}" class="flex-between text-sm">
+          <span class="text-sm text-gray-500 dark:text-gray-400">$t:hwaryeon-paypal.admin.funding_source</span>
+          <span class="text-gray-900 dark:text-white">{{(order.data?.payment?.card_name ?? '') + (order.data?.payment?.card_number_masked ? ' ' + order.data.payment.card_number_masked : '')}}</span>
+        </div>
+        <div data-ref="paypal_currency_row" class="flex-between text-sm">
+          <span class="text-sm text-gray-500 dark:text-gray-400">$t:hwaryeon-paypal.admin.charged</span>
+          <span class="text-gray-900 dark:text-white font-medium">{{order.data?.payment?.paid_amount_formatted ?? ''}}</span>
+        </div>
+        <p class="text-xs text-gray-500 dark:text-gray-400 pt-2">$t:hwaryeon-paypal.admin.dashboard_hint</p>
+      </div>
+    </div>
+  </inject>
+</extension>

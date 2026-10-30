@@ -8,7 +8,8 @@ return [
     'order_description_more' => '외 :count건',
 
     'errors' => [
-        'not_configured' => 'PayPal 연동 키가 설정되지 않았습니다. 관리자에게 문의하세요.',
+        'not_configured' => 'PayPal 연동 키(Client ID·Secret)가 설정되지 않았습니다. 플러그인 설정에서 현재 모드(샌드박스/라이브)의 키를 입력하세요.',
+        'connection_failed' => 'PayPal 서버에 연결하지 못했습니다. 서버의 외부 접속(api-m.paypal.com)을 확인하세요.',
         'auth_failed' => 'PayPal 인증에 실패했습니다. Client ID 와 Secret 을 확인하세요.',
         'currency_not_allowed' => '이 통화로는 PayPal 결제를 할 수 없습니다.',
         'invalid_amount' => 'PayPal 로 결제할 수 없는 금액입니다.',

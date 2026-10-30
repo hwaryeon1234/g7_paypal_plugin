@@ -3,6 +3,12 @@
 이 프로젝트의 모든 주요 변경 사항은 이 파일에 기록됩니다.
 형식은 [Keep a Changelog](https://keepachangelog.com/ko/1.1.0/) 를 따르며, [Semantic Versioning](https://semver.org/lang/ko/) 을 준수합니다.
 
+## [2.0.1] - 2026-10-30
+
+### Fixed
+
+- 환불 실패 사유가 `PayPal 환불에 실패했습니다. (NOT_CONFIGURED)` 처럼 코드로만 보이던 문제 — 키 미설정·인증 실패·연결 실패는 원인과 조치 방법을 그대로 안내
+
 ## [2.0.0] - 2026-10-30
 
 ### Changed

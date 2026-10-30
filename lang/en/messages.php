@@ -8,7 +8,8 @@ return [
     'order_description_more' => 'and :count more',
 
     'errors' => [
-        'not_configured' => 'PayPal is not configured. Please contact the store.',
+        'not_configured' => 'PayPal credentials (Client ID and Secret) are not set. Enter the keys for the current mode (sandbox/live) in the plugin settings.',
+        'connection_failed' => 'Could not connect to PayPal. Check outbound access to api-m.paypal.com from the server.',
         'auth_failed' => 'PayPal authentication failed. Check the Client ID and Secret.',
         'currency_not_allowed' => 'PayPal is not available for this currency.',
         'invalid_amount' => 'This amount cannot be paid with PayPal.',

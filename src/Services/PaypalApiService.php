@@ -302,7 +302,7 @@ class PaypalApiService
         } catch (ConnectionException $e) {
             Log::error('PayPal: API connection failed', ['method' => $method, 'path' => $path, 'error' => $e->getMessage()]);
 
-            throw new PaypalApiException('PayPal API connection failed.', 0, 'CONNECTION_ERROR');
+            throw new PaypalApiException(__('g7plus-paypal::messages.errors.connection_failed'), 0, 'CONNECTION_ERROR');
         }
     }
 
@@ -334,7 +334,7 @@ class PaypalApiService
         } catch (ConnectionException $e) {
             Log::error('PayPal: token connection failed', ['error' => $e->getMessage()]);
 
-            throw new PaypalApiException('PayPal API connection failed.', 0, 'CONNECTION_ERROR');
+            throw new PaypalApiException(__('g7plus-paypal::messages.errors.connection_failed'), 0, 'CONNECTION_ERROR');
         }
 
         $token = (string) ($response->json('access_token') ?? '');

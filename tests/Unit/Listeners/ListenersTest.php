@@ -167,4 +167,20 @@ class ListenersTest extends PluginTestCase
 
         $this->assertSame([], (new ValidateSettingsListener)->rules([], 'other-plugin'));
     }
+
+    public function test_refund_without_credentials_explains_the_cause(): void
+    {
+        // 실제 운영 장애: 식별자 변경 후 설정이 옮겨지지 않아 키가 비어 있었고, 환불 사유가 코드로만 보였다.
+        $this->usePaypalSettings(['sandbox_client_id' => '', 'sandbox_client_secret' => '']);
+        Http::fake();
+        $order = $this->createPaypalOrder(12.50, 'USD', ['payment_status' => PaymentStatusEnum::PAID, 'transaction_id' => 'CAP-R9']);
+
+        $result = (new PaymentRefundListener)->processRefund(['success' => false, 'handled' => false], $order, $order->payment, 5.0);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('NOT_CONFIGURED', $result['error_code']);
+        $this->assertSame(__('g7plus-paypal::messages.errors.not_configured'), $result['error_message']);
+        $this->assertStringNotContainsString('(NOT_CONFIGURED)', $result['error_message']);
+        Http::assertNothingSent();
+    }
 }

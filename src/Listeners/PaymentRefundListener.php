@@ -209,6 +209,16 @@ class PaymentRefundListener implements HookListenerInterface
      */
     private function refundErrorMessage(PaypalApiException $e): string
     {
+        // PayPal 에 닿기 전에 실패한 경우 — 운영자가 바로 조치할 수 있게 원인을 그대로 알린다.
+        $setupErrors = [
+            'NOT_CONFIGURED' => 'not_configured',
+            'AUTHENTICATION_FAILURE' => 'auth_failed',
+            'CONNECTION_ERROR' => 'connection_failed',
+        ];
+        if (isset($setupErrors[$e->getErrorName()])) {
+            return __('g7plus-paypal::messages.errors.'.$setupErrors[$e->getErrorName()]);
+        }
+
         foreach (['REFUND_AMOUNT_EXCEEDED', 'CAPTURE_FULLY_REFUNDED', 'REFUND_TIME_LIMIT_EXCEEDED', 'TRANSACTION_REFUSED', 'INSUFFICIENT_FUNDS'] as $issue) {
             if ($e->hasIssue($issue)) {
                 return __('g7plus-paypal::messages.refund.issues.'.$issue);

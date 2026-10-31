@@ -294,6 +294,361 @@
                         ]
                     },
                     {
+                        "comment": "연결 테스트 — 저장된 설정으로 PayPal 인증과 웹훅 등록 상태를 실제로 확인한다. 키가 비거나 웹훅 주소가 옛 주소로 남은 채 결제·환불이 실패하는 일을 미리 막기 위한 도구다",
+                        "id": "connection_test_card",
+                        "type": "basic",
+                        "name": "Div",
+                        "props": {
+                            "className": "mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "props": {
+                                    "className": "p-6 space-y-4"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "responsive": {
+                                            "portable": {
+                                                "props": {
+                                                    "className": "flex flex-col items-stretch gap-3"
+                                                }
+                                            }
+                                        },
+                                        "props": {
+                                            "className": "flex-between gap-4"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Label",
+                                                        "props": {
+                                                            "className": "form-label"
+                                                        },
+                                                        "text": "$t:g7plus-paypal.settings.conn_title"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "props": {
+                                                            "className": "form-hint"
+                                                        },
+                                                        "text": "$t:g7plus-paypal.settings.conn_hint"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "id": "connection_test_button",
+                                                "type": "basic",
+                                                "name": "Button",
+                                                "actions": [
+                                                    {
+                                                        "comment": "지난 결과를 지우고 다시 확인한다 — 남겨 두면 키를 고친 뒤에도 옛 실패가 그대로 보인다",
+                                                        "type": "click",
+                                                        "handler": "sequence",
+                                                        "actions": [
+                                                            {
+                                                                "handler": "setState",
+                                                                "params": {
+                                                                    "target": "local",
+                                                                    "connTestRunning": true,
+                                                                    "connTestResult": null,
+                                                                    "connTestError": null
+                                                                }
+                                                            },
+                                                            {
+                                                                "handler": "apiCall",
+                                                                "target": "/api/plugins/g7plus-paypal/admin/connection-test",
+                                                                "auth_required": true,
+                                                                "params": {
+                                                                    "method": "GET"
+                                                                },
+                                                                "onSuccess": {
+                                                                    "handler": "setState",
+                                                                    "params": {
+                                                                        "target": "local",
+                                                                        "connTestRunning": false,
+                                                                        "connTestResult": "{{response.data}}"
+                                                                    }
+                                                                },
+                                                                "onError": {
+                                                                    "handler": "setState",
+                                                                    "params": {
+                                                                        "target": "local",
+                                                                        "connTestRunning": false,
+                                                                        "connTestError": "$t:g7plus-paypal.settings.conn_request_failed"
+                                                                    }
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                ],
+                                                "props": {
+                                                    "type": "button",
+                                                    "disabled": "{{_local.connTestRunning}}",
+                                                    "className": "btn btn-secondary btn-sm flex-shrink-0"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Icon",
+                                                        "if": "{{_local.connTestRunning}}",
+                                                        "props": {
+                                                            "name": "spinner",
+                                                            "className": "spinner-sm"
+                                                        }
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "text": "$t:g7plus-paypal.settings.conn_button"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "basic",
+                                        "name": "P",
+                                        "if": "{{_local.connTestError}}",
+                                        "props": {
+                                            "className": "text-sm text-red-600 dark:text-red-400"
+                                        },
+                                        "text": "{{_local.connTestError}}"
+                                    },
+                                    {
+                                        "id": "connection_test_result",
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "if": "{{!!_local.connTestResult}}",
+                                        "props": {
+                                            "className": "rounded-md border border-gray-200 dark:border-gray-700 p-4 space-y-2 text-sm"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "flex-between"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "props": {
+                                                            "className": "paypal-text-muted"
+                                                        },
+                                                        "text": "$t:g7plus-paypal.settings.conn_mode"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "props": {
+                                                            "className": "font-medium text-gray-900 dark:text-white"
+                                                        },
+                                                        "text": "{{_local.connTestResult?.mode === 'live' ? '$t:g7plus-paypal.settings.conn_mode_live' : '$t:g7plus-paypal.settings.conn_mode_sandbox'}}"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "flex-between gap-3"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "props": {
+                                                            "className": "paypal-text-muted"
+                                                        },
+                                                        "text": "$t:g7plus-paypal.settings.conn_credentials"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "if": "{{_local.connTestResult?.credentials === 'ok'}}",
+                                                        "props": {
+                                                            "className": "font-medium text-green-700 dark:text-green-400"
+                                                        },
+                                                        "text": "$t:g7plus-paypal.settings.conn_credentials_ok"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "if": "{{_local.connTestResult?.credentials === 'missing'}}",
+                                                        "props": {
+                                                            "className": "font-medium text-red-600 dark:text-red-400"
+                                                        },
+                                                        "text": "$t:g7plus-paypal.settings.conn_credentials_missing"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "if": "{{_local.connTestResult?.credentials === 'invalid'}}",
+                                                        "props": {
+                                                            "className": "font-medium text-red-600 dark:text-red-400"
+                                                        },
+                                                        "text": "$t:g7plus-paypal.settings.conn_credentials_invalid"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "if": "{{_local.connTestResult?.credentials === 'unreachable'}}",
+                                                        "props": {
+                                                            "className": "font-medium text-red-600 dark:text-red-400"
+                                                        },
+                                                        "text": "$t:g7plus-paypal.settings.conn_credentials_unreachable"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "flex-between gap-3"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "props": {
+                                                            "className": "paypal-text-muted"
+                                                        },
+                                                        "text": "$t:g7plus-paypal.settings.conn_webhook"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "if": "{{_local.connTestResult?.webhook?.status === 'ok'}}",
+                                                        "props": {
+                                                            "className": "font-medium text-green-700 dark:text-green-400"
+                                                        },
+                                                        "text": "$t:g7plus-paypal.settings.conn_webhook_ok"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "if": "{{_local.connTestResult?.webhook?.status === 'missing'}}",
+                                                        "props": {
+                                                            "className": "font-medium paypal-tone-warning"
+                                                        },
+                                                        "text": "$t:g7plus-paypal.settings.conn_webhook_missing"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "if": "{{_local.connTestResult?.webhook?.status === 'not_found'}}",
+                                                        "props": {
+                                                            "className": "font-medium text-red-600 dark:text-red-400"
+                                                        },
+                                                        "text": "$t:g7plus-paypal.settings.conn_webhook_not_found"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "if": "{{_local.connTestResult?.webhook?.status === 'url_mismatch'}}",
+                                                        "props": {
+                                                            "className": "font-medium text-red-600 dark:text-red-400"
+                                                        },
+                                                        "text": "$t:g7plus-paypal.settings.conn_webhook_url_mismatch"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "if": "{{_local.connTestResult?.webhook?.status === 'events_missing'}}",
+                                                        "props": {
+                                                            "className": "font-medium paypal-tone-warning"
+                                                        },
+                                                        "text": "$t:g7plus-paypal.settings.conn_webhook_events_missing"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "if": "{{_local.connTestResult?.webhook?.status === 'skipped'}}",
+                                                        "props": {
+                                                            "className": "font-medium paypal-text-muted"
+                                                        },
+                                                        "text": "$t:g7plus-paypal.settings.conn_webhook_skipped"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "if": "{{_local.connTestResult?.webhook?.status === 'error'}}",
+                                                        "props": {
+                                                            "className": "font-medium text-red-600 dark:text-red-400"
+                                                        },
+                                                        "text": "$t:g7plus-paypal.settings.conn_webhook_error"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "if": "{{_local.connTestResult?.webhook?.status === 'url_mismatch'}}",
+                                                "props": {
+                                                    "className": "space-y-1 pt-1"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "props": {
+                                                            "className": "text-xs paypal-text-muted"
+                                                        },
+                                                        "text": "$t:g7plus-paypal.settings.conn_webhook_registered"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "props": {
+                                                            "className": "font-mono text-xs break-all text-gray-900 dark:text-white"
+                                                        },
+                                                        "text": "{{_local.connTestResult?.webhook?.registered_url ?? ''}}"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "props": {
+                                                            "className": "text-xs paypal-text-muted"
+                                                        },
+                                                        "text": "$t:g7plus-paypal.settings.conn_webhook_expected"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "props": {
+                                                            "className": "font-mono text-xs break-all text-gray-900 dark:text-white"
+                                                        },
+                                                        "text": "{{_local.connTestResult?.webhook?.expected_url ?? ''}}"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "P",
+                                                "if": "{{(_local.connTestResult?.webhook?.missing_events ?? []).length > 0}}",
+                                                "props": {
+                                                    "className": "font-mono text-xs break-all paypal-tone-warning"
+                                                },
+                                                "text": "{{(_local.connTestResult?.webhook?.missing_events ?? []).join(', ')}}"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "id": "sandbox_keys_section",
                         "type": "basic",
                         "name": "Div",

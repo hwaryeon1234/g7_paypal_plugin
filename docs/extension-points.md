@@ -9,7 +9,7 @@
 
 | 훅 이름 | 유형 | 설명 | 발행 위치 |
 |---|---|---|---|
-| `g7plus-paypal.payment.after_capture` | action | PayPal 결제 캡처 완료 후 (금액 대조 전) | `src/Services/PaypalCheckoutService.php:440` |
+| `g7plus-paypal.payment.after_capture` | action | PayPal 결제 캡처 완료 후 (금액 대조 전) | `src/Services/PaypalCheckoutService.php:453` |
 | `g7plus-paypal.payment.after_refund` | action | PayPal 환불 완료 후 | `src/Listeners/PaymentRefundListener.php:166` |
 | `g7plus-paypal.payment.before_create` | action | PayPal 주문(Orders v2) 생성 API 호출 전 | `src/Services/PaypalCheckoutService.php:188` |
 | `g7plus-paypal.payment.before_refund` | action | PayPal 환불 API 호출 전 | `src/Listeners/PaymentRefundListener.php:136` |
@@ -26,6 +26,9 @@
 |---|---|---|---|---|
 | `core.plugin_settings.update_validation_rules` | filter | `ValidateSettingsListener` | `rules` | 10 |
 | `sirsoft-ecommerce.checkout.filter_payment_methods_for_currency` | filter | `RestrictPaymentMethodsForCurrencyListener` | `filter` | 20 |
+| `sirsoft-ecommerce.claim_payment.approve` | filter | `ClaimPaymentListener` | `approve` | 10 |
+| `sirsoft-ecommerce.claim_payment.refund` | filter | `ClaimPaymentListener` | `refund` | 10 |
+| `sirsoft-ecommerce.claim_payment.void_approval` | filter | `ClaimPaymentListener` | `voidApproval` | 10 |
 | `sirsoft-ecommerce.payment.get_client_config` | filter | `RegisterPgProviderListener` | `getClientConfig` | 10 |
 | `sirsoft-ecommerce.payment.refund` | filter | `PaymentRefundListener` | `processRefund` | 10 |
 | `sirsoft-ecommerce.payment.registered_pg_providers` | filter | `RegisterPgProviderListener` | `registerProvider` | 10 |
@@ -43,6 +46,7 @@
 <!-- @generated:listeners START — ext:docgen 이 갱신. 이 블록 안은 직접 수정하지 않는다 -->
 | 리스너 | 구독 훅 | 등록 방식 | HookListenerInterface | 파일 |
 |---|---|---|---|---|
+| `ClaimPaymentListener` | 3개 | 명시 등록 | ✅ | `src/Listeners/ClaimPaymentListener.php` |
 | `PaymentRefundListener` | 2개 | 명시 등록 | ✅ | `src/Listeners/PaymentRefundListener.php` |
 | `ProvideNecessaryStorageKeysListener` | 1개 | 명시 등록 | ✅ | `src/Listeners/ProvideNecessaryStorageKeysListener.php` |
 | `RegisterPaypalPaymentMethodListener` | 1개 | 명시 등록 | ✅ | `src/Listeners/RegisterPaypalPaymentMethodListener.php` |

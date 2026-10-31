@@ -80,6 +80,22 @@ describe('requestPaymentHandler', () => {
         expect(JSON.parse(sessionStorage.getItem(STORAGE_KEY) ?? '{}')).toEqual({ orderId: 'ORD-1001', amount: 1250 });
     });
 
+    it('does not record a close report for claim additional payments', async () => {
+        const post = vi.fn().mockResolvedValue({
+            success: true,
+            data: { approve_url: 'https://www.sandbox.paypal.com/checkoutnow?token=CLM' },
+        });
+        installG7Core(post);
+
+        await requestPaymentHandler({
+            params: { pgPaymentData: { order_number: 'CP20261031-0001', amount: 500, claim_payment_number: 'CP20261031-0001' } },
+        });
+
+        expect(post).toHaveBeenCalledWith(CHECKOUT_PATH, { orderId: 'CP20261031-0001' });
+        expect(go).toHaveBeenCalledWith('https://www.sandbox.paypal.com/checkoutnow?token=CLM');
+        expect(sessionStorage.getItem(STORAGE_KEY)).toBeNull();
+    });
+
     it('sends the guest order token for guest orders', async () => {
         const post = vi.fn().mockResolvedValue({
             success: true,

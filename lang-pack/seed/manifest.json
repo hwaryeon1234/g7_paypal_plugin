@@ -1,4 +1,0 @@
-{
-  "name": "PayPal",
-  "description": "海外のお客様向け PayPal 決済 (Orders v2・外貨決済・部分返金・Webhook 署名検証)"
-}

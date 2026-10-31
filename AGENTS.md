@@ -114,6 +114,7 @@ PayPal 호출이 일어나지 않습니다(예: 특정 국가 배송지 차단).
 
 - [ ] `_bundled` 에서만 수정하고 `php artisan plugin:update g7plus-paypal --force` 로 반영
 - [ ] manifest version 상향 시 `package.json` · `package-lock.json` · `composer.json` 동기화 + CHANGELOG 기재
+- [ ] 문구 키를 더하거나 바꾸면 일본어 언어팩 저장소(`hwaryeon1234/g7_paypal_plugin_ja`)에도 같은 키를 더하고 그쪽 `version`·CHANGELOG 를 올린다 — `.github/workflows/ja-pack-check.yml` 과 `tests/Unit/LanguagePackTest.php`(옆에 `g7_paypal_plugin_ja` 를 받아 두면 실행)가 어긋남을 잡는다. 언어팩 저장소에는 `.json`·`.md`·`backend/ja/*.php` 외의 파일을 두지 않는다(그누보드7 설치가 거부한다)
 - [ ] 배포는 자동이다 — `plugin.json` 의 version 을 올려 main 에 푸시하면 `.github/workflows/release.yml` 이 `v{version}` GitHub Release 를 만든다(노트는 CHANGELOG 의 해당 버전 구간). CHANGELOG 항목 제목은 `## [x.y.z] - YYYY-MM-DD` 형식을 지킨다
 - [ ] 발행 훅 추가·이름 변경 시 `php artisan ext:docgen` 재실행 (구독하는 확장의 계약이 바뀝니다)
 - [ ] API 표면 변경 시 `php artisan api:docgen --scope=plugin:g7plus-paypal` 재실행 + `docs/api/**` 갱신

@@ -1,0 +1,58 @@
+# 일본어 언어팩 저장소(hwaryeon1234/g7_paypal_plugin_ja)의 문구 키가 이 플러그인과 맞는지 확인한다.
+#
+# 언어팩 저장소에는 그누보드7 규칙상 .json·.md·backend/ja/*.php 외의 파일을 둘 수 없어 워크플로를 그쪽에 둘 수 없다.
+# 그래서 이 저장소에서 두 저장소를 함께 받아 대조한다. 플러그인에 문구 키를 더하고 언어팩에 빠뜨리면 실패한다.
+name: 일본어 언어팩 키 대조
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 3 * * 1'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/checkout@v4
+        with:
+          repository: hwaryeon1234/g7_paypal_plugin_ja
+          path: ja-pack
+
+      - name: 키·치환 자리 대조
+        run: |
+          php -r '
+            function flat(array $a, string $p = ""): array {
+                $o = [];
+                foreach ($a as $k => $v) {
+                    $key = $p === "" ? (string) $k : "$p.$k";
+                    if (is_array($v)) { $o += flat($v, $key); } else { $o[$key] = (string) $v; }
+                }
+                return $o;
+            }
+            function marks(string $t): array { preg_match_all("/:[a-z_]+|\{[A-Za-z_]+\}/", $t, $m); sort($m[0]); return $m[0]; }
+            $fail = [];
+            $pairs = [];
+            foreach (glob("lang/ko/*.php") as $f) { $pairs[] = [flat(require $f), flat(require "ja-pack/backend/ja/".basename($f)), basename($f)]; }
+            $pairs[] = [flat(json_decode(file_get_contents("resources/lang/ko.json"), true)), flat(json_decode(file_get_contents("ja-pack/frontend/ja.json"), true)), "ja.json"];
+            foreach ($pairs as [$ko, $ja, $name]) {
+                foreach (array_diff(array_keys($ko), array_keys($ja)) as $k) { $fail[] = "$name: 일본어 누락 $k"; }
+                foreach (array_diff(array_keys($ja), array_keys($ko)) as $k) { $fail[] = "$name: 남는 키 $k"; }
+                foreach (array_intersect_key($ko, $ja) as $k => $t) { if (marks($t) !== marks($ja[$k])) { $fail[] = "$name: 치환 자리 다름 $k"; } }
+            }
+            $pack = json_decode(file_get_contents("ja-pack/language-pack.json"), true);
+            $plugin = json_decode(file_get_contents("plugin.json"), true);
+            if ($pack["target_identifier"] !== $plugin["identifier"]) { $fail[] = "언어팩 target_identifier 불일치"; }
+            if ($fail) { fwrite(STDERR, implode(PHP_EOL, $fail).PHP_EOL); exit(1); }
+            echo "OK: 키 ".count($pairs)."개 파일 대조 통과".PHP_EOL;
+          '
+
+      - name: 언어팩에 허용되지 않는 파일이 없는지
+        run: |
+          BAD=$(cd ja-pack && find . -path ./.git -prune -o -type f -print | grep -vE '\.(json|md)$' | grep -vE '^\./backend/ja/[A-Za-z0-9_-]+\.php$' || true)
+          if [ -n "$BAD" ]; then echo "그누보드7 언어팩에 넣을 수 없는 파일: $BAD"; exit 1; fi
+          echo "OK"

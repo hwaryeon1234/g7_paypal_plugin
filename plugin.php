@@ -33,7 +33,7 @@ class Plugin extends AbstractPlugin
     public function getMetadata(): array
     {
         return [
-            'author' => 'g7plus',
+            'author' => 'Hwaryeon',
             'license' => 'MIT',
             'keywords' => ['payment', 'paypal', 'pg', 'global', 'ecommerce'],
         ];

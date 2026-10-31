@@ -5,6 +5,8 @@
 # 릴리스 노트는 CHANGELOG.md 의 해당 버전 구간을 쓰되, 분류 제목(Added 등)은 한국어로 바꾼다.
 # CHANGELOG.md 자체의 분류 제목은 그누보드7 규칙(Keep a Changelog 영문 카테고리 — 관리자 화면이 파싱)대로 영문을 유지한다.
 # 이미 있는 Release 는 노트만 최신 CHANGELOG 로 갱신한다.
+# 일본어 언어팩(lang-pack/)은 zip 으로 묶어 Release 에 첨부한다 — 관리자는 「URL 에서 설치」에
+# releases/latest/download/g7plus-plugin-g7plus-paypal-ja.zip 을 넣어 항상 최신판을 받는다.
 name: 릴리스 자동 생성
 
 on:
@@ -12,6 +14,7 @@ on:
     branches: [main]
     paths:
       - plugin.json
+      - lang-pack/**
       - .github/workflows/release.yml
   workflow_dispatch:
 
@@ -83,3 +86,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh release edit "${{ steps.version.outputs.tag }}" --notes-file release-notes.md
+
+      - name: 일본어 언어팩 zip 첨부
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PACK_ID=$(jq -r '.identifier' lang-pack/language-pack.json)
+          (cd lang-pack && zip -qr "../${PACK_ID}.zip" language-pack.json backend frontend seed CHANGELOG.md)
+          unzip -l "${PACK_ID}.zip"
+          gh release upload "${{ steps.version.outputs.tag }}" "${PACK_ID}.zip" --clobber

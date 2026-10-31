@@ -5,7 +5,7 @@
 
 <!-- @generated:badges START — ext:docgen 이 갱신. 이 블록 안은 직접 수정하지 않는다 -->
 <p align="center">
-  <img src="https://img.shields.io/badge/version-2.1.0-0066FF?style=flat-square" alt="version 2.1.0">
+  <img src="https://img.shields.io/badge/version-2.2.0-0066FF?style=flat-square" alt="version 2.2.0">
   <img src="https://img.shields.io/badge/type-%ED%94%8C%EB%9F%AC%EA%B7%B8%EC%9D%B8-555555?style=flat-square" alt="type 플러그인">
   <img src="https://img.shields.io/badge/%EA%B7%B8%EB%88%84%EB%B3%B4%EB%93%9C7-%3E%3D7.1.1-1F883D?style=flat-square" alt="그누보드7 &gt;=7.1.1">
   <img src="https://img.shields.io/badge/license-MIT-8250DF?style=flat-square" alt="license MIT">
@@ -146,6 +146,12 @@ php artisan plugin:activate g7plus-paypal
 ```
 
 이미 설치한 사이트에서 Release zip 으로 직접 업데이트하려면 `php artisan plugin:update g7plus-paypal --zip=/경로/파일.zip` 을 씁니다.
+
+**일본어 화면** — 관리자 > 언어팩 > URL 에서 설치에 아래 주소를 넣습니다(일본어 코어 언어팩이 켜져 있어야 합니다). 자세한 내용은 [lang-pack/README.md](lang-pack/README.md).
+
+```text
+https://github.com/hwaryeon1234/g7_paypal_plugin/releases/latest/download/g7plus-plugin-g7plus-paypal-ja.zip
+```
 
 **처음 연결하기**
 1. [developer.paypal.com](https://developer.paypal.com) > Apps & Credentials 에서 앱을 만들고 Sandbox Client ID·Secret 을 관리자 > 플러그인 > PayPal 설정에 입력합니다.

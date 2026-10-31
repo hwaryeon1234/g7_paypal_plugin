@@ -1,12 +1,12 @@
 {
     "name": "plugins/g7plus-paypal",
     "description": "PayPal checkout plugin for Gnuboard7 (sirsoft-ecommerce)",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "type": "library",
     "license": "MIT",
     "authors": [
         {
-            "name": "g7plus"
+            "name": "Hwaryeon"
         }
     ],
     "require": {

@@ -3,6 +3,17 @@
 이 프로젝트의 모든 주요 변경 사항은 이 파일에 기록됩니다.
 형식은 [Keep a Changelog](https://keepachangelog.com/ko/1.1.0/) 를 따르며, [Semantic Versioning](https://semver.org/lang/ko/) 을 준수합니다.
 
+## [2.2.0] - 2026-10-31
+
+### Added
+
+- 일본어 언어팩(`g7plus-plugin-g7plus-paypal-ja`) — 저장소 `lang-pack/` 에 원본을 두고, Release 마다 zip 으로 자동 첨부합니다. 관리자 > 언어팩 > URL 에서 설치에 `https://github.com/hwaryeon1234/g7_paypal_plugin/releases/latest/download/g7plus-plugin-g7plus-paypal-ja.zip` 을 넣어 설치합니다
+
+### Changed
+
+- 결제수단 이름·설명이 ko·en 외의 언어(일본어 등)도 설치된 언어팩에서 채워지도록 변경
+- 개발자(벤더) 표시를 `Hwaryeon` 으로 변경 — 플러그인 식별자(`g7plus-paypal`)는 그대로입니다
+
 ## [2.1.0] - 2026-10-31
 
 ### Added

@@ -70,6 +70,19 @@ class RegisterPaypalPaymentMethodListener implements HookListenerInterface
     }
 
     /**
+     * 번역 키를 지원 언어 전체의 다국어 객체로 만듭니다.
+     *
+     * @param  string  $key  번역 키
+     * @return array<string, string> 언어 코드 → 문구
+     */
+    private function localized(string $key): array
+    {
+        $field = ['ko' => __($key, [], 'ko'), 'en' => __($key, [], 'en')];
+
+        return \function_exists('localize_catalog_field') ? localize_catalog_field($field, $key) : $field;
+    }
+
+    /**
      * 결제수단 항목을 만듭니다 — EcommerceSettingsService::getBuiltinPaymentMethods 와 같은 형식.
      *
      * @return array<string, mixed> 결제수단 항목
@@ -81,14 +94,9 @@ class RegisterPaypalPaymentMethodListener implements HookListenerInterface
 
         return [
             'id' => PaypalCheckoutService::METHOD_ID,
-            'name' => [
-                'ko' => __($nameKey, [], 'ko'),
-                'en' => __($nameKey, [], 'en'),
-            ],
-            'description' => [
-                'ko' => __($descriptionKey, [], 'ko'),
-                'en' => __($descriptionKey, [], 'en'),
-            ],
+            // ko·en 은 플러그인 번역, 그 밖의 언어(ja 등)는 설치된 언어팩에서 채운다 — 이커머스 기본 결제수단과 같은 방식.
+            'name' => $this->localized($nameKey),
+            'description' => $this->localized($descriptionKey),
             'icon' => 'wallet',
             // PayPal 브랜드 색(#003087 바탕, 흰 글자) 배지 — 다른 간편결제와 같은 형식.
             'brand_mark' => ['text' => 'P', 'class' => 'bg-blue-900 text-white'],

@@ -144,7 +144,7 @@ PayPal 호출이 일어나지 않습니다(예: 특정 국가 배송지 차단).
 <!-- @generated:test-commands START — ext:docgen 이 갱신. 이 블록 안은 직접 수정하지 않는다 -->
 | 종류 | 개수 | 위치 |
 |---|---|---|
-| PHPUnit | 9개 | `plugins/_bundled/g7plus-paypal/tests` |
+| PHPUnit | 11개 | `plugins/_bundled/g7plus-paypal/tests` |
 | Vitest | 3개 | `vitest.config.ts` |
 | Playwright | 0개 | — |
 | 시나리오 매니페스트 | 0개 | — |

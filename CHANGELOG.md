@@ -3,6 +3,13 @@
 이 프로젝트의 모든 주요 변경 사항은 이 파일에 기록됩니다.
 형식은 [Keep a Changelog](https://keepachangelog.com/ko/1.1.0/) 를 따르며, [Semantic Versioning](https://semver.org/lang/ko/) 을 준수합니다.
 
+## [2.2.1] - 2026-10-31
+
+### Changed
+
+- 일본어 언어팩을 전용 저장소 [hwaryeon1234/g7_paypal_plugin_ja](https://github.com/hwaryeon1234/g7_paypal_plugin_ja) 로 옮겼습니다 — 관리자 > 언어팩 > 설치 > GitHub 탭에 저장소 주소를 넣어 설치합니다(2.2.0 의 zip 내려받기 방식은 더 쓰지 않습니다)
+- 두 저장소의 문구 키가 맞는지 GitHub Actions(`ja-pack-check`)로 푸시마다 대조합니다
+
 ## [2.2.0] - 2026-10-31
 
 ### Added

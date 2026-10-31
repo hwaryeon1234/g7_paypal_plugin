@@ -15,7 +15,7 @@ class LanguagePackValidatorTest extends PluginTestCase
 {
     public function test_core_validators_accept_the_language_pack(): void
     {
-        $root = dirname(__DIR__, 2).'/lang-pack';
+        $root = LanguagePackTest::packRoot();
         $manifest = json_decode((string) file_get_contents($root.'/language-pack.json'), true);
 
         app(LanguagePackManifestValidator::class)->validate($manifest, $root);

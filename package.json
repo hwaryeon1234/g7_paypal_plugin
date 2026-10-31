@@ -1,6 +1,6 @@
 {
     "name": "@g7/g7plus-paypal",
-    "version": "2.2.0",
+    "version": "2.2.1",
     "type": "module",
     "private": true,
     "scripts": {

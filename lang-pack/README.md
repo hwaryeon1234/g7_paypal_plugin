@@ -4,13 +4,15 @@
 
 ## 설치
 
-관리자 > 언어팩 > **URL 에서 설치**에 아래 주소를 넣습니다. 항상 최신 Release 에 첨부된 언어팩을 받습니다.
+아래 주소에서 zip 을 내려받아 관리자 > 언어팩 > 설치 > **ZIP 업로드** 탭에 올립니다. 이 주소는 항상 최신 Release 에 첨부된 언어팩을 가리킵니다.
 
 ```text
 https://github.com/hwaryeon1234/g7_paypal_plugin/releases/latest/download/g7plus-plugin-g7plus-paypal-ja.zip
 ```
 
-명령줄:
+관리자 화면의 **GitHub** 탭에는 넣을 수 없습니다 — 그 칸은 저장소 주소(`https://github.com/owner/repo`)만 받고 저장소 전체를 언어팩으로 설치하는데, 이 저장소의 본체는 플러그인이기 때문입니다.
+
+명령줄(서버에서 주소로 바로 설치):
 
 ```bash
 php artisan language-pack:install https://github.com/hwaryeon1234/g7_paypal_plugin/releases/latest/download/g7plus-plugin-g7plus-paypal-ja.zip --source=url

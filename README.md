@@ -147,7 +147,7 @@ php artisan plugin:activate g7plus-paypal
 
 이미 설치한 사이트에서 Release zip 으로 직접 업데이트하려면 `php artisan plugin:update g7plus-paypal --zip=/경로/파일.zip` 을 씁니다.
 
-**일본어 화면** — 관리자 > 언어팩 > URL 에서 설치에 아래 주소를 넣습니다(일본어 코어 언어팩이 켜져 있어야 합니다). 자세한 내용은 [lang-pack/README.md](lang-pack/README.md).
+**일본어 화면** — 아래 zip 을 내려받아 관리자 > 언어팩 > 설치 > **ZIP 업로드** 탭에 올립니다(일본어 코어 언어팩이 켜져 있어야 합니다). 자세한 내용은 [lang-pack/README.md](lang-pack/README.md).
 
 ```text
 https://github.com/hwaryeon1234/g7_paypal_plugin/releases/latest/download/g7plus-plugin-g7plus-paypal-ja.zip

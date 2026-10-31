@@ -7,7 +7,7 @@
 
 ### Added
 
-- 일본어 언어팩(`g7plus-plugin-g7plus-paypal-ja`) — 저장소 `lang-pack/` 에 원본을 두고, Release 마다 zip 으로 자동 첨부합니다. 관리자 > 언어팩 > URL 에서 설치에 `https://github.com/hwaryeon1234/g7_paypal_plugin/releases/latest/download/g7plus-plugin-g7plus-paypal-ja.zip` 을 넣어 설치합니다
+- 일본어 언어팩(`g7plus-plugin-g7plus-paypal-ja`) — 저장소 `lang-pack/` 에 원본을 두고, Release 마다 zip 으로 자동 첨부합니다. 이 주소의 zip 을 내려받아 관리자 > 언어팩 > 설치 > ZIP 업로드 탭에 올리거나, 서버에서 `php artisan language-pack:install https://github.com/hwaryeon1234/g7_paypal_plugin/releases/latest/download/g7plus-plugin-g7plus-paypal-ja.zip --source=url` 로 설치합니다 (`https://github.com/hwaryeon1234/g7_paypal_plugin/releases/latest/download/g7plus-plugin-g7plus-paypal-ja.zip`)
 
 ### Changed
 

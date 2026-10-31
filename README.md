@@ -5,7 +5,7 @@
 
 <!-- @generated:badges START — ext:docgen 이 갱신. 이 블록 안은 직접 수정하지 않는다 -->
 <p align="center">
-  <img src="https://img.shields.io/badge/version-2.0.1-0066FF?style=flat-square" alt="version 2.0.1">
+  <img src="https://img.shields.io/badge/version-2.1.0-0066FF?style=flat-square" alt="version 2.1.0">
   <img src="https://img.shields.io/badge/type-%ED%94%8C%EB%9F%AC%EA%B7%B8%EC%9D%B8-555555?style=flat-square" alt="type 플러그인">
   <img src="https://img.shields.io/badge/%EA%B7%B8%EB%88%84%EB%B3%B4%EB%93%9C7-%3E%3D7.1.1-1F883D?style=flat-square" alt="그누보드7 &gt;=7.1.1">
   <img src="https://img.shields.io/badge/license-MIT-8250DF?style=flat-square" alt="license MIT">
@@ -26,8 +26,8 @@
 국내 PG(토스·KG이니시스·KCP·나이스)는 원화 결제용으로 그대로 두고, 이 플러그인은 USD·EUR·JPY 같은 외화 주문에만
 나타납니다. 어떤 통화를 PayPal 로 받을지는 관리자 화면에서 고릅니다.
 
-PayPal 은 원화(KRW)를 지원하지 않으므로 **원화 주문에는 PayPal 이 노출되지 않습니다.** 클레임(교환·반품) 추가결제는
-1.0.0 에서 지원하지 않습니다.
+PayPal 은 원화(KRW)를 지원하지 않으므로 **원화 주문에는 PayPal 이 노출되지 않습니다.**
+교환·반품 배송비 같은 클레임 추가결제도 PayPal 로 받고 돌려줄 수 있습니다(이커머스 클레임 정책의 추가결제 수단에 `paypal` 을 넣으면 됩니다).
 <!-- @intent END -->
 
 ## 주요 기능
@@ -41,6 +41,8 @@ PayPal 은 원화(KRW)를 지원하지 않으므로 **원화 주문에는 PayPal
 | 안정성 | 더블클릭·새로고침·웹훅 동시 도착에도 1회만 결제 처리(멱등키 + 주문 락), 승인 후 창을 닫아도 웹훅이 결제 완료 |
 | 환불 | 관리자 주문 취소·반품 시 PayPal 자동 환불, 부분환불(180일 이내) |
 | 판매자 보호 | 해외 배송지를 PayPal 에 함께 전달(PayPal 이 주소를 거절하면 배송지 없이 재시도) |
+| 클레임 추가결제 | 교환·반품 배송비 등 추가결제를 PayPal 로 받고, 신청 철회·차액 정산 시 PayPal 로 환급 |
+| 연결 테스트 | 설정 화면에서 API 키 인증·웹훅 등록 주소·구독 이벤트를 버튼 하나로 점검 |
 | 관리 | 주문 상세에 PayPal 거래 정보 패널, 체크아웃 오류 안내창 |
 <!-- @intent END -->
 

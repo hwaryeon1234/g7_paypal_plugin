@@ -38,6 +38,8 @@ interface PgPaymentData {
     /** 결제 통화 최소 화폐단위 정수 (USD 12.50 → 1250) — 취소 보고 대조용 */
     amount: number;
     currency?: string;
+    /** 클레임 추가결제(CP 채번)에만 실린다 — 이때 order_number 는 결제번호다 */
+    claim_payment_number?: string;
 }
 
 interface RequestPaymentParams {
@@ -176,7 +178,10 @@ export async function requestPaymentHandler(action: any, _context?: any): Promis
             return;
         }
 
-        rememberPendingClose({ orderId: pgPaymentData.order_number, amount: pgPaymentData.amount });
+        // 주문 결제만 취소 보고 대상이다. 클레임 추가결제는 취소해도 결제 대기로 남고, 서버가 신청서 상세로 돌려보낸다.
+        if (!pgPaymentData.claim_payment_number) {
+            rememberPendingClose({ orderId: pgPaymentData.order_number, amount: pgPaymentData.amount });
+        }
 
         browserNavigation.go(approveUrl);
     } catch (error: any) {

@@ -87,6 +87,46 @@ class PaypalApiService
     }
 
     /**
+     * 현재 모드의 자격증명으로 토큰을 새로 받아 봅니다. (관리자 연결 테스트용)
+     *
+     * 캐시된 토큰을 버리고 다시 발급받으므로, 키를 바꾼 직후에도 실제 키로 판정한다.
+     *
+     * @return string missing | ok | invalid | unreachable
+     */
+    public function checkCredentials(): string
+    {
+        if (! $this->isConfigured()) {
+            return 'missing';
+        }
+
+        $this->forgetAccessToken();
+
+        try {
+            $this->accessToken();
+
+            return 'ok';
+        } catch (PaypalApiException $e) {
+            return $e->getErrorName() === 'CONNECTION_ERROR' ? 'unreachable' : 'invalid';
+        }
+    }
+
+    /**
+     * 설정된 웹훅을 PayPal 에서 조회합니다. (GET /v1/notifications/webhooks/{id})
+     *
+     * @return array<string, mixed>|null 웹훅 객체 (ID 미설정이면 null)
+     *
+     * @throws PaypalApiException API 호출 실패 시 (없는 ID 는 404)
+     */
+    public function getConfiguredWebhook(): ?array
+    {
+        if (! $this->hasWebhookId()) {
+            return null;
+        }
+
+        return $this->request('GET', '/v1/notifications/webhooks/'.rawurlencode($this->webhookId));
+    }
+
+    /**
      * PayPal 주문을 생성합니다. (POST /v2/checkout/orders)
      *
      * @param  array<string, mixed>  $payload  주문 생성 본문

@@ -2,6 +2,7 @@
 
 use App\Support\SiteUrl;
 use Illuminate\Support\Facades\Route;
+use Plugins\G7plus\Paypal\Controllers\AdminConnectionController;
 use Plugins\G7plus\Paypal\Controllers\CheckoutController;
 use Plugins\G7plus\Paypal\Controllers\PaymentCloseReportController;
 use Plugins\G7plus\Paypal\Services\PaypalCheckoutService;
@@ -34,13 +35,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum', 'admin'])->g
             'success' => true,
             'data' => [
                 'webhook_url' => SiteUrl::absolute('/plugins/g7plus-paypal/webhook'),
-                'webhook_events' => [
-                    'CHECKOUT.ORDER.APPROVED',
-                    'PAYMENT.CAPTURE.COMPLETED',
-                    'PAYMENT.CAPTURE.DENIED',
-                    'PAYMENT.CAPTURE.REFUNDED',
-                    'PAYMENT.CAPTURE.REVERSED',
-                ],
+                'webhook_events' => AdminConnectionController::WEBHOOK_EVENTS,
                 'currencies' => array_map(
                     static fn (string $code, int $decimals) => [
                         'code' => $code,
@@ -56,4 +51,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum', 'admin'])->g
     })->middleware('permission:admin,sirsoft-ecommerce.settings.read')
         // 이름에 `.webhook.` 마디를 두지 않는다 — 코어 IP 제한 검사가 그 이름을 외부 인바운드 콜백으로 분류한다.
         ->name('meta');
+
+    // 연결 테스트 — 저장된 키로 PayPal 인증·웹훅 등록 상태를 실제로 확인한다(아무것도 바꾸지 않음).
+    Route::get('/connection-test', [AdminConnectionController::class, 'test'])
+        ->middleware('permission:admin,sirsoft-ecommerce.settings.read')
+        ->name('connection-test');
 });

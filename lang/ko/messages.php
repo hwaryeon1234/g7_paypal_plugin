@@ -46,6 +46,11 @@ return [
         ],
     ],
 
+    'claim' => [
+        'description' => '교환·반품 추가결제 :number',
+        'failed' => 'PayPal 추가결제를 완료하지 못했습니다. (:code)',
+    ],
+
     'settings' => [
         'redirect_url_format' => '주소는 {shopBase}, / 또는 http(s):// 로 시작해야 하며 공백을 포함할 수 없습니다.',
     ],

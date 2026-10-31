@@ -46,6 +46,11 @@ return [
         ],
     ],
 
+    'claim' => [
+        'description' => 'Exchange/return additional payment :number',
+        'failed' => 'The PayPal additional payment could not be completed. (:code)',
+    ],
+
     'settings' => [
         'redirect_url_format' => 'The address must start with {shopBase}, / or http(s):// and contain no spaces.',
     ],

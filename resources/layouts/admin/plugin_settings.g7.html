@@ -61,6 +61,67 @@
           </div>
         </div>
       </div>
+      <!-- 연결 테스트 — 저장된 설정으로 PayPal 인증과 웹훅 등록 상태를 실제로 확인한다. 키가 비거나 웹훅 주소가 옛 주소로 남은 채 결제·환불이 실패하는 일을 미리 막기 위한 도구다 -->
+      <div data-ref="connection_test_card" class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="p-6 space-y-4">
+          <div class="flex-between gap-4">
+            <responsive on="portable" class="flex flex-col items-stretch gap-3"/>
+            <div>
+              <label class="form-label">$t:g7plus-paypal.settings.conn_title</label>
+              <p class="form-hint">$t:g7plus-paypal.settings.conn_hint</p>
+            </div>
+            <button data-ref="connection_test_button" type="button" disabled="{{_local.connTestRunning}}" class="btn btn-secondary btn-sm flex-shrink-0">
+              <on type="click">
+                <!-- 지난 결과를 지우고 다시 확인한다 — 남겨 두면 키를 고친 뒤에도 옛 실패가 그대로 보인다 -->
+                <sequence>
+                  <set-state target="local" :connTestRunning="true" :connTestResult="null" :connTestError="null"/>
+                  <api-call :auth_required="true" target="/api/plugins/g7plus-paypal/admin/connection-test" method="GET">
+                    <success>
+                      <set-state target="local" :connTestRunning="false" connTestResult="{{response.data}}"/>
+                    </success>
+                    <fail>
+                      <set-state target="local" :connTestRunning="false" connTestError="$t:g7plus-paypal.settings.conn_request_failed"/>
+                    </fail>
+                  </api-call>
+                </sequence>
+              </on>
+              <icon data-if="{{_local.connTestRunning}}" name="spinner" class="spinner-sm"/>
+              <span>$t:g7plus-paypal.settings.conn_button</span>
+            </button>
+          </div>
+          <p data-if="{{_local.connTestError}}" class="text-sm text-red-600 dark:text-red-400">{{_local.connTestError}}</p>
+          <div data-ref="connection_test_result" data-if="{{!!_local.connTestResult}}" class="rounded-md border border-gray-200 dark:border-gray-700 p-4 space-y-2 text-sm">
+            <div class="flex-between">
+              <span class="paypal-text-muted">$t:g7plus-paypal.settings.conn_mode</span>
+              <span class="font-medium text-gray-900 dark:text-white">{{_local.connTestResult?.mode === 'live' ? '$t:g7plus-paypal.settings.conn_mode_live' : '$t:g7plus-paypal.settings.conn_mode_sandbox'}}</span>
+            </div>
+            <div class="flex-between gap-3">
+              <span class="paypal-text-muted">$t:g7plus-paypal.settings.conn_credentials</span>
+              <span data-if="{{_local.connTestResult?.credentials === 'ok'}}" class="font-medium text-green-700 dark:text-green-400">$t:g7plus-paypal.settings.conn_credentials_ok</span>
+              <span data-if="{{_local.connTestResult?.credentials === 'missing'}}" class="font-medium text-red-600 dark:text-red-400">$t:g7plus-paypal.settings.conn_credentials_missing</span>
+              <span data-if="{{_local.connTestResult?.credentials === 'invalid'}}" class="font-medium text-red-600 dark:text-red-400">$t:g7plus-paypal.settings.conn_credentials_invalid</span>
+              <span data-if="{{_local.connTestResult?.credentials === 'unreachable'}}" class="font-medium text-red-600 dark:text-red-400">$t:g7plus-paypal.settings.conn_credentials_unreachable</span>
+            </div>
+            <div class="flex-between gap-3">
+              <span class="paypal-text-muted">$t:g7plus-paypal.settings.conn_webhook</span>
+              <span data-if="{{_local.connTestResult?.webhook?.status === 'ok'}}" class="font-medium text-green-700 dark:text-green-400">$t:g7plus-paypal.settings.conn_webhook_ok</span>
+              <span data-if="{{_local.connTestResult?.webhook?.status === 'missing'}}" class="font-medium paypal-tone-warning">$t:g7plus-paypal.settings.conn_webhook_missing</span>
+              <span data-if="{{_local.connTestResult?.webhook?.status === 'not_found'}}" class="font-medium text-red-600 dark:text-red-400">$t:g7plus-paypal.settings.conn_webhook_not_found</span>
+              <span data-if="{{_local.connTestResult?.webhook?.status === 'url_mismatch'}}" class="font-medium text-red-600 dark:text-red-400">$t:g7plus-paypal.settings.conn_webhook_url_mismatch</span>
+              <span data-if="{{_local.connTestResult?.webhook?.status === 'events_missing'}}" class="font-medium paypal-tone-warning">$t:g7plus-paypal.settings.conn_webhook_events_missing</span>
+              <span data-if="{{_local.connTestResult?.webhook?.status === 'skipped'}}" class="font-medium paypal-text-muted">$t:g7plus-paypal.settings.conn_webhook_skipped</span>
+              <span data-if="{{_local.connTestResult?.webhook?.status === 'error'}}" class="font-medium text-red-600 dark:text-red-400">$t:g7plus-paypal.settings.conn_webhook_error</span>
+            </div>
+            <div data-if="{{_local.connTestResult?.webhook?.status === 'url_mismatch'}}" class="space-y-1 pt-1">
+              <p class="text-xs paypal-text-muted">$t:g7plus-paypal.settings.conn_webhook_registered</p>
+              <p class="font-mono text-xs break-all text-gray-900 dark:text-white">{{_local.connTestResult?.webhook?.registered_url ?? ''}}</p>
+              <p class="text-xs paypal-text-muted">$t:g7plus-paypal.settings.conn_webhook_expected</p>
+              <p class="font-mono text-xs break-all text-gray-900 dark:text-white">{{_local.connTestResult?.webhook?.expected_url ?? ''}}</p>
+            </div>
+            <p data-if="{{(_local.connTestResult?.webhook?.missing_events ?? []).length > 0}}" class="font-mono text-xs break-all paypal-tone-warning">{{(_local.connTestResult?.webhook?.missing_events ?? []).join(', ')}}</p>
+          </div>
+        </div>
+      </div>
       <div data-ref="sandbox_keys_section" class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
         <div class="panel-header-row">
           <h3 class="section-heading-md">$t:g7plus-paypal.settings.section_sandbox</h3>

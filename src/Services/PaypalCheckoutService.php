@@ -206,9 +206,9 @@ class PaypalCheckoutService
         }
 
         $paypalOrderId = (string) ($paypalOrder['id'] ?? '');
-        $approveUrl = $this->findLink($paypalOrder, 'payer-action') ?? $this->findLink($paypalOrder, 'approve');
+        $approveUrl = $this->approveUrlOf($paypalOrder);
 
-        if ($paypalOrderId === '' || $approveUrl === null || ! $this->isTrustedApproveUrl($approveUrl)) {
+        if ($paypalOrderId === '' || $approveUrl === null) {
             Log::error('PayPal: create order response has no usable approval link', [
                 'order_number' => $order->order_number,
                 'paypal_order_id' => $paypalOrderId,
@@ -239,6 +239,19 @@ class PaypalCheckoutService
         ]);
 
         return ['paypal_order_id' => $paypalOrderId, 'approve_url' => $approveUrl];
+    }
+
+    /**
+     * PayPal 주문 응답에서 신뢰할 수 있는 승인 주소를 꺼냅니다.
+     *
+     * @param  array<string, mixed>  $paypalOrder  PayPal 주문 객체
+     * @return string|null PayPal 도메인 https 승인 주소 (없거나 신뢰할 수 없으면 null)
+     */
+    public function approveUrlOf(array $paypalOrder): ?string
+    {
+        $url = $this->findLink($paypalOrder, 'payer-action') ?? $this->findLink($paypalOrder, 'approve');
+
+        return $url !== null && $this->isTrustedApproveUrl($url) ? $url : null;
     }
 
     /**

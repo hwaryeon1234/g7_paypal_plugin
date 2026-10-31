@@ -28,8 +28,7 @@ PayPal 은 원화(KRW)를 결제 통화로 받지 않으므로, 원화 주문에
 `payment_meta`·`transaction_id` 에 둡니다. `merchant_order_id` 는 이커머스 자신의 결제번호(NOT NULL)라 쓰지 않습니다.
 
 **의도적으로 하지 않는 것**: 품목(items) 분해 금액을 PayPal 에 보내지 않습니다 — 쿠폰·마일리지·환산 절사가 섞인 주문은
-품목 합이 청구액과 1센트라도 어긋나면 PayPal 이 주문 생성을 거절합니다. 클레임(교환·반품) 추가결제는 1.0.0 에서 지원하지
-않습니다. PayPal 대시보드에서 직접 낸 환불·차지백은 주문을 자동으로 바꾸지 않고 결제행에 기록만 합니다.
+품목 합이 청구액과 1센트라도 어긋나면 PayPal 이 주문 생성을 거절합니다. PayPal 대시보드에서 직접 낸 환불·차지백은 주문을 자동으로 바꾸지 않고 결제행에 기록만 합니다.
 <!-- @intent END -->
 
 ## 2. 디렉토리 지도
@@ -81,6 +80,12 @@ PayPal 은 원화(KRW)를 결제 통화로 받지 않으므로, 원화 주문에
 
 **환불**: 관리자 취소·반품 → 이커머스 `sirsoft-ecommerce.payment.refund` 필터 → `PaymentRefundListener` →
 `refundCapture()`(금액 명시, PayPal-Request-Id = 환불 레코드+금액).
+
+**클레임 추가결제**(결제번호 `CP…`, 2.1.0~): 체크아웃 API·복귀 콜백이 `ClaimPayment::isClaimPaymentNumber()` 로 갈라져
+`PaypalClaimPaymentService` 를 탄다. 승인은 이커머스 `ClaimPaymentCallback::approveAndRedirect()` →
+`claim_payment.approve` 필터(`ClaimPaymentListener`) — 결제 건에 PayPal 주문 ID 칸이 없으므로 캡처 전에 PayPal 주문을
+조회해 custom_id(결제번호)·금액·통화를 대조한다. 클레임 결제에는 보류 상태가 없어 PENDING 캡처는 환불 후 실패다.
+환급은 `claim_payment.refund`(모듈이 준 멱등키를 PayPal-Request-Id 로), 승인 뒤 모듈 거절은 `claim_payment.void_approval`.
 <!-- @intent END -->
 
 ## 4. 확장점
@@ -89,8 +94,8 @@ PayPal 은 원화(KRW)를 결제 통화로 받지 않으므로, 원화 주문에
 | 확장점 | 수 | 상세 |
 |---|---|---|
 | 발행 훅 | 4개 | [발행 훅](docs/extension-points.md#발행-훅) |
-| 구독 훅 | 8개 | [구독 훅](docs/extension-points.md#구독-훅) |
-| 훅 리스너 | 6개 | [훅 리스너](docs/extension-points.md#훅-리스너) |
+| 구독 훅 | 11개 | [구독 훅](docs/extension-points.md#구독-훅) |
+| 훅 리스너 | 7개 | [훅 리스너](docs/extension-points.md#훅-리스너) |
 | 레이아웃 확장 | 2개 | [레이아웃 확장](docs/extension-points.md#레이아웃-확장) |
 | 미들웨어 | 0개 | [미들웨어](docs/extension-points.md#미들웨어) |
 | 브로드캐스트 채널 | 0개 | [브로드캐스트 채널](docs/extension-points.md#브로드캐스트-채널) |
@@ -139,7 +144,7 @@ PayPal 호출이 일어나지 않습니다(예: 특정 국가 배송지 차단).
 <!-- @generated:test-commands START — ext:docgen 이 갱신. 이 블록 안은 직접 수정하지 않는다 -->
 | 종류 | 개수 | 위치 |
 |---|---|---|
-| PHPUnit | 7개 | `plugins/_bundled/g7plus-paypal/tests` |
+| PHPUnit | 9개 | `plugins/_bundled/g7plus-paypal/tests` |
 | Vitest | 3개 | `vitest.config.ts` |
 | Playwright | 0개 | — |
 | 시나리오 매니페스트 | 0개 | — |

@@ -159,6 +159,7 @@ class Plugin extends AbstractPlugin
             Listeners\RegisterPaypalPaymentMethodListener::class,
             Listeners\RestrictPaymentMethodsForCurrencyListener::class,
             Listeners\PaymentRefundListener::class,
+            Listeners\ClaimPaymentListener::class,
             Listeners\ValidateSettingsListener::class,
             Listeners\ProvideNecessaryStorageKeysListener::class,
         ];

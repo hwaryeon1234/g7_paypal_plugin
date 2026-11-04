@@ -2,7 +2,8 @@
     "editor": {
         "data_source": {
             "settings": "Payment settings",
-            "paypal_meta": "Webhook URL & currencies"
+            "paypal_meta": "Webhook URL & currencies",
+            "paypalOrderPayment": "PayPal transaction (order detail)"
         }
     },
     "plugin_name": "PayPal",
@@ -86,6 +87,20 @@
         "capture_id": "Capture ID (Transaction ID)",
         "funding_source": "Funding source",
         "charged": "Charged",
-        "dashboard_hint": "Find the transaction in PayPal Dashboard > Activity by capture ID. Refund through this store's order cancellation/refund."
+        "dashboard_hint": "Find the transaction in PayPal Dashboard > Activity by capture ID. Refund through this store's order cancellation/refund.",
+        "mode": "Mode",
+        "mode_sandbox": "Sandbox (test)",
+        "mode_live": "Live",
+        "paypal_order_id": "PayPal order ID",
+        "capture_status": "Capture status",
+        "pending_notice": "PayPal is holding this payment. It will be marked paid by webhook or by the hourly check once released.",
+        "fee": "PayPal fee",
+        "net": "Net amount",
+        "seller_protection": "Seller protection",
+        "payer": "Buyer PayPal",
+        "events_title": "PayPal refunds & chargebacks",
+        "event_refunded": "Refund",
+        "event_reversed": "Chargeback (reversal)",
+        "open_dashboard": "View in PayPal"
     }
 }

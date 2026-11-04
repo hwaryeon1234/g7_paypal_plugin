@@ -12,6 +12,7 @@ use Modules\Sirsoft\Ecommerce\Services\OrderProcessingService;
 use Plugins\G7plus\Paypal\Concerns\RecordsPaymentFailure;
 use Plugins\G7plus\Paypal\Services\PaypalApiService;
 use Plugins\G7plus\Paypal\Services\PaypalCheckoutService;
+use Plugins\G7plus\Paypal\Support\CaptureOutcome;
 
 /**
  * PayPal 웹훅 수신.
@@ -92,9 +93,24 @@ class WebhookController
             'resource_id' => $resource['id'] ?? null,
         ]);
 
-        $status = match ($type) {
+        $outcome = match ($type) {
             'CHECKOUT.ORDER.APPROVED' => $this->onOrderApproved($resource),
             'PAYMENT.CAPTURE.COMPLETED' => $this->onCaptureCompleted($resource),
+            default => null,
+        };
+
+        // 일시적 실패(락 경합·PayPal 연결 오류)에 200 을 주면 PayPal 이 다시 보내지 않아 결제가 그대로 멈춘다.
+        if ($outcome instanceof CaptureOutcome) {
+            $status = $outcome->status === CaptureOutcome::FAILED ? 'failed:'.$outcome->errorCode : $outcome->status;
+
+            return response()->json(['status' => $status], $outcome->retryable ? 503 : 200);
+        }
+
+        if (is_string($outcome)) {
+            return response()->json(['status' => $outcome], 200);
+        }
+
+        $status = match ($type) {
             'PAYMENT.CAPTURE.DENIED', 'PAYMENT.CAPTURE.DECLINED' => $this->onCaptureDenied($resource, $type),
             'PAYMENT.CAPTURE.REFUNDED', 'PAYMENT.CAPTURE.REVERSED' => $this->onCaptureReversed($resource, $type, (string) ($event['id'] ?? '')),
             default => 'ignored',
@@ -107,9 +123,9 @@ class WebhookController
      * 구매자 승인 이벤트 — 아직 캡처되지 않았으면 캡처합니다.
      *
      * @param  array<string, mixed>  $resource  PayPal 주문 객체
-     * @return string 처리 결과
+     * @return CaptureOutcome|string 처리 결과 (주문을 못 찾으면 문자열)
      */
-    private function onOrderApproved(array $resource): string
+    private function onOrderApproved(array $resource): CaptureOutcome|string
     {
         $order = $this->findOrder((string) ($resource['purchase_units'][0]['custom_id'] ?? ''));
         $paypalOrderId = (string) ($resource['id'] ?? '');
@@ -118,16 +134,16 @@ class WebhookController
             return 'order_not_found';
         }
 
-        return $this->checkoutService->captureAndRecord($order, $paypalOrderId)->status;
+        return $this->checkoutService->captureAndRecord($order, $paypalOrderId);
     }
 
     /**
      * 캡처 완료 이벤트 — 보류였던 결제를 완료합니다.
      *
      * @param  array<string, mixed>  $resource  캡처 객체
-     * @return string 처리 결과
+     * @return CaptureOutcome|string 처리 결과 (주문을 못 찾으면 문자열)
      */
-    private function onCaptureCompleted(array $resource): string
+    private function onCaptureCompleted(array $resource): CaptureOutcome|string
     {
         $order = $this->findOrder((string) ($resource['custom_id'] ?? ''));
         $captureId = (string) ($resource['id'] ?? '');
@@ -136,9 +152,7 @@ class WebhookController
             return 'order_not_found';
         }
 
-        $outcome = $this->checkoutService->completeCaptureFromWebhook($order, $captureId);
-
-        return $outcome->status === 'failed' ? 'failed:'.$outcome->errorCode : $outcome->status;
+        return $this->checkoutService->completeCaptureFromWebhook($order, $captureId);
     }
 
     /**

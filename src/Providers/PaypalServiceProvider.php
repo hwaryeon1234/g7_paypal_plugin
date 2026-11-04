@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Plugins\G7plus\Paypal\Providers;
 
 use App\Extension\BasePluginServiceProvider;
+use Plugins\G7plus\Paypal\Console\Commands\ReconcilePendingCapturesCommand;
 use Plugins\G7plus\Paypal\Services\PaypalApiService;
 
 /**
@@ -25,4 +26,18 @@ class PaypalServiceProvider extends BasePluginServiceProvider
     protected array $cacheServices = [
         PaypalApiService::class,
     ];
+
+    /**
+     * 콘솔 명령을 등록합니다.
+     *
+     * @return void 반환값 없음
+     */
+    public function boot(): void
+    {
+        parent::boot();
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([ReconcilePendingCapturesCommand::class]);
+        }
+    }
 }

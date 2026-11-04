@@ -286,7 +286,7 @@ class PaypalCheckoutService
 
             return $this->isRecordedWith($latest, $paypalOrderId)
                 ? CaptureOutcome::of(CaptureOutcome::ALREADY_RECORDED)
-                : CaptureOutcome::failed('callback_locked');
+                : CaptureOutcome::failed('callback_locked', retryable: true);
         } finally {
             $this->releaseOrderCallbackLock($lock);
         }
@@ -336,9 +336,9 @@ class PaypalCheckoutService
             // 캡처 조회 응답에는 구매자·결제수단 정보가 없다 — 복귀 때 저장해 둔 값을 그대로 쓴다.
             return $this->recordCapture($order, $capture, $paypalOrderId, [], null);
         } catch (LockTimeoutException) {
-            return CaptureOutcome::failed('callback_locked');
+            return CaptureOutcome::failed('callback_locked', retryable: true);
         } catch (PaypalApiException $e) {
-            return CaptureOutcome::failed($e->publicCode());
+            return CaptureOutcome::failed($e->publicCode(), $e->isTransient());
         } finally {
             $this->releaseOrderCallbackLock($lock);
         }
@@ -413,10 +413,10 @@ class PaypalCheckoutService
                 try {
                     $paypalOrder = $this->api->getOrder($paypalOrderId);
                 } catch (PaypalApiException $inner) {
-                    return CaptureOutcome::failed($inner->publicCode());
+                    return CaptureOutcome::failed($inner->publicCode(), $inner->isTransient());
                 }
             } else {
-                return CaptureOutcome::failed($e->publicCode());
+                return CaptureOutcome::failed($e->publicCode(), $e->isTransient());
             }
         }
 

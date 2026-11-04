@@ -166,6 +166,24 @@ class Plugin extends AbstractPlugin
     }
 
     /**
+     * 스케줄 작업 반환
+     *
+     * 웹훅을 놓친 보류(PENDING) 결제를 매시간 PayPal 에 다시 조회해 정리한다.
+     *
+     * @return array 스케줄 목록
+     */
+    public function getSchedules(): array
+    {
+        return [
+            [
+                'command' => 'g7plus-paypal:reconcile-pending',
+                'schedule' => '17 * * * *',
+                'description' => 'PayPal 보류 결제 확인',
+            ],
+        ];
+    }
+
+    /**
      * 훅 정의 반환
      *
      * @return array 훅 정의

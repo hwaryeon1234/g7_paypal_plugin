@@ -77,6 +77,10 @@ PayPal 은 원화(KRW)를 결제 통화로 받지 않으므로, 원화 주문에
 **웹훅**: `WebhookController@handle` → `PaypalApiService::verifyWebhookSignature()`(원문 본문 그대로) →
 `CHECKOUT.ORDER.APPROVED`(구매자가 복귀하지 않은 경우 서버가 캡처) / `PAYMENT.CAPTURE.COMPLETED`(캡처를 PayPal 에서
 다시 조회해 대조 후 완료) / `PAYMENT.CAPTURE.DENIED`(실패 기록) / `REFUNDED`·`REVERSED`(기록·경고만).
+일시적 실패(`CaptureOutcome::$retryable` — 락 경합·연결 오류·429·5xx)는 503 으로 답해 PayPal 이 재전송하게 한다.
+
+**보류 정리**: 스케줄 `g7plus-paypal:reconcile-pending`(매시 17분) → `PaypalPendingCaptureService` — 30분 넘게 보류인
+결제행을 `getCapture()` 로 다시 조회해, 완료면 웹훅과 같은 `completeCaptureFromWebhook()`, 거절이면 실패 기록.
 
 **환불**: 관리자 취소·반품 → 이커머스 `sirsoft-ecommerce.payment.refund` 필터 → `PaymentRefundListener` →
 `refundCapture()`(금액 명시, PayPal-Request-Id = 환불 레코드+금액).
@@ -99,7 +103,7 @@ PayPal 은 원화(KRW)를 결제 통화로 받지 않으므로, 원화 주문에
 | 레이아웃 확장 | 2개 | [레이아웃 확장](docs/extension-points.md#레이아웃-확장) |
 | 미들웨어 | 0개 | [미들웨어](docs/extension-points.md#미들웨어) |
 | 브로드캐스트 채널 | 0개 | [브로드캐스트 채널](docs/extension-points.md#브로드캐스트-채널) |
-| 스케줄 | 0개 | [스케줄](docs/extension-points.md#스케줄) |
+| 스케줄 | 1개 | [스케줄](docs/extension-points.md#스케줄) |
 | 알림 정의 | 0개 | [알림 정의](docs/extension-points.md#알림-정의) |
 <!-- @generated:extension-points-summary END -->
 
@@ -145,7 +149,7 @@ PayPal 호출이 일어나지 않습니다(예: 특정 국가 배송지 차단).
 <!-- @generated:test-commands START — ext:docgen 이 갱신. 이 블록 안은 직접 수정하지 않는다 -->
 | 종류 | 개수 | 위치 |
 |---|---|---|
-| PHPUnit | 11개 | `plugins/_bundled/g7plus-paypal/tests` |
+| PHPUnit | 13개 | `plugins/_bundled/g7plus-paypal/tests` |
 | Vitest | 3개 | `vitest.config.ts` |
 | Playwright | 0개 | — |
 | 시나리오 매니페스트 | 0개 | — |

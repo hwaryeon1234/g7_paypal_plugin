@@ -239,4 +239,39 @@ class WebhookControllerTest extends PluginTestCase
             && ($r->data()['custom_id'] ?? null) === $order->order_number);
         $this->assertSame(OrderStatusEnum::CANCELLED, $order->fresh()->order_status);
     }
+
+    public function test_transient_paypal_failure_asks_paypal_to_retry(): void
+    {
+        $order = $this->createPaypalOrder(12.50, 'USD', [
+            'payment_status' => PaymentStatusEnum::IN_PROGRESS,
+            'transaction_id' => 'CAP-PPO-W10',
+            'payment_meta' => $this->createdMeta('PPO-W10') + ['paypal_capture_id' => 'CAP-PPO-W10', 'paypal_capture_status' => 'PENDING'],
+        ]);
+        $this->fakeVerification('SUCCESS', [
+            'api-m.sandbox.paypal.com/v2/payments/captures/CAP-PPO-W10' => Http::response(['name' => 'INTERNAL_SERVER_ERROR'], 500),
+        ]);
+
+        // 200 을 주면 PayPal 이 다시 보내지 않아 결제가 보류에 멈춘다 — 503 으로 재전송을 받는다.
+        $this->sendWebhook([
+            'id' => 'WH-10',
+            'event_type' => 'PAYMENT.CAPTURE.COMPLETED',
+            'resource' => ['id' => 'CAP-PPO-W10', 'custom_id' => $order->order_number],
+        ])->assertStatus(503);
+
+        $this->assertNotSame(OrderStatusEnum::PAYMENT_COMPLETE, $order->fresh()->order_status);
+    }
+
+    public function test_permanent_mismatch_is_acknowledged_without_retry(): void
+    {
+        $order = $this->createPaypalOrder(12.50, 'USD', [
+            'payment_meta' => $this->createdMeta('PPO-W11') + ['paypal_capture_id' => 'CAP-PPO-W11', 'paypal_capture_status' => 'PENDING'],
+        ]);
+        $this->fakeVerification('SUCCESS');
+
+        $this->sendWebhook([
+            'id' => 'WH-11',
+            'event_type' => 'PAYMENT.CAPTURE.COMPLETED',
+            'resource' => ['id' => 'CAP-OTHER', 'custom_id' => $order->order_number],
+        ])->assertOk()->assertJsonPath('status', 'failed:capture_mismatch');
+    }
 }

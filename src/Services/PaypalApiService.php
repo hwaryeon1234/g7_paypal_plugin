@@ -29,7 +29,7 @@ class PaypalApiService
 
     private const SANDBOX_BASE_URL = 'https://api-m.sandbox.paypal.com';
 
-    /** 요청 타임아웃(초) — 캡처 왕복이 콜백 락 TTL(30초)보다 짧아야 한다. */
+    /** 요청 타임아웃(초) — 한 주문 처리의 PayPal 왕복 합이 콜백 락 TTL(120초)보다 짧아야 한다. */
     private const TIMEOUT_SECONDS = 20;
 
     private bool $sandbox;

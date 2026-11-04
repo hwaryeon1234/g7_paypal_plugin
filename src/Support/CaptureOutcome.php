@@ -30,11 +30,13 @@ final class CaptureOutcome
      * @param  string  $status  결과 상태 (위 상수)
      * @param  string|null  $errorCode  실패 코드 (FAILED 일 때)
      * @param  string|null  $redirectUrl  다시 보낼 PayPal 승인 주소 (RETRY_APPROVAL 일 때)
+     * @param  bool  $retryable  일시적 실패인지 (락 경합·PayPal 연결 오류·5xx — 웹훅이면 PayPal 이 다시 보내게 한다)
      */
     private function __construct(
         public readonly string $status,
         public readonly ?string $errorCode = null,
         public readonly ?string $redirectUrl = null,
+        public readonly bool $retryable = false,
     ) {}
 
     /**
@@ -52,11 +54,12 @@ final class CaptureOutcome
      * 실패 결과를 만듭니다.
      *
      * @param  string  $errorCode  실패 코드
+     * @param  bool  $retryable  일시적 실패인지
      * @return self 결과
      */
-    public static function failed(string $errorCode): self
+    public static function failed(string $errorCode, bool $retryable = false): self
     {
-        return new self(self::FAILED, $errorCode);
+        return new self(self::FAILED, $errorCode, null, $retryable);
     }
 
     /**

@@ -103,4 +103,16 @@ class PaypalApiException extends RuntimeException
     {
         return $this->issues[0] ?? $this->errorName ?? 'PAYPAL_API_ERROR';
     }
+
+    /**
+     * 다시 시도하면 성공할 수 있는 실패인지 반환합니다. (연결 오류·429·5xx)
+     *
+     * @return bool 일시적 실패 여부
+     */
+    public function isTransient(): bool
+    {
+        $status = $this->getHttpStatus();
+
+        return $status === 0 || $status === 429 || $status >= 500;
+    }
 }

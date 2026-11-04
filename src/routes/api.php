@@ -3,6 +3,7 @@
 use App\Support\SiteUrl;
 use Illuminate\Support\Facades\Route;
 use Plugins\G7plus\Paypal\Controllers\AdminConnectionController;
+use Plugins\G7plus\Paypal\Controllers\AdminOrderPaymentController;
 use Plugins\G7plus\Paypal\Controllers\CheckoutController;
 use Plugins\G7plus\Paypal\Controllers\PaymentCloseReportController;
 use Plugins\G7plus\Paypal\Services\PaypalCheckoutService;
@@ -56,4 +57,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:sanctum', 'admin'])->g
     Route::get('/connection-test', [AdminConnectionController::class, 'test'])
         ->middleware('permission:admin,sirsoft-ecommerce.settings.read')
         ->name('connection-test');
+
+    // 주문 상세 PayPal 패널 — 수수료·판매자 보호·환불/차지백 기록(이커머스 주문 API 가 내보내지 않는 payment_meta).
+    Route::get('/orders/{orderNumber}/payment', [AdminOrderPaymentController::class, 'show'])
+        ->middleware('permission:admin,sirsoft-ecommerce.orders.read')
+        ->name('orders.payment');
 });

@@ -9,9 +9,9 @@
 
 | 훅 이름 | 유형 | 설명 | 발행 위치 |
 |---|---|---|---|
-| `g7plus-paypal.payment.after_capture` | action | PayPal 결제 캡처 완료 후 (금액 대조 전) | `src/Services/PaypalCheckoutService.php:453` |
-| `g7plus-paypal.payment.after_refund` | action | PayPal 환불 완료 후 | `src/Listeners/PaymentRefundListener.php:166` |
-| `g7plus-paypal.payment.before_create` | action | PayPal 주문(Orders v2) 생성 API 호출 전 | `src/Services/PaypalCheckoutService.php:188` |
+| `g7plus-paypal.payment.after_capture` | action | PayPal 결제 캡처 완료 후 (금액 대조 전) | `src/Services/PaypalCheckoutService.php:462` |
+| `g7plus-paypal.payment.after_refund` | action | PayPal 환불 완료 후 | `src/Listeners/PaymentRefundListener.php:167` |
+| `g7plus-paypal.payment.before_create` | action | PayPal 주문(Orders v2) 생성 API 호출 전 | `src/Services/PaypalCheckoutService.php:197` |
 | `g7plus-paypal.payment.before_refund` | action | PayPal 환불 API 호출 전 | `src/Listeners/PaymentRefundListener.php:136` |
 <!-- @generated:hooks-published END -->
 
@@ -97,7 +97,9 @@ _등록하는 브로드캐스트 채널이 없습니다._
 ## 스케줄
 
 <!-- @generated:schedules START — ext:docgen 이 갱신. 이 블록 안은 직접 수정하지 않는다 -->
-_등록하는 스케줄이 없습니다._
+| 스케줄 | 주기 | 설명 |
+|---|---|---|
+| `g7plus-paypal:reconcile-pending` | `17 * * * *` | PayPal 보류 결제 확인 |
 <!-- @generated:schedules END -->
 
 <!-- @intent START -->

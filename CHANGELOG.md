@@ -3,6 +3,19 @@
 이 프로젝트의 모든 주요 변경 사항은 이 파일에 기록됩니다.
 형식은 [Keep a Changelog](https://keepachangelog.com/ko/1.1.0/) 를 따르며, [Semantic Versioning](https://semver.org/lang/ko/) 을 준수합니다.
 
+## [2.3.0] - 2026-11-04
+
+### Added
+
+- 보류 결제 자동 확인 — PayPal 이 보류(PENDING)한 결제를 매시간 다시 조회해 결제완료·실패로 정리합니다. 웹훅을 놓쳐도 주문이 결제대기에 멈추지 않습니다(`php artisan g7plus-paypal:reconcile-pending`, 서버 크론 `schedule:run` 필요)
+- 관리자 주문 상세 PayPal 패널 확장 — 모드, PayPal 주문 ID, 캡처 상태, PayPal 수수료, 정산 예정액, 판매자 보호, 구매자 PayPal 계정, 환불·차지백 기록, PayPal 거래 바로가기
+- README 에 자주 묻는 질문·정기 작업 안내·문제 해결 항목 추가
+
+### Fixed
+
+- 웹훅 처리 중 일시 오류(동시 처리·PayPal 연결 실패·5xx)에도 200 으로 답해 PayPal 이 다시 보내지 않던 문제 — 이제 503 으로 답해 재전송을 받습니다
+- 주문 처리 락(30초)이 PayPal 왕복 최악 시간보다 짧아 같은 주문이 동시에 처리될 수 있던 문제 — 120초로 늘렸습니다
+
 ## [2.2.2] - 2026-11-04
 
 ### Fixed

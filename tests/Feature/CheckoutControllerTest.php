@@ -250,4 +250,21 @@ class CheckoutControllerTest extends PluginTestCase
             && ! isset($r->data()['purchase_units'][0]['shipping'])
             && str_ends_with($r->header('PayPal-Request-Id')[0] ?? '', '-noship'));
     }
+
+    public function test_order_with_a_pending_capture_does_not_start_a_second_payment(): void
+    {
+        $this->fakeCreate();
+        $order = $this->createPaypalOrder(12.50, 'USD', [
+            'payment_status' => PaymentStatusEnum::IN_PROGRESS,
+            'transaction_id' => 'CAP-PEND',
+            'payment_meta' => $this->createdMeta('PPO-PEND') + ['paypal_capture_id' => 'CAP-PEND', 'paypal_capture_status' => 'PENDING'],
+        ]);
+
+        $this->actingAs(User::find($order->user_id))
+            ->postJson(self::URL, ['orderId' => $order->order_number])
+            ->assertStatus(409)
+            ->assertJsonPath('errors.code', 'callback_locked');
+
+        Http::assertNothingSent();
+    }
 }

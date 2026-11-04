@@ -209,4 +209,34 @@ class WebhookControllerTest extends PluginTestCase
 
         $this->assertCount(1, $order->fresh(['payment'])->payment->payment_meta['paypal_events']);
     }
+
+    public function test_pending_capture_completed_after_the_order_was_cancelled_is_refunded(): void
+    {
+        $order = $this->createPaypalOrder(12.50, 'USD', [
+            'payment_status' => PaymentStatusEnum::IN_PROGRESS,
+            'transaction_id' => 'CAP-PPO-W9',
+            'payment_meta' => $this->createdMeta('PPO-W9') + ['paypal_capture_id' => 'CAP-PPO-W9', 'paypal_capture_status' => 'PENDING'],
+        ], ['order_status' => OrderStatusEnum::CANCELLED]);
+        $this->fakeVerification('SUCCESS', [
+            'api-m.sandbox.paypal.com/v2/payments/captures/CAP-PPO-W9/refund' => Http::response(['id' => 'RF-W9', 'status' => 'COMPLETED'], 201),
+            'api-m.sandbox.paypal.com/v2/payments/captures/CAP-PPO-W9' => Http::response([
+                'id' => 'CAP-PPO-W9',
+                'status' => 'COMPLETED',
+                'amount' => ['currency_code' => 'USD', 'value' => '12.50'],
+                'custom_id' => $order->order_number,
+                'supplementary_data' => ['related_ids' => ['order_id' => 'PPO-W9']],
+            ]),
+        ]);
+
+        // 보류 중에 주문이 취소됐다 — 뒤늦게 완료된 캡처는 쇼핑몰이 모르는 돈이므로 돌려줘야 한다.
+        $this->sendWebhook([
+            'id' => 'WH-9',
+            'event_type' => 'PAYMENT.CAPTURE.COMPLETED',
+            'resource' => ['id' => 'CAP-PPO-W9', 'custom_id' => $order->order_number],
+        ])->assertOk()->assertJsonPath('status', 'failed:order_not_payable');
+
+        Http::assertSent(fn (HttpRequest $r) => str_ends_with($r->url(), '/captures/CAP-PPO-W9/refund')
+            && ($r->data()['custom_id'] ?? null) === $order->order_number);
+        $this->assertSame(OrderStatusEnum::CANCELLED, $order->fresh()->order_status);
+    }
 }

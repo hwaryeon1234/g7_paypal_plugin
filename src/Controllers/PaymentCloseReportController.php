@@ -63,6 +63,11 @@ class PaymentCloseReportController
             return ResponseHelper::pluginError('g7plus-paypal', 'messages.errors.order_not_found', 404);
         }
 
+        // 소유 확인이 먼저다 — 뒤의 「ignored」 응답만으로도 남의 주문이 결제됐는지 알 수 있다.
+        if (! $this->requestOwnsOrder($request, $order, $this->guestOrderAuthService)) {
+            return ResponseHelper::pluginError('g7plus-paypal', 'messages.errors.ownership_failed', 403);
+        }
+
         if (! $order->order_status->isBeforePayment()) {
             return ResponseHelper::success('common.success', ['status' => 'ignored', 'reason' => 'order_not_payable']);
         }
@@ -71,10 +76,6 @@ class PaymentCloseReportController
         $meta = $order->payment?->payment_meta ?? [];
         if ($order->payment?->isPaid() || ! empty($meta['paypal_capture_id'])) {
             return ResponseHelper::success('common.success', ['status' => 'ignored', 'reason' => 'payment_captured']);
-        }
-
-        if (! $this->requestOwnsOrder($request, $order, $this->guestOrderAuthService)) {
-            return ResponseHelper::pluginError('g7plus-paypal', 'messages.errors.ownership_failed', 403);
         }
 
         try {

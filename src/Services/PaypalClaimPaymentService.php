@@ -44,11 +44,12 @@ class PaypalClaimPaymentService
      * 클레임 결제 건의 PayPal 청구액을 계산합니다.
      *
      * @param  ClaimPayment  $payment  결제 건
+     * @param  bool  $enforceAllowlist  허용 통화 목록 확인 여부 (결제 시작 때만 true — 승인된 결제는 목록 변경과 무관하다)
      * @return array{currency:string, minor:int, decimals:int, value:string} 청구 통화·금액
      *
      * @throws PaypalCheckoutException 청구할 수 없는 통화·금액
      */
-    public function resolveCharge(ClaimPayment $payment): array
+    public function resolveCharge(ClaimPayment $payment, bool $enforceAllowlist = true): array
     {
         $charge = $this->claimPaymentService->resolvePaymentCharge($payment);
 
@@ -57,7 +58,7 @@ class PaypalClaimPaymentService
         }
 
         $currency = strtoupper($charge['currency']);
-        if (! $this->checkoutService->acceptsCurrency($currency)) {
+        if ($enforceAllowlist && ! $this->checkoutService->acceptsCurrency($currency)) {
             throw new PaypalCheckoutException('currency_not_allowed');
         }
 
@@ -158,7 +159,7 @@ class PaypalClaimPaymentService
         }
 
         try {
-            $charge = $this->resolveCharge($payment);
+            $charge = $this->resolveCharge($payment, enforceAllowlist: false);
         } catch (PaypalCheckoutException $e) {
             return $this->failure(strtoupper($e->errorCode));
         }
@@ -244,6 +245,7 @@ class PaypalClaimPaymentService
                 $currency,
                 __('g7plus-paypal::messages.refund.verification_failed_note'),
                 'g7-claimvoid-'.$captureId,
+                (string) $payment->payment_number,
             );
 
             return true;

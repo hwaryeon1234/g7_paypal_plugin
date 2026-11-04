@@ -142,6 +142,7 @@ class PaymentRefundListener implements HookListenerInterface
                 $currency,
                 $reason ?: __('g7plus-paypal::messages.refund.default_note'),
                 $requestId,
+                (string) $order->order_number,
             );
         } catch (PaypalApiException $e) {
             Log::error('PayPal: refund failed', [

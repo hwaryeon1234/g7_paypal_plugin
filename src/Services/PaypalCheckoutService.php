@@ -95,12 +95,16 @@ class PaypalCheckoutService
     /**
      * 주문의 PayPal 청구액을 계산합니다.
      *
+     * 허용 통화 목록은 결제를 「시작」할 때만 본다. 이미 만든 PayPal 주문을 캡처·대조할 때 다시 보면, 운영자가 그 사이
+     * 통화를 목록에서 뺀 것만으로 구매자가 승인한 결제가 캡처되지 않거나 환불된다.
+     *
      * @param  Order  $order  대상 주문
+     * @param  bool  $enforceAllowlist  허용 통화 목록 확인 여부 (결제 시작 때만 true)
      * @return array{currency:string, minor:int, decimals:int, value:string} 청구 통화·금액
      *
      * @throws PaypalCheckoutException 청구할 수 없는 통화·금액
      */
-    public function resolveCharge(Order $order): array
+    public function resolveCharge(Order $order, bool $enforceAllowlist = true): array
     {
         try {
             $charge = $this->currencyService->resolveSnapshotPaymentCharge(
@@ -118,7 +122,7 @@ class PaypalCheckoutService
 
         $currency = strtoupper((string) $charge['currency']);
 
-        if (! $this->acceptsCurrency($currency)) {
+        if ($enforceAllowlist && ! $this->acceptsCurrency($currency)) {
             throw new PaypalCheckoutException('currency_not_allowed');
         }
 
@@ -174,6 +178,11 @@ class PaypalCheckoutService
 
         if ($order->payment?->paymentMethodId() !== self::METHOD_ID) {
             throw new PaypalCheckoutException('payment_method_mismatch');
+        }
+
+        // 보류(PENDING) 캡처가 있는 주문 — 돈은 이미 PayPal 에 잡혀 있고 웹훅이 완료시킨다. 새 PayPal 주문을 만들면 이중 결제다.
+        if (! empty($order->payment?->payment_meta['paypal_capture_id'] ?? null)) {
+            throw new PaypalCheckoutException('callback_locked', 409);
         }
 
         if (! $this->api->isConfigured()) {
@@ -368,7 +377,7 @@ class PaypalCheckoutService
 
         // 승인 화면을 연 사이 주문 금액이 바뀌었으면 캡처하지 않는다(쿠폰 취소·관리자 수정 등).
         try {
-            $charge = $this->resolveCharge($order);
+            $charge = $this->resolveCharge($order, enforceAllowlist: false);
         } catch (PaypalCheckoutException $e) {
             return CaptureOutcome::failed($e->errorCode);
         }
@@ -465,7 +474,7 @@ class PaypalCheckoutService
         }
 
         try {
-            $charge = $this->resolveCharge($order);
+            $charge = $this->resolveCharge($order, enforceAllowlist: false);
         } catch (PaypalCheckoutException $e) {
             $this->refundQuietly($capture, $order, $e->errorCode);
 
@@ -488,8 +497,10 @@ class PaypalCheckoutService
 
         // 캡처 왕복 사이에 주문이 결제 불가가 됐으면(관리자 취소 등) 결과를 쓰지 않고 돈을 돌려준다.
         $order = $order->fresh(['payment']) ?? $order;
+        // 「기록됨」은 이 캡처로 결제완료된 경우뿐이다. 보류 캡처만 기록된 채 주문이 취소됐으면, 뒤늦게 완료된 이 캡처는
+        // 쇼핑몰이 모르는 돈이다 — 돌려준다.
         if (! $this->isPayable($order)) {
-            if ($this->isRecordedWith($order, $paypalOrderId)) {
+            if (($order->payment?->isPaid() ?? false) && (string) $order->payment->transaction_id === $captureId) {
                 return CaptureOutcome::of(CaptureOutcome::ALREADY_RECORDED);
             }
 
@@ -619,6 +630,7 @@ class PaypalCheckoutService
                 (string) ($capture['amount']['currency_code'] ?? 'USD'),
                 __('g7plus-paypal::messages.refund.verification_failed_note'),
                 'g7-void-'.$captureId,
+                (string) $order->order_number,
             );
 
             Log::warning('PayPal: capture refunded after verification failure', [

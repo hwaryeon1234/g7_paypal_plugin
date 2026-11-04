@@ -229,4 +229,20 @@ class PaymentReturnTest extends PluginTestCase
 
         $this->assertSame(OrderStatusEnum::PAYMENT_COMPLETE, $order->fresh()->order_status);
     }
+
+    public function test_currency_removed_from_the_allowlist_after_approval_is_still_captured(): void
+    {
+        // 구매자가 USD 로 승인한 뒤 운영자가 허용 통화에서 USD 를 뺐다 — 이미 시작된 결제는 그대로 받는다.
+        $this->usePaypalSettings(['allowed_currencies' => ['EUR']]);
+        $order = $this->createPaypalOrder(12.50, 'USD', ['payment_meta' => $this->createdMeta('PPO-AL')]);
+        Http::fake($this->tokenFake() + [
+            'api-m.sandbox.paypal.com/v2/checkout/orders/PPO-AL/capture' => Http::response($this->captureResponse('PPO-AL', $order->order_number), 201),
+        ]);
+
+        $this->get($this->returnUrl($order->order_number, 'PPO-AL'))
+            ->assertRedirectContains('/complete');
+
+        $this->assertSame(OrderStatusEnum::PAYMENT_COMPLETE, $order->fresh()->order_status);
+        Http::assertNotSent(fn (HttpRequest $r) => str_ends_with($r->url(), '/refund'));
+    }
 }

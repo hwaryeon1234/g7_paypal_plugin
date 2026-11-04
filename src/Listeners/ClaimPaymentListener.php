@@ -117,6 +117,7 @@ class ClaimPaymentListener implements HookListenerInterface
                 $currency,
                 $reason ?: __('g7plus-paypal::messages.refund.default_note'),
                 $idempotencyKey !== '' ? $idempotencyKey : 'g7-claimrefund-'.$payment->id.'-'.$currency.'-'.$value,
+                (string) $payment->payment_number,
             );
         } catch (PaypalApiException $e) {
             Log::error('PayPal: claim refund failed', [

@@ -194,13 +194,19 @@ class PaypalApiService
      * @param  string  $currency  통화 코드
      * @param  string|null  $note  구매자에게 보일 메모 (최대 255자)
      * @param  string  $requestId  멱등키 (PayPal-Request-Id)
+     * @param  string|null  $customId  환불 객체에 남길 주문·결제번호 (환불 웹훅에서 주문을 찾는 열쇠)
      * @return array<string, mixed> 환불 객체
      *
      * @throws PaypalApiException API 호출 실패 시
      */
-    public function refundCapture(string $captureId, ?string $value, string $currency, ?string $note, string $requestId): array
+    public function refundCapture(string $captureId, ?string $value, string $currency, ?string $note, string $requestId, ?string $customId = null): array
     {
         $payload = [];
+
+        // 환불 웹훅(PAYMENT.CAPTURE.REFUNDED)의 환불 객체는 캡처의 custom_id 를 물려받지 않는다 — 주문을 찾을 수 있게 다시 싣는다.
+        if ($customId !== null && $customId !== '') {
+            $payload['custom_id'] = mb_substr($customId, 0, 127);
+        }
 
         if ($value !== null) {
             $payload['amount'] = ['value' => $value, 'currency_code' => strtoupper($currency)];

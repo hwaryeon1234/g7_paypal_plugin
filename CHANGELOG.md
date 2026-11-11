@@ -7,7 +7,7 @@
 
 ### Added
 
-- 쉬운 설명서 [GUIDE.md](GUIDE.md) — 설치, PayPal 키 받기, 웹훅 등록, 테스트 결제, 실결제 전환, 자주 묻는 질문을 순서대로 안내합니다
+- 쉬운 설명서(저장소의 GUIDE.md) — 설치, PayPal 키 받기, 웹훅 등록, 테스트 결제, 실결제 전환, 자주 묻는 질문을 순서대로 안내합니다
 - PayPal 설정 화면 맨 아래에 「도움이 필요하세요?」 칸 — 설명서 보기·문제 알리기 버튼
 - GitHub 이슈 양식(문제 알리기·질문/제안) — 버전, 모드, 오류 코드를 빠짐없이 받을 수 있게 칸을 나눴습니다
 
@@ -15,7 +15,7 @@
 
 ### Added
 
-- 보류 결제 자동 확인 — PayPal 이 보류(PENDING)한 결제를 매시간 다시 조회해 결제완료·실패로 정리합니다. 웹훅을 놓쳐도 주문이 결제대기에 멈추지 않습니다(`php artisan g7plus-paypal:reconcile-pending`, 서버 크론 `schedule:run` 필요)
+- 보류 결제 자동 확인 — PayPal 이 보류(PENDING)한 결제를 매시간 다시 조회해 결제완료·실패로 정리합니다. 웹훅을 놓쳐도 주문이 결제대기에 멈추지 않습니다(서버 크론에 schedule:run 이 등록돼 있어야 합니다. 바로 돌리려면 php artisan g7plus-paypal:reconcile-pending)
 - 관리자 주문 상세 PayPal 패널 확장 — 모드, PayPal 주문 ID, 캡처 상태, PayPal 수수료, 정산 예정액, 판매자 보호, 구매자 PayPal 계정, 환불·차지백 기록, PayPal 거래 바로가기
 - README 에 자주 묻는 질문·정기 작업 안내·문제 해결 항목 추가
 

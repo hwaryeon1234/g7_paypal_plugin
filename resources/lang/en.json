@@ -73,7 +73,11 @@
         "conn_webhook_skipped": "Not checked because authentication failed",
         "conn_webhook_error": "Could not read the webhook",
         "conn_webhook_registered": "URL registered at PayPal",
-        "conn_webhook_expected": "URL to register"
+        "conn_webhook_expected": "URL to register",
+        "help_title": "Need help?",
+        "help_desc": "The guide walks you through setup step by step. If something goes wrong, let us know on GitHub.",
+        "help_guide": "Open guide",
+        "help_issue": "Report a problem"
     },
     "payment_error_title": "PayPal Payment Error",
     "payment": {

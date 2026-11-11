@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 설명서 (쉬운 설치·설정 안내)
+    url: https://github.com/hwaryeon1234/g7_paypal_plugin/blob/main/GUIDE.md
+    about: 설치부터 첫 결제, 실결제 전환까지 차근차근 안내해요.

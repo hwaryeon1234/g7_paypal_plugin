@@ -73,7 +73,11 @@
         "conn_webhook_skipped": "API 키 인증에 실패해 확인하지 못했습니다",
         "conn_webhook_error": "웹훅을 조회하지 못했습니다",
         "conn_webhook_registered": "PayPal 에 등록된 주소",
-        "conn_webhook_expected": "등록해야 할 주소"
+        "conn_webhook_expected": "등록해야 할 주소",
+        "help_title": "도움이 필요하세요?",
+        "help_desc": "설명서에서 설정 방법을 차근차근 볼 수 있어요. 문제가 생기면 GitHub 에 알려 주세요.",
+        "help_guide": "설명서 보기",
+        "help_issue": "문제 알리기"
     },
     "payment_error_title": "PayPal 결제 오류",
     "payment": {

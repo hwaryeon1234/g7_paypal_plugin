@@ -1,0 +1,20 @@
+name: 질문·제안
+description: 사용법이 궁금하거나, 있었으면 하는 기능이 있을 때 남겨 주세요.
+title: "[질문] "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        먼저 [설명서](https://github.com/hwaryeon1234/g7_paypal_plugin/blob/main/GUIDE.md)의 「자주 묻는 질문」을 확인해 보세요. 거기 답이 있을 수도 있어요.
+  - type: textarea
+    id: question
+    attributes:
+      label: 궁금한 점이나 제안
+    validations:
+      required: true
+  - type: input
+    id: plugin_version
+    attributes:
+      label: 페이팔 플러그인 버전 (알면)
+      placeholder: 예) 2.3.0

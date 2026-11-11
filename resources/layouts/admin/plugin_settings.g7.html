@@ -318,6 +318,19 @@
           </div>
         </div>
       </div>
+      <!-- 도움말 — 설명서와 문제 신고 창구. 공개 배포 플러그인이라 쓰는 분이 막혔을 때 갈 곳을 알려 준다 -->
+      <div data-ref="help_section" class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="p-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h3 class="section-heading-md">$t:g7plus-paypal.settings.help_title</h3>
+            <p class="form-hint">$t:g7plus-paypal.settings.help_desc</p>
+          </div>
+          <div class="flex gap-2 flex-shrink-0">
+            <a data-ref="help_guide_link" href="https://github.com/hwaryeon1234/g7_paypal_plugin/blob/main/GUIDE.md" target="_blank" rel="noopener noreferrer" class="button btn btn-secondary btn-sm">$t:g7plus-paypal.settings.help_guide</a>
+            <a data-ref="help_issue_link" href="https://github.com/hwaryeon1234/g7_paypal_plugin/issues/new/choose" target="_blank" rel="noopener noreferrer" class="button btn btn-secondary btn-sm">$t:g7plus-paypal.settings.help_issue</a>
+          </div>
+        </div>
+      </div>
       <div data-ref="footer_buttons" class="sticky-footer-buttons">
         <a href="/admin/plugins" data-ref="cancel_button" class="button btn btn-secondary">
           <on type="click">

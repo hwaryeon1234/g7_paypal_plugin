@@ -4,7 +4,7 @@
 # 그 Release 의 zip 으로 업데이트한다. Release 가 없으면 다른 사이트에 업데이트 알림이 가지 않는다.
 # 릴리스 노트는 CHANGELOG.md 의 해당 버전 구간을 쓰되, 분류 제목(Added 등)은 한국어로 바꾼다.
 # CHANGELOG.md 자체의 분류 제목은 그누보드7 규칙(Keep a Changelog 영문 카테고리 — 관리자 화면이 파싱)대로 영문을 유지한다.
-# 이미 있는 Release 는 노트만 최신 CHANGELOG 로 갱신한다.
+# 이미 있는 Release 는 노트만 최신 CHANGELOG 로 갱신한다 — CHANGELOG 만 고친 경우 이 파일을 건드리거나 Actions 에서 수동 실행하면 노트가 다시 써진다.
 name: 릴리스 자동 생성
 
 on:
